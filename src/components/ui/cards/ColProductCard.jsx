@@ -46,10 +46,10 @@ const ColProductCard = ({ card }) => {
 
   return (
     <div className="flex flex-col bg-base-100 min-w-[220px] rounded-xl">
-      {/* Product ustiga bosilganda SingleProduct sahifasiga o'tish */}
+     
       <Link to={`/products/${card.id}`} className="photo rounded-xl bg-base-300 relative">
         <div className="flex flex-col gap-2 items-end absolute z-10 top-2 right-4">
-          {/* Like tugmasi */}
+          
           <div className="border-none">
             <button
               type="button"
@@ -67,7 +67,7 @@ const ColProductCard = ({ card }) => {
             </button>
           </div>
 
-          {/* Compare tugmasi */}
+         
           <div>
             <label className="btn btn-circle swap swap-rotate border-none bg-base-100 ">
               <input type="checkbox" />
@@ -81,7 +81,7 @@ const ColProductCard = ({ card }) => {
           </div>
         </div>
 
-        {/* Product rasmi */}
+       
         <img
           src={card?.images[0] || "Нет картинки"}
           alt={card?.title || "Нет Названия"}
@@ -89,13 +89,13 @@ const ColProductCard = ({ card }) => {
         />
       </Link>
 
-      {/* Pastki qism */}
+   
       <Link to={`/products/${card.id}`}>
         <div className="flex bg-base-100 rounded-xl flex-col gap-[20px] p-2">
           <div className="main flex flex-col gap-3">
             <div className="info flex flex-col gap-1 h-[86px]">
               <p className="text-lg">{card?.category || "Нет Категории"}</p>
-              {/* Nomi ham link bo‘lsin */}
+             
               <Link to={`/products/${card.id}`} className="text-lg hover:underline">
                 {card?.title || "Нет Названия"}
               </Link>
@@ -118,7 +118,7 @@ const ColProductCard = ({ card }) => {
             </div>
           </div>
 
-          {/* Tugmalar */}
+        
           <div className="buy flex justify-between items-center gap-2">
             <button
               onClick={handleAddToCart}

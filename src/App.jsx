@@ -11,8 +11,11 @@ export default function App() {
   return (
     <>
       <Header />
-      <Navbar />
-      <div>
+      <div className='sticky top-0 z-50'>
+         <Navbar />
+      </div>
+     
+      {/* <div>
         <BannerSection
           images={[
             "https://www.fdli.org/wp-content/uploads/2020/05/The-Regulation-of-Cosmetics-scaled.jpeg",
@@ -20,7 +23,7 @@ export default function App() {
             "https://professionals.beauty/media/images/685871428e6d42a0ad5b863a86d64664.webp",
           ]}
         />
-      </div>
+      </div> */}
       <main>
         <Outlet />
        

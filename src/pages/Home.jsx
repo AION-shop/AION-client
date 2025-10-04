@@ -10,7 +10,8 @@ import SkeletonCards from '../components/shared/SkeletonCards'
 import RowDiscauntCard from '../components/ui/cards/RowDiscountCard'
 import ColDiscauntCard from '../components/ui/cards/ColDiscountCard'
 import CategorySwiper from '../components/ui/promotions/CategorySwiper'
-const Home = () => {
+import BannerSection from '../components/ui/promotions/SwiperBanner'
+const Home = () => {  
   const [user, usetUser] = useState([])
   const [products, setProducts] = useState([])
   const [smartphones, setSmartphones] = useState([])
@@ -64,7 +65,7 @@ const Home = () => {
   }, [])
   useEffect(() => {
     const a = products.filter(item => item.category === 'smartphones')
-    console.log("erik gey:  ",a)
+    console.log("erik gey:  ", a)
   }, [])
   return (
     <>
@@ -73,7 +74,18 @@ const Home = () => {
         {/* smartphones cards */}
         <section className='py-10'>
           <Container>
-           
+
+
+            <div>
+              <BannerSection
+                images={[
+                  "https://www.fdli.org/wp-content/uploads/2020/05/The-Regulation-of-Cosmetics-scaled.jpeg",
+                  "https://media1.popsugar-assets.com/files/thumbor/Oh75nKn1VsIoIKTr7AyLl_x9fP0=/fit-in/792x529/top/filters:format_auto():upscale()/2023/02/17/038/n/1922153/tmp_1girMz_9800731501475e8c_GettyImages-642659348.jpg",
+                  "https://professionals.beauty/media/images/685871428e6d42a0ad5b863a86d64664.webp",
+                ]}
+              />
+            </div>
+
             <div className='bg-primary border border-primary rounded-2xl'>
               <div className="flex gap-2 p-5">
                 {/* BILOL = FETCH BILAN QILISH */}
@@ -89,9 +101,9 @@ const Home = () => {
         </section>
         <PromotionBanner img={'https://olcha.uz/image/1440x302/homePage/cdn_1/2025-07-16/DvAmWwCXU8V2EDK0d3bFFo7YbIpfPT8euXbpAkSWU6PxaThfpP4GeGHfrLJN.jpg'} />
         <div className='p-10'>
-          <CategorySwiper/>
+          <CategorySwiper />
         </div>
-         
+
         <section className='py-20'>
           <Container>
             {
@@ -116,12 +128,12 @@ const Home = () => {
               )
             }
 
-           
+
           </Container>
         </section>
         <PromotionBanner />
-        
-        
+
+
       </main>
     </>
   );
