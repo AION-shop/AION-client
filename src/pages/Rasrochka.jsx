@@ -110,7 +110,7 @@ const Rasrochka = () => {
                     }}
                     className={`w-full flex items-center justify-between px-3 py-2 rounded-md transition text-left font-medium ${
                       selectedCategory === cat.id
-                        ? "bg-red-600 text-white"
+                        ? "bg-error text-base-100"
                         : "text-base-900 hover:bg-base-200"
                     }`}
                   >
@@ -128,14 +128,14 @@ const Rasrochka = () => {
                   placeholder="от 0"
                   value={minPrice}
                   onChange={(e) => setMinPrice(e.target.value)}
-                  className="w-full text-black bg-white px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
+                  className="w-full text-base-content bg-base-100 px-3 py-2 border border-base-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-error"
                 />
                 <input
                   type="number"
                   placeholder="до 0"
                   value={maxPrice}
                   onChange={(e) => setMaxPrice(e.target.value)}
-                  className="w-full text-black bg-white px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
+                  className="w-full text-base-content bg-base-100 px-3 py-2 border border-base-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-error"
                 />
               </div>
               {(minPrice || maxPrice) && (
@@ -144,7 +144,7 @@ const Rasrochka = () => {
                     setMinPrice("");
                     setMaxPrice("");
                   }}
-                  className="mt-2 text-sm text-red-600 hover:text-red-800"
+                  className="mt-2 text-sm text-error hover:text-error"
                 >
                   Очистить фильтр
                 </button>
@@ -164,7 +164,7 @@ const Rasrochka = () => {
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className="border text-black border-gray-300 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-red-500"
+                className="border text-black border-base-300 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:bg-error"
               >
                 <option value="popularity">Популярности</option>
                 <option value="low">Сначала дешевые</option>
@@ -176,8 +176,8 @@ const Rasrochka = () => {
               onClick={toggleViewMode}
               className={`p-2 rounded-lg transition ${
                 viewMode === "grid"
-                  ? "bg-red-600 text-white"
-                  : "bg-gray-200 text-gray-800 hover:bg-gray-300"
+                  ? "bg-error text-base"
+                  : "bg-base-200 text-gray-800 hover:bg-base-300"
               }`}
               title="Переключить вид"
             >
@@ -204,23 +204,23 @@ const Rasrochka = () => {
                   {filteredProducts.map((p) => (
                     <div
                       key={p.id}
-                      className="bg-white rounded-xl shadow hover:shadow-xl transition overflow-hidden group cursor-pointer"
+                      className="bg-base-100 rounded-xl shadow hover:shadow-xl transition overflow-hidden group cursor-pointer"
                       onClick={() => handleGoToSingle(p.id)}
                     >
-                      <div className="relative h-48 bg-gray-100 flex items-center justify-center overflow-hidden">
+                      <div className="relative h-48 bg-base-100 flex items-center justify-center overflow-hidden">
                         <img
                           src={p.thumbnail}
                           alt={p.title}
                           className="object-contain h-full w-full p-4 group-hover:scale-110 transition-transform duration-300"
                         />
                         {p.discountPercentage > 10 && (
-                          <div className="absolute top-2 left-2 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded">
+                          <div className="absolute top-2 left-2 bg-eror text-base-100 text-xs font-bold px-2 py-1 rounded">
                             -{Math.round(p.discountPercentage)}%
                           </div>
                         )}
                       </div>
                       <div className="p-4" onClick={(e) => e.stopPropagation()}>
-                        <h3 className="font-semibold text-gray-900 mb-2 line-clamp-2 h-12">
+                        <h3 className="font-semibold text-base-content mb-2 line-clamp-2 h-12">
                           {p.title}
                         </h3>
                         <p className="text-gray-600 text-sm mb-3 line-clamp-3">
@@ -228,7 +228,7 @@ const Rasrochka = () => {
                         </p>
                         <div className="flex items-center justify-between mb-3">
                           <div>
-                            <p className="text-xl font-bold text-red-600">
+                            <p className="text-xl font-bold text-error">
                               {p.price.toLocaleString()} сум
                             </p>
                             <p className="text-xs text-gray-500 mt-1">
@@ -237,14 +237,14 @@ const Rasrochka = () => {
                           </div>
                           <button
                             onClick={(e) => handleAddToCart(p, e)}
-                            className="bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded-lg transition font-medium"
+                            className="bg-error hover:bg-error text-base py-2 px-4 rounded-lg transition font-medium"
                           >
                             🛒 В корзину
                           </button>
                         </div>
                         <button
                           onClick={(e) => handleAddToFavorites(p, e)}
-                          className="w-full bg-gray-100 hover:bg-gray-200 text-gray-800 py-2 px-3 rounded-lg transition text-sm font-medium"
+                          className="w-full bg-base-100 hover:bg-base-200 text-gray-800 py-2 px-3 rounded-lg transition text-sm font-medium"
                         >
                           ❤️ В избранное
                         </button>
@@ -258,24 +258,24 @@ const Rasrochka = () => {
                   {filteredProducts.map((p) => (
                     <div
                       key={p.id}
-                      className="bg-white rounded-xl shadow hover:shadow-xl transition cursor-pointer flex flex-row overflow-hidden"
+                      className="bg-base-100 rounded-xl shadow hover:shadow-xl transition cursor-pointer flex flex-row overflow-hidden"
                       onClick={() => handleGoToSingle(p.id)}
                     >
                       {/* Image */}
-                      <div className="relative w-64 flex-shrink-0 bg-gray-100 flex items-center justify-center">
+                      <div className="relative w-64 flex-shrink-0 bg-base-100 flex items-center justify-center">
                         <img
                           src={p.thumbnail}
                           alt={p.title}
                           className="object-contain h-full w-full p-4"
                         />
                         {p.discountPercentage > 10 && (
-                          <div className="absolute top-2 left-2 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded">
+                          <div className="absolute top-2 left-2 bg-error text-base-100 text-xs font-bold px-2 py-1 rounded">
                             -{Math.round(p.discountPercentage)}%
                           </div>
                         )}
                         <button
                           onClick={(e) => handleAddToFavorites(p, e)}
-                          className="absolute top-2 right-2 p-1 bg-white rounded-full shadow-md hover:bg-gray-100 transition"
+                          className="absolute top-2 right-2 p-1 bg-base-100 rounded-full shadow-md hover:bg-base-100 transition"
                         >
                           ❤️
                         </button>
@@ -291,7 +291,7 @@ const Rasrochka = () => {
                         </p>
                         <div className="flex items-center justify-between">
                           <div>
-                            <p className="text-2xl font-bold text-red-600">
+                            <p className="text-2xl font-bold text-error">
                               {p.price.toLocaleString()} сум
                             </p>
                             <p className="text-sm text-gray-500 mt-1">
@@ -300,7 +300,7 @@ const Rasrochka = () => {
                           </div>
                           <button
                             onClick={(e) => handleAddToCart(p, e)}
-                            className="bg-red-600 hover:bg-red-700 text-white py-3 px-6 rounded-lg transition font-medium"
+                            className="bg-error hover:bg-error text-white py-3 px-6 rounded-lg transition font-medium"
                           >
                             🛒 В корзину
                           </button>
@@ -315,7 +315,7 @@ const Rasrochka = () => {
                 <div className="flex justify-center mt-6">
                   <button
                     onClick={() => setPage((prev) => prev + 1)}
-                    className="px-6 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium"
+                    className="px-6 py-2 bg-error hover:bg-error-700 text-white rounded-lg font-medium"
                   >
                     Показать еще
                   </button>
