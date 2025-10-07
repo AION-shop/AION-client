@@ -28,9 +28,11 @@ import Korzinka from "./pages/Korzinka.jsx";
 import Favorites from "./pages/Fovorites.jsx";
 import Rasrochka from "./pages/Rasrochka.jsx";
 import SellOnPage from "./pages/SellOn.jsx";
+import Discount from "./pages/Discount.jsx";
 
 // Toast
 import { Toaster } from "react-hot-toast";
+import News from "./pages/News.jsx";
 
 // Router config
 const router = createBrowserRouter(
@@ -77,6 +79,8 @@ const router = createBrowserRouter(
         { path: "korzinka", element: <Korzinka /> },
         { path: "favorites", element: <Favorites /> },
         { path: "rasrochka", element: <Rasrochka /> },
+        { path: "news", element: <News /> },
+        {path: "discount", element : <Discount />},
         { path: "products/:id", element: <SingleProducts /> },
         {path: "sell-on", element: <SellOnPage />}
       ],

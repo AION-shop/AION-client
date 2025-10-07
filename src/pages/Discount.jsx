@@ -5,14 +5,14 @@ import { addToFavorites } from "../redux/slices/favoritesSlice";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 
-const Rasrochka = () => {
+const Discount = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
-  const [sortBy, setSortBy] = useState("popularity");
+  const [sortBy, setSortBy] = useState("discount");
   const [viewMode, setViewMode] = useState("grid");
   const [page, setPage] = useState(0);
   const [hasMore, setHasMore] = useState(true);
@@ -44,12 +44,16 @@ const Rasrochka = () => {
         const res = await fetch(url);
         const data = await res.json();
 
-        if (page === 0) setProducts(data.products || []);
-        else setProducts((prev) => [...prev, ...(data.products || [])]);
+        const discounted = (data.products || []).filter(
+          (p) => p.discountPercentage && p.discountPercentage > 0
+        );
 
-        setHasMore(!data.products || data.products.length < 12 ? false : true);
+        if (page === 0) setProducts(discounted);
+        else setProducts((prev) => [...prev, ...discounted]);
+
+        setHasMore(discounted.length >= 12);
       } catch (err) {
-        console.error("Error fetching products:", err);
+        console.error("Error fetching discount products:", err);
       } finally {
         setLoading(false);
         setLoadingMore(false);
@@ -59,19 +63,16 @@ const Rasrochka = () => {
     fetchProducts();
   }, [selectedCategory, page]);
 
-  // 🔥 Filtering & Sorting
   const filteredProducts = products
     .filter((p) => {
       const min = minPrice ? parseFloat(minPrice) : 0;
       const max = maxPrice ? parseFloat(maxPrice) : Infinity;
-      const inRange = p.price >= min && p.price <= max;
-      if (sortBy === "discount") return inRange && p.discountPercentage > 0;
-      return inRange;
+      return p.price >= min && p.price <= max;
     })
     .sort((a, b) => {
       if (sortBy === "low") return a.price - b.price;
       if (sortBy === "high") return b.price - a.price;
-      if (sortBy === "new") return b.id - a.id;
+      if (sortBy === "discount") return b.discountPercentage - a.discountPercentage;
       return 0;
     });
 
@@ -101,7 +102,7 @@ const Rasrochka = () => {
         <aside className="w-72 bg-base-200 shadow-sm border-r border-base-300">
           <div className="p-6">
             <h3 className="text-2xl font-bold mb-6 text-base-content">
-              Рассрочка
+              Скидки
             </h3>
             <ul className="space-y-3">
               {categories.map((cat) => (
@@ -114,7 +115,7 @@ const Rasrochka = () => {
                     }}
                     className={`w-full flex items-center justify-between px-3 py-2 rounded-md transition text-left font-medium ${
                       selectedCategory === cat.id
-                        ? "bg-error text-error-content"
+                        ? "bg-primary text-primary-content"
                         : "text-base-content hover:bg-base-300"
                     }`}
                   >
@@ -135,14 +136,14 @@ const Rasrochka = () => {
                   placeholder="от 0"
                   value={minPrice}
                   onChange={(e) => setMinPrice(e.target.value)}
-                  className="w-full text-base-content bg-base-100 px-3 py-2 border border-base-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-error"
+                  className="w-full text-base-content bg-base-100 px-3 py-2 border border-base-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                 />
                 <input
                   type="number"
                   placeholder="до 0"
                   value={maxPrice}
                   onChange={(e) => setMaxPrice(e.target.value)}
-                  className="w-full text-base-content bg-base-100 px-3 py-2 border border-base-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-error"
+                  className="w-full text-base-content bg-base-100 px-3 py-2 border border-base-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                 />
               </div>
               {(minPrice || maxPrice) && (
@@ -151,7 +152,7 @@ const Rasrochka = () => {
                     setMinPrice("");
                     setMaxPrice("");
                   }}
-                  className="mt-2 text-sm text-error hover:text-error-focus"
+                  className="mt-2 text-sm text-primary hover:text-primary-focus"
                 >
                   Очистить фильтр
                 </button>
@@ -164,47 +165,39 @@ const Rasrochka = () => {
         <main className="flex-1 p-6">
           {/* Header */}
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
-            <h1 className="text-3xl font-bold text-base-content">
-              {sortBy === "discount"
-                ? "Товары со скидкой 💸"
-                : "Товары в рассрочку"}
-            </h1>
+            <h1 className="text-3xl font-bold text-base-content">Скидки</h1>
             <div className="flex items-center gap-2">
               <span className="text-base-content/70 text-sm">
                 Найдено {filteredProducts.length} товаров
               </span>
               <select
                 value={sortBy}
-                onChange={(e) => {
-                  setSortBy(e.target.value);
-                  setPage(0);
-                }}
-                className="border text-base-content bg-base-100 border-base-300 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-error"
+                onChange={(e) => setSortBy(e.target.value)}
+                className="border text-base-content bg-base-100 border-base-300 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-primary"
               >
-                <option value="popularity">Популярности</option>
+                <option value="discount">По скидке</option>
                 <option value="low">Сначала дешевые</option>
                 <option value="high">Сначала дорогие</option>
-                <option value="new">Новинки</option>
-                <option value="discount">Скидки</option>
               </select>
               <button
                 onClick={toggleViewMode}
                 className={`p-2 rounded-lg transition ${
                   viewMode === "grid"
-                    ? "bg-error text-error-content"
+                    ? "bg-primary text-primary-content"
                     : "bg-base-200 text-base-content hover:bg-base-300"
                 }`}
+                title="Переключить вид"
               >
                 {viewMode === "grid" ? "Grid" : "List"}
               </button>
             </div>
           </div>
 
-          {/* Products */}
+          {/* Content */}
           {loading && page === 0 ? (
             <div className="flex items-center justify-center h-64">
               <div className="text-center">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-error mx-auto mb-4"></div>
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
                 <p className="text-base-content/70">Загрузка...</p>
               </div>
             </div>
@@ -214,6 +207,7 @@ const Rasrochka = () => {
             </div>
           ) : (
             <>
+              {/* Grid View */}
               {viewMode === "grid" ? (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                   {filteredProducts.map((p) => (
@@ -223,16 +217,16 @@ const Rasrochka = () => {
                       onClick={() => handleGoToSingle(p.id)}
                     >
                       <div className="relative h-48 bg-base-200 flex items-center justify-center overflow-hidden">
+                        {p.discountPercentage > 0 && (
+                          <span className="absolute top-2 left-2 bg-error text-error-content text-xs font-bold px-2 py-1 rounded">
+                            -{Math.round(p.discountPercentage)}%
+                          </span>
+                        )}
                         <img
                           src={p.thumbnail}
                           alt={p.title}
                           className="object-contain h-full w-full p-4 group-hover:scale-110 transition-transform duration-300"
                         />
-                        {p.discountPercentage > 0 && (
-                          <div className="absolute top-2 left-2 bg-error text-error-content text-xs font-bold px-2 py-1 rounded">
-                            -{Math.round(p.discountPercentage)}%
-                          </div>
-                        )}
                       </div>
                       <div className="p-4" onClick={(e) => e.stopPropagation()}>
                         <h3 className="font-semibold text-base-content mb-2 line-clamp-2 h-12">
@@ -242,17 +236,12 @@ const Rasrochka = () => {
                           {p.description}
                         </p>
                         <div className="flex items-center justify-between mb-3">
-                          <div>
-                            <p className="text-xl font-bold text-error">
-                              {p.price.toLocaleString()} сум
-                            </p>
-                            <p className="text-xs text-base-content/70 mt-1">
-                              {Math.ceil(p.price / 6).toLocaleString()} сум × 6 мес
-                            </p>
-                          </div>
+                          <p className="text-xl font-bold text-primary">
+                            {p.price.toLocaleString()} сум
+                          </p>
                           <button
                             onClick={(e) => handleAddToCart(p, e)}
-                            className="bg-error hover:bg-error-focus text-error-content py-2 px-4 rounded-lg transition font-medium"
+                            className="bg-primary hover:bg-primary-focus text-primary-content py-2 px-4 rounded-lg transition font-medium"
                           >
                             🛒 В корзину
                           </button>
@@ -268,6 +257,7 @@ const Rasrochka = () => {
                   ))}
                 </div>
               ) : (
+                // List View
                 <div className="space-y-4">
                   {filteredProducts.map((p) => (
                     <div
@@ -276,16 +266,22 @@ const Rasrochka = () => {
                       onClick={() => handleGoToSingle(p.id)}
                     >
                       <div className="relative w-64 flex-shrink-0 bg-base-200 flex items-center justify-center">
+                        {p.discountPercentage > 0 && (
+                          <span className="absolute top-2 left-2 bg-error text-error-content text-xs font-bold px-2 py-1 rounded">
+                            -{Math.round(p.discountPercentage)}%
+                          </span>
+                        )}
                         <img
                           src={p.thumbnail}
                           alt={p.title}
                           className="object-contain h-full w-full p-4"
                         />
-                        {p.discountPercentage > 0 && (
-                          <div className="absolute top-2 left-2 bg-error text-error-content text-xs font-bold px-2 py-1 rounded">
-                            -{Math.round(p.discountPercentage)}%
-                          </div>
-                        )}
+                        <button
+                          onClick={(e) => handleAddToFavorites(p, e)}
+                          className="absolute top-2 right-2 p-1 bg-base-100 rounded-full shadow-md hover:bg-base-200 transition"
+                        >
+                          ❤️
+                        </button>
                       </div>
                       <div className="p-6 flex-1 flex flex-col justify-between min-w-0">
                         <h3 className="font-semibold text-base-content mb-2 text-lg line-clamp-2">
@@ -295,12 +291,12 @@ const Rasrochka = () => {
                           {p.description}
                         </p>
                         <div className="flex items-center justify-between">
-                          <p className="text-2xl font-bold text-error">
+                          <p className="text-2xl font-bold text-primary">
                             {p.price.toLocaleString()} сум
                           </p>
                           <button
                             onClick={(e) => handleAddToCart(p, e)}
-                            className="bg-error hover:bg-error-focus text-error-content py-3 px-6 rounded-lg transition font-medium"
+                            className="bg-primary hover:bg-primary-focus text-primary-content py-3 px-6 rounded-lg transition font-medium"
                           >
                             🛒 В корзину
                           </button>
@@ -311,11 +307,12 @@ const Rasrochka = () => {
                 </div>
               )}
 
+              {/* Load More */}
               {hasMore && !loadingMore && (
                 <div className="flex justify-center mt-6">
                   <button
                     onClick={() => setPage((prev) => prev + 1)}
-                    className="px-6 py-2 bg-error hover:bg-error-focus text-error-content rounded-lg font-medium"
+                    className="px-6 py-2 bg-primary hover:bg-primary-focus text-primary-content rounded-lg font-medium"
                   >
                     Показать еще
                   </button>
@@ -334,4 +331,4 @@ const Rasrochka = () => {
   );
 };
 
-export default Rasrochka;
+export default Discount;

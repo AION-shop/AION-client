@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 
+
+
 import {
   Phone,
   Globe,
@@ -35,7 +37,7 @@ const SubNavbar = ({ lang, onLangChange }) => {
 
             {/* Скидки */}
             <Link
-              to="/discounts"
+              to="/discount"
               className="flex items-center gap-2 px-2 py-1 rounded-md hover:bg-base-200 transition cursor-pointer"
             >
               <Percent className="w-4 h-4 text-primary" />
