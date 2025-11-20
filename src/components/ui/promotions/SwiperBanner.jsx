@@ -1,55 +1,107 @@
 import React, { useEffect, useState } from "react";
+import Container from "../../shared/Container";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Pagination, Autoplay } from "swiper/modules";
+import { Navigation, Pagination, Autoplay } from "swiper/modules";
+import SwiperCore from "swiper";
 import "swiper/css";
+import "swiper/css/navigation";
 import "swiper/css/pagination";
-import DiscountCard from "../cards/DiscountCard";
-export default function BannerSection() {
-  const [products, setProducts] = useState([]);
+
+SwiperCore.use([Navigation, Pagination, Autoplay]);
+
+const SwiperBanner = () => {
+  const [banners, setBanners] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    (async () => {
-      try {
-        const res = await fetch("https://dummyjson.com/products?limit=5");
-        const data = await res.json();
-        setProducts(data.products); // to‘liq productlarni saqlaymiz
-      } catch (err) {
-        console.error("Banner fetch error:", err);
-      }
-    })();
+    fetch("http://localhost:5000/api/banners/")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success) setBanners(data.banners);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("Bannerlarni olishda xato:", err);
+        setLoading(false);
+      });
   }, []);
 
+  if (loading)
+    return (
+      <p className="text-center my-5 text-gray-500 font-medium">
+        Loading banners...
+      </p>
+    );
+
+  if (banners.length === 0)
+    return (
+      <p className="text-center my-5 text-gray-500 font-medium">
+        Bannerlar mavjud emas
+      </p>
+    );
+
   return (
-      <div className="flex gap-4 w-full p-10">
-        <div className="w-3/4 relative">
+    <Container>
+      <div className="my-5">
+        {banners.length === 1 ? (
+          <a
+            href={banners[0].link || "#"}
+            target={banners[0].link ? "_blank" : "_self"}
+            rel="noopener noreferrer"
+            className="block overflow-hidden rounded-2xl w-full cursor-pointer relative aspect-[16/5] sm:aspect-[16/6] md:aspect-[16/5]"
+            aria-label={banners[0].title || "Promotion Banner"}
+          >
+            <img
+              src={banners[0].image}
+              alt={banners[0].title || "Promotion Banner"}
+              className="w-full h-full object-cover rounded-2xl shadow-lg hover:scale-105 transition-transform duration-500"
+              loading="lazy"
+            />
+            {banners[0].title && (
+              <h2 className="absolute bottom-4 left-4 text-white font-semibold text-lg sm:text-xl md:text-2xl drop-shadow-md">
+                {banners[0].title}
+              </h2>
+            )}
+          </a>
+        ) : (
           <Swiper
-            modules={[Pagination, Autoplay]}
+            navigation
+            pagination={{ clickable: true }}
+            autoplay={{ delay: 5000 }}
+            loop
             spaceBetween={20}
             slidesPerView={1}
-            autoplay={{ delay: 2500, disableOnInteraction: false }}
-            pagination={{ clickable: true }}
-            className="rounded-xl overflow-hidden"
+            className="rounded-2xl"
+            aria-label="Promotion banners slider"
           >
-            {products.map((p, idx) => (
-              <SwiperSlide key={idx}>
-                <div className="relative w-full aspect-[16/7]">
+            {banners.map((banner) => (
+              <SwiperSlide key={banner._id}>
+                <a
+                  href={banner.link || "#"}
+                  target={banner.link ? "_blank" : "_self"}
+                  rel="noopener noreferrer"
+                  className="block overflow-hidden rounded-2xl w-full cursor-pointer relative aspect-[16/5] sm:aspect-[16/6] md:aspect-[16/5]"
+                  aria-label={banner.title || "Promotion Banner"}
+                >
                   <img
-                    src={p.thumbnail || p.images?.[0]}
-                    alt={p.title}
-                    className="w-full h-full object-cover"
+                    src={banner.image}
+                    alt={banner.title || "Promotion Banner"}
+                    className="w-full h-full object-cover rounded-2xl shadow-lg hover:scale-105 transition-transform duration-500"
+                    loading="lazy"
                   />
-                  {/* Overlay matn */}
-                  <div className="absolute inset-0 bg-black/40 flex flex-col justify-end p-6 text-white">
-                    <h2 className="text-2xl font-bold">{p.title}</h2>
-                    <p className="text-sm mt-2 line-clamp-2">{p.description}</p>
-                  </div>
-                </div>
+                  {banner.title && (
+                    <h2 className="absolute bottom-4 left-4 text-white font-semibold text-lg sm:text-xl md:text-2xl drop-shadow-md">
+                      {banner.title}
+                    </h2>
+                  )}
+                </a>
               </SwiperSlide>
             ))}
           </Swiper>
-        </div>
-
-        <DiscountCard />
+        )}
       </div>
+    </Container>
   );
-}
+};
+
+export default SwiperBanner;

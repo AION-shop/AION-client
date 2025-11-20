@@ -1,63 +1,89 @@
+import React from "react";
 import { HeartIcon, ShoppingCartIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export default function ProductCard({ product, addToCart, addToFavorites }) {
-  // Рассрочка: 12 oylik misol qilib olamiz
+  if (!product) return null;
+
   const installmentMonths = 12;
   const installmentPrice = Math.ceil(product.price / installmentMonths);
 
+  const images = product.images?.length ? product.images : [product.thumbnail || "https://via.placeholder.com/300"];
+
   return (
-    <div className="bg-white rounded-xl shadow hover:shadow-lg transition relative overflow-hidden">
-    
+    <div className="bg-base-100 rounded-2xl shadow-md hover:shadow-xl transition-transform duration-300 relative overflow-hidden flex flex-col group hover:-translate-y-1">
+      {/* Favorites button */}
       <button
         onClick={() => addToFavorites(product)}
-        className="absolute top-2 right-2 bg-white p-1 rounded-full shadow hover:bg-gray-100 transition"
+        aria-label={`Add ${product?.title} to favorites`}
+        className="absolute top-3 right-3 bg-base-100 p-2 rounded-full shadow hover:bg-base-200 transition z-10"
       >
-        <HeartIcon className="w-5 h-5 text-gray-600" />
+        <HeartIcon className="w-5 h-5 text-red-500 group-hover:text-red-600 transition-colors duration-200" />
       </button>
 
-   
-      <Link to={`/products/${product.id}`}>
-        <div className="flex justify-center items-center h-52 p-4 cursor-pointer">
-          <img
-            src={product?.thumbnail || product?.images?.[0]}
-            alt={product?.title}
-            className="h-full object-contain group-hover:scale-105 transition-transform duration-300"
-          />
-        </div>
+      {/* Product image */}
+      <Link
+        to={`/products/${product._id}`}
+        aria-label={`Go to ${product?.title}`}
+        className="flex justify-center items-center w-full h-64 sm:h-72 md:h-80 cursor-pointer overflow-hidden"
+      >
+        <img
+          src={images[0]}
+          alt={product?.title || "Product image"}
+          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+        />
       </Link>
 
-      <div className="p-4 border-t">
-       
-        <h2 className="text-sm font-medium text-gray-800 line-clamp-2 min-h-[36px]">
+      {/* Product info */}
+      <div className="p-4 flex flex-col gap-2 border-t border-base-200">
+        {/* Title */}
+        <Link
+          to={`/products/${product._id}`}
+          className="text-sm sm:text-base font-semibold text-base-content hover:underline"
+        >
           {product?.title}
-        </h2>
+        </Link>
 
-       
-        <p className="text-lg font-bold text-black mt-2">
+        {/* Description */}
+        {product?.description && (
+          <p className="text-sm sm:text-sm text-gray-600">
+            {product.description}
+          </p>
+        )}
+
+        {/* Price */}
+        <p className="text-lg sm:text-xl font-bold text-primary mt-1">
           {product?.price.toLocaleString()} so‘m
         </p>
 
-       
-        <p className="bg-yellow-300 inline-block px-2 py-1 rounded text-sm font-semibold mt-1">
-          {installmentPrice.toLocaleString()} so‘m × {installmentMonths} мес
-        </p>                                              
+        {/* Installment info */}
+        <span className="badge badge-outline badge-primary text-sm sm:text-base mt-1">
+          {installmentPrice.toLocaleString()} so‘m × {installmentMonths} oy
+        </span>
 
-       
-        <div className="flex gap-2 mt-4">
+        {/* Action buttons */}
+        <div className="flex flex-col sm:flex-row gap-2 mt-3">
           <button
-            onClick={() => addToCart(product)}
-            className="flex-1 border border-gray-300 rounded-lg p-2 flex items-center justify-center hover:bg-gray-100 transition"
+            onClick={() =>
+              addToCart({
+                id: product._id,
+                name: product.title,
+                price: product.price,
+                image: images[0],
+                quantity: 1,
+              })
+            }
+            className="btn btn-outline btn-primary flex-1 flex items-center justify-center gap-2 hover:bg-primary hover:text-white transition-colors duration-300"
           >
-            <ShoppingCartIcon className="w-4 h-4 mr-1" />
-            <span className="text-sm">В корзину</span>
+            <ShoppingCartIcon className="w-4 h-4" />
+            Savatga
           </button>
 
           <Link
-            to={`/products/${product.id}`}
-            className="flex-1 bg-red-500 text-white text-center rounded-lg p-2 hover:bg-red-600 transition text-sm"
+            to={`/products/${product._id}`}
+            className="btn btn-primary flex-1 text-center hover:bg-primary/90 transition-colors duration-300"
           >
-            Подробнее
+            Batafsil
           </Link>
         </div>
       </div>

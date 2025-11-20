@@ -1,30 +1,28 @@
-// src/redux/slices/authSlice.js
 import { createSlice } from "@reduxjs/toolkit";
 
-// Boshlang'ich holatni localStorage'dan tekshiramiz
-const user = JSON.parse(localStorage.getItem("user"));
-const token = localStorage.getItem("token");
+// Boshlang'ich holatni localStorage'dan olish
+let storedUser = null;
+try {
+  const userData = localStorage.getItem("user");
+  if (userData) {
+    storedUser = JSON.parse(userData);
+  }
+} catch (err) {
+  console.warn("Failed to parse user from localStorage:", err);
+  storedUser = null;
+}
 
 const initialState = {
-  user: user || null,
-  token: token || null,
-  isAuth: !!token, // agar token bo‘lsa true
+  user: storedUser,
+  token: localStorage.getItem("token") || null,
+  isAuth: !!localStorage.getItem("token"),
 };
 
 const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    login: (state, action) => {
-      state.user = action.payload.user;
-      state.token = action.payload.token;
-      state.isAuth = true;
-
-      // LocalStorage'ga saqlash
-      localStorage.setItem("user", JSON.stringify(action.payload.user));
-      localStorage.setItem("token", action.payload.token);
-    },
-    register: (state, action) => {
+    setAuthState: (state, action) => {
       state.user = action.payload.user;
       state.token = action.payload.token;
       state.isAuth = true;
@@ -37,12 +35,11 @@ const authSlice = createSlice({
       state.token = null;
       state.isAuth = false;
 
-      // LocalStorage tozalash
       localStorage.removeItem("user");
       localStorage.removeItem("token");
     },
   },
 });
 
-export const { login, register, logout } = authSlice.actions;
+export const { setAuthState, logout } = authSlice.actions;
 export default authSlice.reducer;

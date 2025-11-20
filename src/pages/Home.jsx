@@ -1,141 +1,176 @@
-import React, { use, useEffect, useState } from 'react'
-import Header from '../components/layouts/Header'
-import { Outlet } from 'react-router-dom'
-import ProductCard from '../components/ui/cards/ProductCard'
-import ColProductCard from '../components/ui/cards/ColProductCard'
-import RowProductCard from '../components/ui/cards/RowProductCard'
-import PromotionBanner from '../components/ui/promotions/PromotionBanner'
-import Container from '../components/shared/Container'
-import SkeletonCards from '../components/shared/SkeletonCards'
-import RowDiscauntCard from '../components/ui/cards/RowDiscountCard'
-import ColDiscauntCard from '../components/ui/cards/ColDiscountCard'
-import CategorySwiper from '../components/ui/promotions/CategorySwiper'
-import BannerSection from '../components/ui/promotions/SwiperBanner'
-const Home = () => {  
-  const [user, usetUser] = useState([])
-  const [products, setProducts] = useState([])
-  const [smartphones, setSmartphones] = useState([])
-  const [laptops, setLaptops] = useState([])
-  const [loadingProducts, setLoadingProducts] = useState(true)
-  console.log(import.meta.env.VITE_API_URL)
+import React, { useEffect, useState } from "react";
+import { Helmet } from "react-helmet-async";
 
+// Components
+import Container from "../components/shared/Container";
+import BannerSection from "../components/ui/promotions/SwiperBanner";
+import CategorySwiper from "../components/ui/promotions/CategorySwiper";
+import PromotionBanner from "../components/ui/promotions/PromotionBanner";
+import ColProductCard from "../components/ui/cards/ColProductCard";
+import RowProductCard from "../components/ui/cards/RowProductCard";
+import DiscountCard from "../components/ui/cards/DiscountCard";
 
-  const getProducts = async () => {
-    try {
-      const request = await fetch(import.meta.env.VITE_API_URL + '/products')
-      const response = await request.json()
-      console.log("products", response)
-      setProducts(response.products)
-    } catch (e) {
-      console.log('server error:', e)
-    } finally {
-      setLoadingProducts(false)
-    }
-  }
-  const getSmartPhones = async () => {
-    try {
-      const request = await fetch(import.meta.env.VITE_API_URL + '/products/search?q=phone')
-      const response = await request.json()
-      console.log("smartphones: ", response)
-      setSmartphones(response.products)
-    } catch (e) {
-      console.log('server error:', e)
-    } finally {
-      setLoadingProducts(false)
-    }
-  }
+const Home = () => {
+  const [products, setProducts] = useState([]);
+  const [colProducts, setColProducts] = useState([]);
+  const [laptops, setLaptops] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [visibleColProducts, setVisibleColProducts] = useState(6);
 
-  const getLaptops = async () => {
+  const API_URL = import.meta.env.VITE_API_URL;
+
+  // Fetch all products
+  const fetchProducts = async () => {
     try {
-      const request = await fetch(import.meta.env.VITE_API_URL + '/products/category/laptops')
-      const response = await request.json()
-      console.log("Laptops: ", response)
-      setLaptops(response.products)
-    } catch (e) {
-      console.log('server error:', e)
-    } finally {
-      setLoadingProducts(false)
+      const resMain = await fetch(`${API_URL}/products`);
+      const dataMain = await resMain.json();
+
+      const resCol = await fetch(`${API_URL}/col-products`);
+      const dataCol = await resCol.json();
+
+      setProducts(dataMain.products || []);
+      setColProducts(dataCol.products || []);
+    } catch (err) {
+      console.error("Server error (products):", err);
     }
-  }
+  };
+
+  // Fetch laptops
+  const fetchLaptops = async () => {
+    try {
+      const res = await fetch(`${API_URL}/products/category/laptops`);
+      const data = await res.json();
+      setLaptops(data.products || []);
+    } catch (err) {
+      console.error("Server error (laptops):", err);
+    }
+  };
 
   useEffect(() => {
-    getProducts()
-    getSmartPhones()
-    getLaptops()
-  }, [])
-  useEffect(() => {
-    const a = products.filter(item => item.category === 'smartphones')
-    console.log("erik gey:  ", a)
-  }, [])
+    const fetchAll = async () => {
+      setLoading(true);
+      await Promise.all([fetchProducts(), fetchLaptops()]);
+      setLoading(false);
+    };
+    fetchAll();
+  }, []);
+
+  const handleShowMoreCars = () => setVisibleColProducts(prev => prev + 10);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-base-200">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
   return (
-    <>
-      <main>
-        {/* Main Products */}
-        {/* smartphones cards */}
-        <section className='py-10'>
+    <main className="bg-base-200">
+      {/* SEO */}
+      <Helmet>
+        <title>ShopMarket | Barcha mahsulotlar</title>
+        <meta
+          name="description"
+          content="ShopMarket onlayn do‘kon. Mahsulotlarni ko‘rib chiqish, chegirmalar, avtomobillar va texnologiya mahsulotlari."
+        />
+        <meta
+          name="keywords"
+          content="ShopMarket, onlayn do‘kon, mahsulotlar, avtomobillar, laptops, elektronika, savatga qo‘shish"
+        />
+      </Helmet>
+
+      {/* Banner + Discount */}
+      <section className="py-10">
+        <Container>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+            <div className="lg:col-span-2">
+              <BannerSection />
+            </div>
+            <div className="flex flex-col gap-4">
+              <DiscountCard />
+            </div>
+          </div>
+        </Container>
+      </section>
+
+      {/* ColProducts Section */}
+      {colProducts.length > 0 && (
+        <section className="py-10">
           <Container>
+            <h2 className="text-2xl font-bold mb-5">Avtomobillar</h2>
 
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {/* First 2 ColProduct highlight */}
+              {colProducts.slice(0, 2).map(card => (
+                <ColProductCard key={card._id} card={card} />
+              ))}
 
-            <div>
-              <BannerSection
-                images={[
-                  "https://www.fdli.org/wp-content/uploads/2020/05/The-Regulation-of-Cosmetics-scaled.jpeg",
-                  "https://media1.popsugar-assets.com/files/thumbor/Oh75nKn1VsIoIKTr7AyLl_x9fP0=/fit-in/792x529/top/filters:format_auto():upscale()/2023/02/17/038/n/1922153/tmp_1girMz_9800731501475e8c_GettyImages-642659348.jpg",
-                  "https://professionals.beauty/media/images/685871428e6d42a0ad5b863a86d64664.webp",
-                ]}
-              />
+              {/* Remaining RowProducts */}
+              {colProducts.slice(2, visibleColProducts).map(product => (
+                <RowProductCard key={product._id} product={product} />
+              ))}
             </div>
 
-            <div className='bg-primary border border-primary rounded-2xl'>
-              <div className="flex gap-2 p-5">
-                {/* BILOL = FETCH BILAN QILISH */}
-                <div className='max-w-[30%] flex flex-wrap flex-col justify-between'>
-                  {smartphones.slice(0, 2).map((item, index) => <RowDiscauntCard key={index} title={item?.title} price={item?.price} discount={item?.discount} image={item?.thumbnail} />)}
-                </div>
-                <div className='flex items-center justify-center w-full'>
-                  {laptops.slice(0, 4).map((item, index) => <ColDiscauntCard key={index} title={item?.title} price={item?.price} discount={item?.discount} image={item?.thumbnail} />)}
-                </div>
+            {visibleColProducts < colProducts.length && (
+              <div className="mt-8 flex justify-center">
+                <button
+                  onClick={handleShowMoreCars}
+                  className="px-6 py-3 rounded-lg bg-primary text-white font-semibold hover:bg-primary/90 transition"
+                >
+                  Yana 10 mashina
+                </button>
               </div>
+            )}
+          </Container>
+        </section>
+      )}
+
+      {/* Promotion Banner */}
+      <section className="py-10">
+        <PromotionBanner />
+      </section>
+
+      {/* Category Swiper */}
+      <section className="py-10">
+        <Container>
+          <CategorySwiper />
+        </Container>
+      </section>
+
+      {/* Laptops Section */}
+      {laptops.length > 0 && (
+        <section className="py-10">
+          <Container>
+            <h2 className="text-2xl font-bold mb-5">Laptops</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+              {laptops.map(product => (
+                <RowProductCard key={product._id} product={product} />
+              ))}
             </div>
           </Container>
         </section>
-        <PromotionBanner img={'https://olcha.uz/image/1440x302/homePage/cdn_1/2025-07-16/DvAmWwCXU8V2EDK0d3bFFo7YbIpfPT8euXbpAkSWU6PxaThfpP4GeGHfrLJN.jpg'} />
-        <div className='p-10'>
-          <CategorySwiper />
-        </div>
+      )}
 
-        <section className='py-20'>
+      {/* All Products Section */}
+      {products.length > 0 && (
+        <section className="py-10">
           <Container>
-            {
-              loadingProducts ? (
-                <div className='grid grid-cols-5 gap-5'>
-                  {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((item, index) => <SkeletonCards key={index} />)}
-                </div>
-              ) : (
-                <div>
-                  {
-                    products.length > 0 ? (
-                      <div className='grid grid-cols-5 gap-5'>
-                        {products.map((item, index) => <ColProductCard key={index} card={item} />)}
-                      </div>
-                    ) : (
-                      <div className='py-20 flex items-center justify-center text-2xl'>
-                        <p>Товары не найдены</p>
-                      </div>
-                    )
-                  }
-                </div>
-              )
-            }
-
-
+            <h2 className="text-2xl font-bold mb-5">Barcha mahsulotlar</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+              {products.map(product => (
+                <RowProductCard key={product._id} product={product} />
+              ))}
+            </div>
           </Container>
         </section>
+      )}
+
+      {/* Another Promotion Banner */}
+      <section className="py-10">
         <PromotionBanner />
-
-
-      </main>
-    </>
+      </section>
+    </main>
   );
 };
 

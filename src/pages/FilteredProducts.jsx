@@ -28,13 +28,7 @@ const FilteredProducts = () => {
             <div className='flex relative min-h-screen'>
                 <div className='w-1/4  bg-red-400 h-full sticky top-0 left-0'>
                     <ul className='menu'>
-                        <li className='menu-item'>Tashoq</li>
-                        <li className='menu-item'>Tashoq</li>
-                        <li className='menu-item'>Tashoq</li>
-                        <li className='menu-item'>Tashoq</li>
-                        <li className='menu-item'>Tashoq</li>
-                        <li className='menu-item'>Tashoq</li>
-                        <li className='menu-item'>Tashoq</li>
+                
                     </ul>
                 </div>
                 <div className='bg-green-400 flex-1'>

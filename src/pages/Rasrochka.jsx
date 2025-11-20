@@ -1,332 +1,137 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
-import { addToCart } from "../redux/slices/cartSlice";
-import { addToFavorites } from "../redux/slices/favoritesSlice";
-import { useNavigate } from "react-router-dom";
-import toast from "react-hot-toast";
+import { useLocation } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
+import RowProductCard from "../components/ui/cards/RowProductCard";
 
 const Rasrochka = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [loadingMore, setLoadingMore] = useState(false);
-  const [minPrice, setMinPrice] = useState("");
-  const [maxPrice, setMaxPrice] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
-  const [sortBy, setSortBy] = useState("popularity");
-  const [viewMode, setViewMode] = useState("grid");
-  const [page, setPage] = useState(0);
-  const [hasMore, setHasMore] = useState(true);
 
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const location = useLocation();
 
+  // Kategoriyalar
   const categories = [
     { id: "all", name: "Все товары" },
-    { id: "smartphones", name: "Смартфоны, гаджеты, аксессуары" },
-    { id: "beauty", name: "Красота и здоровье" },
-    { id: "fragrances", name: "Парфюмерия" },
-    { id: "automotive", name: "Автотовары" },
-    { id: "special", name: "Предложение от Olcha" },
-    { id: "fashion", name: "Гардероб" },
+    { id: "AION V", name: "AION V" },
+    { id: "AION Y", name: "AION Y" },
+    { id: "AION S", name: "AION S" },
+    { id: "AION MAX", name: "AION MAX" },
+    { id: "new", name: "Новинки" },
   ];
 
+  // URL orqali highlight qilish
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const highlight = params.get("highlight");
+    if (highlight) {
+      setSelectedCategory(highlight);
+    }
+  }, [location.search]);
+
+  // Mahsulotlarni yuklash
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        if (page === 0) setLoading(true);
-        else setLoadingMore(true);
+        setLoading(true);
 
-        const url =
-          selectedCategory === "all"
-            ? `https://dummyjson.com/products?limit=12&skip=${page * 12}`
-            : `https://dummyjson.com/products/category/${selectedCategory}?limit=12&skip=${page * 12}`;
-
-        const res = await fetch(url);
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/products?limit=1000`);
         const data = await res.json();
+        let fetched = data.products || [];
 
-        if (page === 0) setProducts(data.products || []);
-        else setProducts((prev) => [...prev, ...(data.products || [])]);
+        // FILTER: Category
+        if (selectedCategory !== "all") {
+          if (selectedCategory === "new") {
+            const now = new Date();
+            fetched = fetched.filter((p) => {
+              const createdAt = new Date(p.createdAt);
+              const diff = (now - createdAt) / (1000 * 60 * 60 * 24);
+              return diff <= 4; // faqat 4 kunlik yangilar
+            });
+          } else {
+            // Title orqali filter
+            fetched = fetched.filter((p) =>
+              p.title.toUpperCase().includes(selectedCategory.toUpperCase())
+            );
+          }
+        }
 
-        setHasMore(!data.products || data.products.length < 12 ? false : true);
+        setProducts(fetched);
       } catch (err) {
-        console.error("Error fetching products:", err);
+        console.error("Error loading products:", err);
       } finally {
         setLoading(false);
-        setLoadingMore(false);
       }
     };
 
     fetchProducts();
-  }, [selectedCategory, page]);
-
-  // 🔥 Filtering & Sorting
-  const filteredProducts = products
-    .filter((p) => {
-      const min = minPrice ? parseFloat(minPrice) : 0;
-      const max = maxPrice ? parseFloat(maxPrice) : Infinity;
-      const inRange = p.price >= min && p.price <= max;
-      if (sortBy === "discount") return inRange && p.discountPercentage > 0;
-      return inRange;
-    })
-    .sort((a, b) => {
-      if (sortBy === "low") return a.price - b.price;
-      if (sortBy === "high") return b.price - a.price;
-      if (sortBy === "new") return b.id - a.id;
-      return 0;
-    });
-
-  const handleAddToCart = (product, e) => {
-    e.stopPropagation();
-    dispatch(addToCart(product));
-    toast.success(`${product.title} добавлен в корзину 🛒`);
-  };
-
-  const handleAddToFavorites = (product, e) => {
-    e.stopPropagation();
-    dispatch(addToFavorites(product));
-    toast.success(`${product.title} добавлен в избранное ❤️`);
-  };
-
-  const handleGoToSingle = (id) => {
-    navigate(`/products/${id}`);
-  };
-
-  const toggleViewMode = () =>
-    setViewMode(viewMode === "grid" ? "list" : "grid");
+  }, [selectedCategory]);
 
   return (
-    <div className="min-h-screen bg-base-300 flex flex-col">
-      <div className="flex flex-1">
-        {/* Sidebar */}
-        <aside className="w-72 bg-base-200 shadow-sm border-r border-base-300">
-          <div className="p-6">
-            <h3 className="text-2xl font-bold mb-6 text-base-content">
-              Рассрочка
-            </h3>
-            <ul className="space-y-3">
-              {categories.map((cat) => (
-                <li key={cat.id}>
-                  <button
-                    onClick={() => {
-                      setSelectedCategory(cat.id);
-                      setPage(0);
-                      setProducts([]);
-                    }}
-                    className={`w-full flex items-center justify-between px-3 py-2 rounded-md transition text-left font-medium ${
-                      selectedCategory === cat.id
-                        ? "bg-error text-error-content"
-                        : "text-base-content hover:bg-base-300"
-                    }`}
-                  >
-                    {cat.name}
-                  </button>
-                </li>
-              ))}
-            </ul>
+    <div className="min-h-screen flex flex-col text-white">
 
-            {/* Price filter */}
-            <div className="mt-8">
-              <h4 className="font-semibold mb-3 text-base-content">
-                Цена, сум
-              </h4>
-              <div className="flex space-x-2">
-                <input
-                  type="number"
-                  placeholder="от 0"
-                  value={minPrice}
-                  onChange={(e) => setMinPrice(e.target.value)}
-                  className="w-full text-base-content bg-base-100 px-3 py-2 border border-base-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-error"
-                />
-                <input
-                  type="number"
-                  placeholder="до 0"
-                  value={maxPrice}
-                  onChange={(e) => setMaxPrice(e.target.value)}
-                  className="w-full text-base-content bg-base-100 px-3 py-2 border border-base-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-error"
-                />
-              </div>
-              {(minPrice || maxPrice) && (
+      {/* SEO */}
+      <Helmet>
+        <title>Рассрочка — ShopMarket</title>
+        <meta
+          name="description"
+          content="AION V, AION S, AION MAX avtomobillari va boshqa mahsulotlar uchun eng qulay hisob-kitobli rassrochka."
+        />
+        <meta name="keywords" content="AION rassrochka, kredit, bo‘lib to‘lash, AION V, AION S" />
+      </Helmet>
+
+      <div className="flex flex-1 flex-col lg:flex-row">
+
+        {/* SIDEBAR */}
+        <aside className="w-full lg:w-72 border-r border-gray-800 p-6">
+          <h3 className="text-2xl font-bold mb-6">Рассрочка</h3>
+
+          <ul className="space-y-3">
+            {categories.map((cat) => (
+              <li key={cat.id}>
                 <button
-                  onClick={() => {
-                    setMinPrice("");
-                    setMaxPrice("");
-                  }}
-                  className="mt-2 text-sm text-error hover:text-error-focus"
+                  onClick={() => setSelectedCategory(cat.id)}
+                  className={`w-full flex items-center justify-between px-3 py-2 rounded-md font-medium transition ${
+                    selectedCategory === cat.id
+                      ? "bg-white text-black"
+                      : "text-white hover:bg-gray-800"
+                  }`}
                 >
-                  Очистить фильтр
+                  {cat.name}
                 </button>
-              )}
-            </div>
-          </div>
+              </li>
+            ))}
+          </ul>
         </aside>
 
-        {/* Main */}
+        {/* MAIN CONTENT */}
         <main className="flex-1 p-6">
-          {/* Header */}
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
-            <h1 className="text-3xl font-bold text-base-content">
-              {sortBy === "discount"
-                ? "Товары со скидкой 💸"
-                : "Товары в рассрочку"}
+
+          {/* HEADER */}
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+            <h1 className="text-3xl font-bold">
+              {selectedCategory === "new" ? "Новинки" : "Товары в рассрочку"}
             </h1>
-            <div className="flex items-center gap-2">
-              <span className="text-base-content/70 text-sm">
-                Найдено {filteredProducts.length} товаров
-              </span>
-              <select
-                value={sortBy}
-                onChange={(e) => {
-                  setSortBy(e.target.value);
-                  setPage(0);
-                }}
-                className="border text-base-content bg-base-100 border-base-300 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-error"
-              >
-                <option value="popularity">Популярности</option>
-                <option value="low">Сначала дешевые</option>
-                <option value="high">Сначала дорогие</option>
-                <option value="new">Новинки</option>
-                <option value="discount">Скидки</option>
-              </select>
-              <button
-                onClick={toggleViewMode}
-                className={`p-2 rounded-lg transition ${
-                  viewMode === "grid"
-                    ? "bg-error text-error-content"
-                    : "bg-base-200 text-base-content hover:bg-base-300"
-                }`}
-              >
-                {viewMode === "grid" ? "Grid" : "List"}
-              </button>
+            <div className="text-gray-300">
+              Найдено {products.length} товаров
             </div>
           </div>
 
-          {/* Products */}
-          {loading && page === 0 ? (
+          {/* PRODUCTS GRID */}
+          {loading ? (
             <div className="flex items-center justify-center h-64">
-              <div className="text-center">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-error mx-auto mb-4"></div>
-                <p className="text-base-content/70">Загрузка...</p>
-              </div>
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
             </div>
-          ) : filteredProducts.length === 0 ? (
-            <div className="text-center py-16">
-              <p className="text-base-content/70 text-lg">Товары не найдены</p>
+          ) : products.length === 0 ? (
+            <div className="text-center py-16 text-gray-400 text-lg">
+              Товары не найдены
             </div>
           ) : (
-            <>
-              {viewMode === "grid" ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                  {filteredProducts.map((p) => (
-                    <div
-                      key={p.id}
-                      className="bg-base-100 rounded-xl shadow hover:shadow-xl transition overflow-hidden group cursor-pointer"
-                      onClick={() => handleGoToSingle(p.id)}
-                    >
-                      <div className="relative h-48 bg-base-200 flex items-center justify-center overflow-hidden">
-                        <img
-                          src={p.thumbnail}
-                          alt={p.title}
-                          className="object-contain h-full w-full p-4 group-hover:scale-110 transition-transform duration-300"
-                        />
-                        {p.discountPercentage > 0 && (
-                          <div className="absolute top-2 left-2 bg-error text-error-content text-xs font-bold px-2 py-1 rounded">
-                            -{Math.round(p.discountPercentage)}%
-                          </div>
-                        )}
-                      </div>
-                      <div className="p-4" onClick={(e) => e.stopPropagation()}>
-                        <h3 className="font-semibold text-base-content mb-2 line-clamp-2 h-12">
-                          {p.title}
-                        </h3>
-                        <p className="text-base-content/70 text-sm mb-3 line-clamp-3">
-                          {p.description}
-                        </p>
-                        <div className="flex items-center justify-between mb-3">
-                          <div>
-                            <p className="text-xl font-bold text-error">
-                              {p.price.toLocaleString()} сум
-                            </p>
-                            <p className="text-xs text-base-content/70 mt-1">
-                              {Math.ceil(p.price / 6).toLocaleString()} сум × 6 мес
-                            </p>
-                          </div>
-                          <button
-                            onClick={(e) => handleAddToCart(p, e)}
-                            className="bg-error hover:bg-error-focus text-error-content py-2 px-4 rounded-lg transition font-medium"
-                          >
-                            🛒 В корзину
-                          </button>
-                        </div>
-                        <button
-                          onClick={(e) => handleAddToFavorites(p, e)}
-                          className="w-full bg-base-200 hover:bg-base-300 text-base-content py-2 px-3 rounded-lg transition text-sm font-medium"
-                        >
-                          ❤️ В избранное
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  {filteredProducts.map((p) => (
-                    <div
-                      key={p.id}
-                      className="bg-base-100 rounded-xl shadow hover:shadow-xl transition cursor-pointer flex flex-row overflow-hidden"
-                      onClick={() => handleGoToSingle(p.id)}
-                    >
-                      <div className="relative w-64 flex-shrink-0 bg-base-200 flex items-center justify-center">
-                        <img
-                          src={p.thumbnail}
-                          alt={p.title}
-                          className="object-contain h-full w-full p-4"
-                        />
-                        {p.discountPercentage > 0 && (
-                          <div className="absolute top-2 left-2 bg-error text-error-content text-xs font-bold px-2 py-1 rounded">
-                            -{Math.round(p.discountPercentage)}%
-                          </div>
-                        )}
-                      </div>
-                      <div className="p-6 flex-1 flex flex-col justify-between min-w-0">
-                        <h3 className="font-semibold text-base-content mb-2 text-lg line-clamp-2">
-                          {p.title}
-                        </h3>
-                        <p className="text-base-content/70 text-sm mb-4 line-clamp-3">
-                          {p.description}
-                        </p>
-                        <div className="flex items-center justify-between">
-                          <p className="text-2xl font-bold text-error">
-                            {p.price.toLocaleString()} сум
-                          </p>
-                          <button
-                            onClick={(e) => handleAddToCart(p, e)}
-                            className="bg-error hover:bg-error-focus text-error-content py-3 px-6 rounded-lg transition font-medium"
-                          >
-                            🛒 В корзину
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-
-              {hasMore && !loadingMore && (
-                <div className="flex justify-center mt-6">
-                  <button
-                    onClick={() => setPage((prev) => prev + 1)}
-                    className="px-6 py-2 bg-error hover:bg-error-focus text-error-content rounded-lg font-medium"
-                  >
-                    Показать еще
-                  </button>
-                </div>
-              )}
-              {loadingMore && (
-                <div className="flex justify-center mt-4 text-base-content/70">
-                  Загрузка...
-                </div>
-              )}
-            </>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {products.map((product) => (
+                <RowProductCard key={product._id} product={product} />
+              ))}
+            </div>
           )}
         </main>
       </div>

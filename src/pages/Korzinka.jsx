@@ -26,7 +26,7 @@ const Korzinka = () => {
       {/* ❌ Chiqish tugmasi */}
       <button
         onClick={() => navigate("/")}
-        className="absolute top-6 right-6 p-2 rounded-full hover:bg-base-200"
+        className="absolute top-6 right-6 p-2 rounded-full hover:bg-base-200 transition"
       >
         <X size={28} />
       </button>
@@ -67,14 +67,14 @@ const Korzinka = () => {
                     <div className="flex items-center gap-2 mt-3">
                       <button
                         onClick={() => dispatch(decreaseQty(item.id))}
-                        className="px-3 py-1 bg-base-200 rounded-lg hover:bg-base-300"
+                        className="px-3 py-1 bg-base-200 rounded-lg hover:bg-base-300 transition"
                       >
                         -
                       </button>
                       <span className="px-3 text-lg">{item.quantity}</span>
                       <button
                         onClick={() => dispatch(addToCart(item))}
-                        className="px-3 py-1 bg-base-200 rounded-lg hover:bg-base-300"
+                        className="px-3 py-1 bg-base-200 rounded-lg hover:bg-base-300 transition"
                       >
                         +
                       </button>
@@ -89,7 +89,7 @@ const Korzinka = () => {
                   </span>
                   <button
                     onClick={() => dispatch(removeFromCart(item.id))}
-                    className="text-error hover:text-error/80"
+                    className="text-error hover:text-error/80 transition"
                     title="O‘chirish"
                   >
                     <Trash2 size={22} />
@@ -100,7 +100,7 @@ const Korzinka = () => {
           </div>
 
           {/* Jami summa va tugmalar */}
-          <div className="mt-10 flex items-center justify-between bg-base-100 p-6 rounded-xl shadow-lg">
+          <div className="mt-10 flex flex-col md:flex-row items-center justify-between bg-base-100 p-6 rounded-xl shadow-lg gap-4 md:gap-0">
             <div>
               <h2 className="text-lg font-semibold">Jami:</h2>
               <p className="text-2xl font-bold">{total.toLocaleString()} so‘m</p>
@@ -108,13 +108,14 @@ const Korzinka = () => {
             <div className="flex gap-4">
               <button
                 onClick={() => dispatch(clearCart())}
-                className="px-5 py-2 border rounded-lg hover:bg-base-200"
+                className="flex items-center gap-2 px-5 py-2 border rounded-lg hover:bg-base-200 transition"
               >
+                <Trash2 size={18} />
                 Tozalash
               </button>
               <button
                 disabled={cartItems.length === 0}
-                className="px-6 py-2 bg-primary text-primary-content rounded-lg hover:bg-primary/80 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-6 py-2 bg-primary text-primary-content rounded-lg hover:bg-primary/80 disabled:opacity-50 disabled:cursor-not-allowed transition"
               >
                 Buyurtma berish
               </button>

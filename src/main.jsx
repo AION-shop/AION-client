@@ -10,6 +10,9 @@ import { PersistGate } from "redux-persist/integration/react";
 // Router
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
+// Helmet
+import { HelmetProvider } from "react-helmet-async";
+
 // Guards
 import PrivateRouter from "./guard/PrivateRouter.jsx";
 import VerifyGuard from "./guard/VerifyGuard.jsx";
@@ -24,15 +27,16 @@ import Register from "./pages/Register.jsx";
 import TelegramCallback from "./pages/TelegramCallback.jsx";
 import FilteredProducts from "./pages/FilteredProducts.jsx";
 import SingleProducts from "./pages/SingleProducts.jsx";
+import SingleColProductPage from "./pages/SingleProducts.jsx"; // ✅ Shu import qo‘shildi
 import Korzinka from "./pages/Korzinka.jsx";
 import Favorites from "./pages/Fovorites.jsx";
 import Rasrochka from "./pages/Rasrochka.jsx";
 import SellOnPage from "./pages/SellOn.jsx";
 import Discount from "./pages/Discount.jsx";
+import News from "./pages/News.jsx";
 
 // Toast
 import { Toaster } from "react-hot-toast";
-import News from "./pages/News.jsx";
 
 // Router config
 const router = createBrowserRouter(
@@ -58,18 +62,10 @@ const router = createBrowserRouter(
       ],
       errorElement: <div>Profile page not found</div>,
     },
-    {
-      path: "/verify-account",
-      element: (
-        <PrivateRouter>
-          <VerifyAccount />
-        </PrivateRouter>
-      ),
-    },
+    { path: "/verify-account", element: <PrivateRouter><VerifyAccount /></PrivateRouter> },
     { path: "/login", element: <Login /> },
     { path: "/register", element: <Register /> },
     { path: "/telegram/callback", element: <TelegramCallback /> },
-
     {
       path: "/",
       element: <App />,
@@ -80,9 +76,10 @@ const router = createBrowserRouter(
         { path: "favorites", element: <Favorites /> },
         { path: "rasrochka", element: <Rasrochka /> },
         { path: "news", element: <News /> },
-        {path: "discount", element : <Discount />},
+        { path: "discount", element: <Discount /> },
         { path: "products/:id", element: <SingleProducts /> },
-        {path: "sell-on", element: <SellOnPage />}
+        { path: "col-products/:id", element: <SingleColProductPage /> }, // ✅ Shu qo‘shildi
+        { path: "sell-on", element: <SellOnPage /> },
       ],
     },
     {
@@ -111,18 +108,20 @@ const router = createBrowserRouter(
 // Render
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <Provider store={store}>
-      <PersistGate
-        loading={
-          <div className="min-h-screen flex items-center justify-center">
-            <div className="loading loading-spinner loading-lg"></div>
-          </div>
-        }
-        persistor={persistor}
-      >
-        <RouterProvider router={router} />
-        <Toaster position="top-right" reverseOrder={false} />
-      </PersistGate>
-    </Provider>
+    <HelmetProvider>
+      <Provider store={store}>
+        <PersistGate
+          loading={
+            <div className="min-h-screen flex items-center justify-center">
+              <div className="loading loading-spinner loading-lg"></div>
+            </div>
+          }
+          persistor={persistor}
+        >
+          <RouterProvider router={router} />
+          <Toaster position="top-right" reverseOrder={false} />
+        </PersistGate>
+      </Provider>
+    </HelmetProvider>
   </StrictMode>
 );
