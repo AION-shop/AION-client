@@ -1,122 +1,118 @@
-// AllProducts.jsx
-import React, { useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
-import { addToCart } from "../redux/slices/cartSlice";
-import { addToFavorites } from "../redux/slices/favoritesSlice";
-import { useNavigate } from "react-router-dom";
+// src/pages/discount.jsx
+import React, { useEffect, useState } from "react";
+import { Helmet } from "react-helmet-async";
 import toast from "react-hot-toast";
 
-const AllProducts = () => {
-  const [products, setProducts] = useState([]);
+export default function Discount() {
+  const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [page, setPage] = useState(0);
-  const [hasMore, setHasMore] = useState(true);
+  const [remaining, setRemaining] = useState(0);
 
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
-  const API = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
-
+  // Mahsulotni olish
   useEffect(() => {
-    const fetchProducts = async () => {
+    const fetchDiscountCard = async () => {
       try {
         setLoading(true);
-
-        const url = `${API}/products?limit=12&skip=${page * 12}`;
-        const res = await fetch(url);
+        const res = await fetch(`${apiUrl}/discount-cards/active/products`);
+        if (!res.ok) throw new Error(`Server responded with status ${res.status}`);
         const data = await res.json();
 
-        if (!data.success) throw new Error(data.message || "Server error");
+        if (data?.products?.length > 0) {
+          const productData = data.products[0];
+          setProduct(productData);
 
-        if (page === 0) setProducts(data.products);
-        else setProducts((prev) => [...prev, ...data.products]);
-
-        setHasMore(data.products.length >= 12);
+          const now = Date.now();
+          const expires = new Date(productData.product1.showProduct1Until).getTime();
+          setRemaining(Math.max(expires - now, 0));
+        } else {
+          setProduct(null);
+        }
       } catch (err) {
-        console.error(err);
+        console.error("DiscountCard fetch error:", err);
+        setProduct(null);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchProducts();
-  }, [page]);
+    fetchDiscountCard();
+  }, [apiUrl]);
 
-  const handleAddToCart = (product, e) => {
-    e.stopPropagation();
-    dispatch(addToCart(product));
-    toast.success(`${product.title} добавлен в корзину 🛒`);
+  // Countdown timer
+  useEffect(() => {
+    if (!product) return;
+    const interval = setInterval(() => {
+      const now = Date.now();
+      const expires = new Date(product.product1.showProduct1Until).getTime();
+      const diff = Math.max(expires - now, 0);
+      setRemaining(diff);
+      if (diff <= 0) clearInterval(interval);
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [product]);
+
+  const formatTime = (ms) => {
+    if (ms <= 0) return "00:00:00";
+    let sec = Math.floor(ms / 1000);
+    let h = Math.floor(sec / 3600);
+    sec %= 3600;
+    let m = Math.floor(sec / 60);
+    let s = sec % 60;
+    return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
   };
 
-  const handleAddToFavorites = (product, e) => {
-    e.stopPropagation();
-    dispatch(addToFavorites(product));
-    toast.success(`${product.title} добавлен в избранное ❤️`);
-  };
+  if (loading) return <p className="text-center py-10">Yuklanmoqda...</p>;
+  if (!product) return <p className="text-center py-10">Chegirma yo‘q</p>;
 
-  const handleGoToSingle = (id) => navigate(`/products/${id}`);
+  const { product1, discountPercent } = product;
+  const { name, price, originalPrice, image } = product1;
 
   return (
-    <div className="min-h-screen bg-base-300 p-6">
-      <h1 className="text-3xl font-bold mb-6">Все товары</h1>
+    <div className="max-w-sm mx-auto bg-base-100 shadow-xl rounded-2xl overflow-hidden border border-base-300 hover:shadow-2xl transition-all duration-300 mt-10">
+      <Helmet>
+        <title>{name} — Chegirma | ShopMarket</title>
+        <meta
+          name="description"
+          content={`Chegirma: ${name}. Narx: ${price?.toLocaleString("ru-RU") || 0} UZS`}
+        />
+      </Helmet>
 
-      {loading ? (
-        <div className="flex justify-center items-center h-64">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-        </div>
-      ) : products.length === 0 ? (
-        <p className="text-center text-base-content/70 py-16">Товары не найдены</p>
-      ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {products.map((p) => (
-            <div
-              key={p._id}
-              className="bg-base-100 rounded-xl shadow hover:shadow-xl transition overflow-hidden cursor-pointer"
-              onClick={() => handleGoToSingle(p._id)}
-            >
-              <div className="relative h-48 bg-base-200 flex items-center justify-center overflow-hidden">
-                <img
-                  src={p.thumbnail}
-                  alt={p.title}
-                  className="object-contain h-full w-full p-4 group-hover:scale-110 transition-transform duration-300"
-                />
-              </div>
-              <div className="p-4" onClick={(e) => e.stopPropagation()}>
-                <h3 className="font-semibold text-base-content mb-2 line-clamp-2">{p.title}</h3>
-                <p className="text-base-content/70 text-sm mb-3 line-clamp-3">{p.description}</p>
-                <div className="flex items-center justify-between mb-3">
-                  <p className="text-xl font-bold text-primary">{p.price.toLocaleString()} сум</p>
-                  <button
-                    onClick={(e) => handleAddToCart(p, e)}
-                    className="bg-primary hover:bg-primary-focus text-primary-content py-2 px-4 rounded-lg transition font-medium"
-                  >
-                    🛒 В корзину
-                  </button>
-                </div>
-                <button
-                  onClick={(e) => handleAddToFavorites(p, e)}
-                  className="w-full bg-base-200 hover:bg-base-300 text-base-content py-2 px-3 rounded-lg transition text-sm font-medium"
-                >
-                  ❤️ В избранное
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
+      <div className="relative">
+        <img
+          src={image || "https://via.placeholder.com/400x300"}
+          alt={name || "Chegirma mahsuloti"}
+          className="w-full h-64 object-cover"
+        />
+        {discountPercent && (
+          <span className="absolute top-2 left-2 bg-red-500 text-white px-2 py-1 rounded-md text-sm font-bold shadow-md">
+            -{discountPercent}%
+          </span>
+        )}
+        {remaining > 0 && (
+          <span className="absolute top-2 right-2 bg-base-200 text-primary px-2 py-1 rounded-md text-sm font-mono shadow-md">
+            {formatTime(remaining)}
+          </span>
+        )}
+      </div>
 
-      {hasMore && !loading && (
-        <div className="flex justify-center mt-6">
-          <button
-            onClick={() => setPage((prev) => prev + 1)}
-            className="px-6 py-2 bg-primary hover:bg-primary-focus text-primary-content rounded-lg font-medium"
-          >
-            Показать еще
-          </button>
+      <div className="p-4 flex flex-col gap-2">
+        <h2 className="font-bold text-lg line-clamp-2">{name}</h2>
+        <div className="flex items-center gap-2 mt-2">
+          <p className="text-xl font-bold text-primary">{price?.toLocaleString("ru-RU") || 0} UZS</p>
+          {originalPrice && (
+            <p className="text-sm line-through text-gray-400">{originalPrice?.toLocaleString("ru-RU") || 0} UZS</p>
+          )}
         </div>
-      )}
+        <button
+          onClick={() => toast.success("Savatga qo'shildi")}
+          className="btn btn-primary w-full mt-3"
+        >
+          Savatga
+        </button>
+      </div>
     </div>
   );
-};
-
-export default AllProducts;
+}

@@ -4,10 +4,13 @@ import SubNavbar from '../shared/SubNavbar'
 import Navbar from '../shared/Navbar'
 
 import BannerSection from '../ui/promotions/SwiperBanner'
+import Container from '../shared/Container'
 
 const Header = () => {
   return (
     <div>
+
+      
       <InfoBar />
        <SubNavbar />
       

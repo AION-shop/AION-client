@@ -1,121 +1,125 @@
-// ColProductCard.jsx
 import React, { useState } from "react";
 import { Heart, ShoppingCart } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { Helmet } from "react-helmet-async";
+import { useDispatch } from "react-redux";
+import { addToCart } from "../../../redux/slices/cartSlice";
+import toast from "react-hot-toast";
 
 export default function ColProductCard({ card }) {
   const [isFavorite, setIsFavorite] = useState(false);
   const [months, setMonths] = useState(12);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   if (!card) return null;
 
   const images = card.images?.length
     ? card.images
     : [card.thumbnail || "https://via.placeholder.com/300"];
+
   const installmentPrice = Math.floor(card.price / months);
 
+  const handleAddCart = (e) => {
+    e.stopPropagation();
+
+    dispatch(
+      addToCart({
+        id: card._id,
+        title: card.title,
+        price: card.price,
+        image: images[0],
+        quantity: 1,
+      })
+    );
+
+    toast.success(`${card.title} savatga qo‘shildi!`);
+  };
+
   return (
-    <>
-      {/* SEO for individual product */}
-      <Helmet>
-        <title>{card.title} | Mahsulot</title>
-        <meta
-          name="description"
-          content={`${card.title} haqida to‘liq ma'lumot, narxi va oylik to‘lov variantlari.`}
+    <article
+      onClick={() => navigate(`/col-products/${card._id}`)}
+      className="group relative overflow-hidden rounded-2xl cursor-pointer 
+      bg-white border border-gray-200 shadow-sm hover:shadow-md
+      transition-all duration-300 flex flex-col"
+    >
+      {/* IMAGE */}
+      <div className="relative h-36 sm:h-44 md:h-48 flex items-center justify-center bg-gray-50 rounded-t-2xl overflow-hidden">
+        <img
+          src={images[0]}
+          alt={card.title}
+          className="h-full w-full object-contain transition-transform duration-500 group-hover:scale-105"
         />
-        <meta
-          name="keywords"
-          content={`${card.title}, ${card.category}, avtomobil, onlayn sotib olish`}
-        />
-      </Helmet>
 
-      <article
-        onClick={() => navigate(`/col-products/${card._id}`)}
-        className="group bg-white rounded-xl shadow-md hover:shadow-xl
-          border border-gray-200 hover:border-blue-500 transition-all duration-300 
-          cursor-pointer flex flex-col w-full sm:w-auto"
-      >
-        {/* IMAGE */}
-        <div className="relative bg-gray-50 h-44 sm:h-48 md:h-52 lg:h-56 overflow-hidden rounded-t-xl flex items-center justify-center">
-          <img
-            src={images[0]}
-            alt={`${card.title} rasmi`}
-            loading="lazy"
-            className="h-full w-full object-contain transition-transform duration-500 group-hover:scale-105"
-          />
-          {/* FAVORITE */}
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              setIsFavorite(!isFavorite);
-            }}
-            aria-label="Yoqtirish"
-            className={`absolute top-2 right-2 w-8 h-8 flex items-center justify-center 
-              rounded-full bg-white shadow-md hover:shadow-lg transition-all duration-200
-              ${isFavorite ? "text-red-500" : "text-gray-600"}`}
-          >
-            <Heart className={`w-5 h-5 ${isFavorite ? "fill-red-500" : ""}`} />
-          </button>
+        {/* FAVORITE */}
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            setIsFavorite(!isFavorite);
+
+            !isFavorite
+              ? toast.success("Sevimlilarga qo‘shildi!")
+              : toast("Sevimlilardan olib tashlandi");
+          }}
+          className={`absolute top-3 right-3 w-8 h-8 flex items-center justify-center 
+          rounded-full bg-white border border-gray-200 hover:bg-gray-100 
+          text-gray-700 shadow-sm transition-all
+          ${isFavorite ? "text-red-500" : ""}`}
+        >
+          <Heart className="w-4 h-4" />
+        </button>
+      </div>
+
+      {/* BODY */}
+      <div className="p-3 flex flex-col flex-1">
+        <p className="text-[9px] text-gray-500 uppercase">
+          {card.brand || card.category}
+        </p>
+
+        <h2 className="font-semibold text-sm text-black line-clamp-2 mt-1 group-hover:text-gray-700">
+          {card.title}
+        </h2>
+
+        <div className="mt-2 flex flex-col gap-1">
+          <p className="text-xl font-bold text-black">
+            {card.price.toLocaleString()} UZS
+          </p>
+
+          <span className="text-[11px] text-gray-800 px-2 py-[3px] rounded-full bg-gray-100 w-fit">
+            {installmentPrice.toLocaleString()} × {months} oy
+          </span>
         </div>
 
-        {/* BODY */}
-        <div className="p-4 flex flex-col flex-1">
-          {card.category && (
-            <p className="text-xs sm:text-sm text-gray-500">{card.category}</p>
-          )}
-
-          <h2 className="font-semibold text-gray-900 text-sm sm:text-base line-clamp-2 
-            group-hover:text-blue-600 transition-colors mt-1">
-            {card.title}
-          </h2>
-
-          {/* PRICE */}
-          <div className="mt-2 flex flex-col gap-1">
-            <p className="text-lg sm:text-xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 
-              text-transparent bg-clip-text">
-              {card.price.toLocaleString()} UZS
-            </p>
-
-            <span className="text-xs sm:text-sm font-medium bg-blue-50 text-blue-700 px-2 py-1 
-              rounded-full shadow-sm inline-block w-fit">
-              {installmentPrice.toLocaleString()} × {months} oy
-            </span>
-          </div>
-
-          {/* MONTHS */}
-          <div className="flex gap-2 mt-3 flex-wrap">
-            {[12, 18, 24].map((m) => (
-              <button
-                key={m}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setMonths(m);
-                }}
-                aria-label={`${m} oy bo‘lib to‘lash`}
-                className={`px-3 py-1 text-xs rounded-md border transition-all
-                  ${months === m
-                    ? "bg-blue-600 text-white border-blue-600"
-                    : "border-gray-300 text-gray-700 hover:bg-gray-100"
-                  }`}
-              >
-                {m} oy
-              </button>
-            ))}
-          </div>
-
-          {/* ADD TO CART */}
-          <button
-            onClick={(e) => e.stopPropagation()}
-            className="mt-4 w-full flex items-center justify-center gap-2 px-4 py-2 
-              bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 transition-all duration-200"
-          >
-            <ShoppingCart className="w-4 h-4" />
-            Savatga
-          </button>
+        {/* MONTH BUTTONS */}
+        <div className="flex gap-2 mt-2">
+          {[12, 18, 24].map((m) => (
+            <button
+              key={m}
+              onClick={(e) => {
+                e.stopPropagation();
+                setMonths(m);
+              }}
+              className={`px-2 py-[5px] text-[10px] rounded-md border transition-all
+              ${
+                months === m
+                  ? "bg-black text-white border-black"
+                  : "border-gray-300 text-gray-700 hover:bg-gray-100"
+              }`}
+            >
+              {m} oy
+            </button>
+          ))}
         </div>
-      </article>
-    </>
+
+        {/* ADD TO CART */}
+        <button
+          onClick={handleAddCart}
+          className="mt-3 w-full flex items-center justify-center gap-2 text-sm px-3 py-2 
+          bg-black hover:bg-gray-800 text-white rounded-xl transition shadow-sm"
+        >
+          <ShoppingCart className="w-4 h-4" />
+          Savatga
+        </button>
+      </div>
+    </article>
   );
 }

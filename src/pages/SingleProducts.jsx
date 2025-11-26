@@ -1,4 +1,4 @@
-// SingleColProductPage.jsx
+// src/pages/SingleColProductPage.jsx
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import {
@@ -30,28 +30,45 @@ export default function SingleColProductPage() {
 
   const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
-  // Fetch single col-product from backend
+  // 🔹 Productni backenddan olish
   useEffect(() => {
     const fetchProduct = async () => {
       setLoading(true);
       try {
-        const res = await fetch(`${API_URL}/col-products/${id}`);
-        const data = await res.json();
+        // 1️⃣ Col-Productni tekshirish birinchi
+        let res = await fetch(`${API_URL}/col-products/${id}`);
+        let data = await res.json();
 
+        // Agar col-product topilsa
         if (data.success && data.product) {
-          const prod = data.product;
-          setProduct(prod);
-
+          setProduct(data.product);
           const imgs =
-            prod.images && prod.images.length
-              ? prod.images
-              : prod.thumbnail
-              ? [prod.thumbnail]
-              : ["https://via.placeholder.com/1200x800?text=No+image"];
+            data.product.images?.length > 0
+              ? data.product.images
+              : data.product.thumbnail
+                ? [data.product.thumbnail]
+                : ["https://via.placeholder.com/1200x800?text=No+image"];
           setImages(imgs);
           setSelectedImage(0);
         } else {
-          setProduct(null);
+          // Agar col-product topilmasa, normal productni fetch qilamiz
+          res = await fetch(`${API_URL}/products/${id}`);
+          data = await res.json();
+
+          if (data.success && data.product) {
+            setProduct(data.product);
+            const imgs =
+              data.product.images?.length > 0
+                ? data.product.images
+                : data.product.thumbnail
+                  ? [data.product.thumbnail]
+                  : ["https://via.placeholder.com/1200x800?text=No+image"];
+            setImages(imgs);
+            setSelectedImage(0);
+          } else {
+            // Hech narsa topilmasa
+            setProduct(null);
+          }
         }
       } catch (err) {
         console.error("Product olishda xato:", err);
@@ -64,14 +81,15 @@ export default function SingleColProductPage() {
     fetchProduct();
   }, [id]);
 
+
   if (loading)
     return (
-      <div className="min-h-screen flex items-center justify-center bg-base-200">
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="w-full max-w-5xl p-6">
-          <div className="animate-pulse">
-            <div className="h-72 sm:h-96 bg-gray-200 rounded-xl mb-6"></div>
-            <div className="h-6 bg-gray-200 rounded w-1/3 mb-3"></div>
-            <div className="h-4 bg-gray-200 rounded w-2/3 mb-3"></div>
+          <div className="animate-pulse space-y-4">
+            <div className="h-72 sm:h-96 bg-gray-200 rounded-xl"></div>
+            <div className="h-6 bg-gray-200 rounded w-1/3"></div>
+            <div className="h-4 bg-gray-200 rounded w-2/3"></div>
           </div>
         </div>
       </div>
@@ -79,7 +97,7 @@ export default function SingleColProductPage() {
 
   if (!product)
     return (
-      <div className="min-h-screen flex items-center justify-center bg-base-200 p-6">
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 p-6">
         <div className="max-w-md w-full">
           <div className="alert alert-error shadow-lg">
             <div>
@@ -127,7 +145,7 @@ export default function SingleColProductPage() {
           text: product.description || "",
           url,
         });
-      } catch {}
+      } catch { }
     } else {
       await navigator.clipboard.writeText(url);
       toast.success("Havola nusxalandi");
@@ -147,25 +165,8 @@ export default function SingleColProductPage() {
     toast.success("Mahsulot savatga qo'shildi (rezerv qilindi)");
   };
 
-  const jsonLd = {
-    "@context": "https://schema.org/",
-    "@type": "Product",
-    name: product.title,
-    image: images,
-    description: product.description || "",
-    sku: product._id,
-    brand: { "@type": "Brand", name: product.brand || "AION" },
-    offers: {
-      "@type": "Offer",
-      url: window.location.href,
-      priceCurrency: "UZS",
-      price: discountedPrice,
-      availability: "https://schema.org/InStock",
-    },
-  };
-
   return (
-    <div className="min-h-screen bg-base-200 pb-12">
+    <div className="min-h-screen bg-gray-50 pb-12">
       <Helmet>
         <title>{product.title} — AION Uzbekistan</title>
         <meta
@@ -177,12 +178,12 @@ export default function SingleColProductPage() {
         <meta property="og:description" content={product.description || ""} />
         <meta property="og:image" content={images[0]} />
         <meta property="og:type" content="product" />
-        <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
         <link rel="canonical" href={window.location.href} />
       </Helmet>
 
-      <div className="mx-auto px-4 lg:px-6 pt-6">
-        <nav className="text-sm mb-4 text-base-content/70" aria-label="breadcrumb">
+      <div className="mx-auto px-4 lg:px-6 pt-6 max-w-7xl">
+        {/* Breadcrumb */}
+        <nav className="text-sm mb-4 text-gray-500" aria-label="breadcrumb">
           <ol className="flex gap-2 items-center">
             <li>
               <button className="link link-hover" onClick={() => navigate("/")}>
@@ -200,26 +201,25 @@ export default function SingleColProductPage() {
           {/* Images */}
           <div className="lg:col-span-5 space-y-4">
             <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
-              <div className="relative flex items-center justify-center">
+              <div className="relative flex items-center justify-center bg-white p-4">
                 <img
                   src={images[selectedImage]}
                   alt={product.title}
-                  className="w-full max-h-[460px] object-contain bg-white"
+                  className="w-full max-h-[460px] object-contain"
                 />
                 <div className="absolute top-3 right-3 flex gap-3 z-20">
                   <button
                     onClick={handleToggleFavorite}
                     aria-label={isFavorite ? "Remove favorite" : "Add favorite"}
-                    className={`w-10 h-10 rounded-full flex items-center justify-center shadow-md transition ${
-                      isFavorite ? "bg-red-500 text-white" : "bg-white hover:bg-gray-100"
-                    }`}
+                    className={`w-10 h-10 rounded-full flex items-center justify-center shadow-md transition ${isFavorite ? "bg-red-500 text-white" : "bg-gray-700 hover:bg-gray-800"
+                      }`}
                   >
                     <Heart size={18} />
                   </button>
                   <button
                     onClick={handleShare}
                     aria-label="Share product"
-                    className="w-10 h-10 rounded-full flex items-center justify-center shadow-md bg-white hover:bg-gray-100"
+                    className="w-10 h-10 rounded-full flex items-center justify-center shadow-md bg-gray-700 hover:bg-gray-800 "
                   >
                     <Share2 size={18} />
                   </button>
@@ -227,15 +227,14 @@ export default function SingleColProductPage() {
               </div>
             </div>
 
+            {/* Thumbnails */}
             <div className="flex gap-3 overflow-x-auto py-2">
               {images.map((img, idx) => (
                 <button
                   key={idx}
                   onClick={() => setSelectedImage(idx)}
-                  className={`min-w-[84px] h-16 rounded-lg overflow-hidden border transition ${
-                    idx === selectedImage ? "border-primary shadow-lg" : "border-base-300"
-                  }`}
-                  aria-label={`View image ${idx + 1}`}
+                  className={`min-w-[84px] h-16 rounded-lg overflow-hidden border transition ${idx === selectedImage ? "border-blue-600 shadow-lg" : "border-gray-300"
+                    }`}
                 >
                   <img src={img} alt={`${product.title} - ${idx + 1}`} className="w-full h-full object-cover" />
                 </button>
@@ -245,37 +244,47 @@ export default function SingleColProductPage() {
 
           {/* Details */}
           <div className="lg:col-span-5 space-y-6">
-            <h1 className="text-3xl sm:text-4xl font-bold leading-tight">{product.title}</h1>
-            <p className="text-base text-base-content/80">{product.description}</p>
+            <h1 className="text-3xl sm:text-4xl font-bold leading-tight text-black">{product.title}</h1>
+            <p className="text-base text-gray-700">{product.description}</p>
 
             <div className="grid grid-cols-2 gap-4 mt-3">
               <Spec title="Narx" value={`${discountedPrice.toLocaleString()} so'm`} />
               <Spec title="Kategoriya" value={product.category || "—"} />
               <Spec title="Asl narxi" value={`${basePrice.toLocaleString()} so'm`} />
               <Spec title="Chegirma" value={`${discount}%`} />
+              <Spec title="Battery Options" value={product.batteryOptions?.join(", ") || "—"} />
+              <Spec title="Maksimal masofa" value={`${product.maxRange || 0} km`} />
+              <Spec title="Tezlanish" value={`${product.acceleration || 0} s`} />
+              <Spec title="Kuch" value={`${product.power || 0} kW`} />
+              <Spec title="Reviews" value={product.reviewsCount || 0} />
             </div>
 
+            {/* Installment */}
             <div className="mt-4">
-              <p className="text-sm text-base-content/70 mb-2">Rasrochka muddatini tanlang</p>
+              <p className="text-sm text-gray-600 mb-2">Rasrochka muddatini tanlang</p>
               <div className="flex gap-2">
                 {[12, 24, 36].map((m) => (
                   <button
                     key={m}
                     onClick={() => setInstallmentMonths(m)}
-                    className={`px-3 py-1 rounded-md border text-sm ${
-                      installmentMonths === m ? "bg-primary text-white border-primary" : "border-base-300 text-base-content"
-                    }`}
+                    className={`px-3 py-1 rounded-md border text-sm ${installmentMonths === m
+                      ? "bg-blue-600 text-white border-blue-600"
+                      : "border-gray-300 text-gray-700"
+                      }`}
                   >
                     {m} oy
                   </button>
                 ))}
               </div>
-              <div className="mt-3 text-sm text-base-content/80">
-                <span className="font-semibold">{Math.round(discountedPrice / installmentMonths).toLocaleString()}</span>{" "}
+              <div className="mt-3 text-sm text-gray-700">
+                <span className="font-semibold">
+                  {Math.round(discountedPrice / installmentMonths).toLocaleString()}
+                </span>{" "}
                 so'm / oy ({installmentMonths} oy)
               </div>
             </div>
 
+            {/* Features */}
             <div className="mt-4 space-y-3">
               <Feature icon={<Zap />} text="Regenerativ tormozlash" />
               <Feature icon={<MapPin />} text="Navigatsiya va OTA yangilanishlar" />
@@ -284,49 +293,57 @@ export default function SingleColProductPage() {
           </div>
 
           {/* Sidebar */}
-          <div className="lg:col-span-2">
-            <div className="rounded-2xl shadow-xl p-6 flex flex-col gap-4 lg:sticky lg:top-28 border border-gray-100">
-              <div>
-                <p className="text-3xl font-bold text-primary">{discountedPrice.toLocaleString()} so'm</p>
+          <div className="lg:col-span-2 w-full">
+            <div className="rounded-2xl shadow-lg p-6 flex flex-col gap-4 border border-gray-200 bg-white sticky top-6 lg:top-28">
+              {/* Price */}
+              <div className="space-y-1">
+                <p className="text-3xl font-bold text-black">{discountedPrice.toLocaleString()} so'm</p>
                 {discount > 0 && (
-                  <p className="text-sm line-through text-gray-400 mt-1">{basePrice.toLocaleString()} so'm</p>
+                  <p className="text-sm line-through text-gray-400">{basePrice.toLocaleString()} so'm</p>
                 )}
-                <p className="text-sm text-success font-semibold mt-1">
+                <p className="text-sm text-gray-600 font-semibold">
                   {Math.round(discountedPrice / installmentMonths).toLocaleString()} so'm / {installmentMonths} oy
                 </p>
               </div>
 
-              <button onClick={handleReserve} className="btn btn-primary w-full btn-lg rounded-xl">
+              {/* Reserve button */}
+              <button
+                onClick={handleReserve}
+                className="btn btn-primary w-full py-3 rounded-xl hover:bg-blue-700 transition-colors text-white text-base"
+              >
                 Rezervga olish
               </button>
 
-              <div className="divider my-1"></div>
+              <div className="divider my-2"></div>
 
+              {/* Info */}
               <div className="space-y-3 text-sm">
-                <InfoItem icon={<Truck />} text="Tez yetkazib berish" />
-                <InfoItem icon={<Shield />} text="5 yil rasmiy kafolat" />
-                <InfoItem icon={<RotateCcw />} text="14 kun ichida qaytarish" />
+                <InfoItem icon={<Truck className="text-blue-600" />} text="Tez yetkazib berish" />
+                <InfoItem icon={<Shield className="text-blue-600" />} text="5 yil rasmiy kafolat" />
+                <InfoItem icon={<RotateCcw className="text-blue-600" />} text="14 kun ichida qaytarish" />
               </div>
             </div>
           </div>
+
         </div>
       </div>
     </div>
   );
 }
 
+// Helper components
 function Spec({ title, value }) {
   return (
     <div>
-      <p className="text-sm text-base-content/60">{title}</p>
-      <p className="font-medium">{value}</p>
+      <p className="text-sm text-gray-500">{title}</p>
+      <p className="font-medium text-gray-800">{value}</p>
     </div>
   );
 }
 
 function Feature({ icon, text }) {
   return (
-    <div className="flex items-center gap-3 text-base-content/80">
+    <div className="flex items-center gap-3 text-gray-700">
       <span className="w-6 h-6 flex items-center justify-center">{icon}</span>
       <span className="text-sm">{text}</span>
     </div>
@@ -335,8 +352,8 @@ function Feature({ icon, text }) {
 
 function InfoItem({ icon, text }) {
   return (
-    <div className="flex items-center gap-3 text-sm text-base-content/80">
-      <span className="w-5 h-5 flex items-center justify-center text-primary">{icon}</span>
+    <div className="flex items-center gap-3 text-sm text-gray-700">
+      <span className="w-5 h-5 flex items-center justify-center text-blue-600">{icon}</span>
       <span>{text}</span>
     </div>
   );

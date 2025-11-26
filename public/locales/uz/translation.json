@@ -1,0 +1,14 @@
+{
+  "home": {
+    "banners": "Bannerlar",
+    "cars": "Avtomobillar",
+    "loadMoreCars": "Yana 10 ta yuklash",
+    "laptops": "Laptops",
+    "allProducts": "Barcha mahsulotlar"
+  },
+  "navbar": {
+    "installment": "Rassrochka",
+    "callUs": "Zvonite",
+    "sell": "Продавайте"
+  }
+}

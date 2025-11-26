@@ -17,39 +17,30 @@ const Home = () => {
   const [loading, setLoading] = useState(true);
   const [visibleColProducts, setVisibleColProducts] = useState(6);
 
-  const API_URL = import.meta.env.VITE_API_URL;
+  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
-  // Fetch all products
   const fetchProducts = async () => {
     try {
       const resMain = await fetch(`${API_URL}/products`);
       const dataMain = await resMain.json();
-
       const resCol = await fetch(`${API_URL}/col-products`);
       const dataCol = await resCol.json();
 
       setProducts(dataMain.products || []);
       setColProducts(dataCol.products || []);
     } catch (err) {
-      console.error("Server error (products):", err);
+      console.error("Server error:", err);
+      setProducts([]);
+      setColProducts([]);
     }
   };
 
-  // Fetch laptops
-  const fetchLaptops = async () => {
-    try {
-      const res = await fetch(`${API_URL}/products/category/laptops`);
-      const data = await res.json();
-      setLaptops(data.products || []);
-    } catch (err) {
-      console.error("Server error (laptops):", err);
-    }
-  };
+
 
   useEffect(() => {
     const fetchAll = async () => {
       setLoading(true);
-      await Promise.all([fetchProducts(), fetchLaptops()]);
+      await Promise.all([fetchProducts()]);
       setLoading(false);
     };
     fetchAll();
@@ -59,118 +50,124 @@ const Home = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-base-200">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+      <div className="min-h-screen flex items-center justify-center bg-white">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-black"></div>
       </div>
     );
   }
 
   return (
-    <main className="bg-base-200">
-      {/* SEO */}
+    <main className="bg-white text-black">
       <Helmet>
-        <title>ShopMarket | Barcha mahsulotlar</title>
+        <title>ShopMarket — Onlayn do'kon</title>
         <meta
           name="description"
-          content="ShopMarket onlayn do‘kon. Mahsulotlarni ko‘rib chiqish, chegirmalar, avtomobillar va texnologiya mahsulotlari."
-        />
-        <meta
-          name="keywords"
-          content="ShopMarket, onlayn do‘kon, mahsulotlar, avtomobillar, laptops, elektronika, savatga qo‘shish"
+          content="ShopMarket — avtomobillar va texnika bo‘limlari. Tez yetkazib berish."
         />
       </Helmet>
 
-      {/* Banner + Discount */}
-      <section className="py-10">
-        <Container>
+      <Container>
+        {/* Banner + Discount */}
+        <section className="py-10">
+          <h2 className="text-2xl sm:text-3xl font-bold mb-6">Bannerlar</h2>
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
             <div className="lg:col-span-2">
-              <BannerSection />
+              <BannerSection className="bg-white border border-gray-200 shadow-sm rounded-xl" />
+              <div className="lg:hidden mt-4">
+                <DiscountCard
+                  apiUrl={API_URL}
+                  className="bg-white text-black border border-gray-200 shadow-sm"
+                />
+              </div>
             </div>
-            <div className="flex flex-col gap-4">
-              <DiscountCard />
+
+            <div className="hidden lg:flex flex-col gap-4">
+              <DiscountCard
+                apiUrl={API_URL}
+                className="bg-white text-black border border-gray-200 shadow-sm"
+              />
             </div>
           </div>
-        </Container>
-      </section>
+        </section>
 
-      {/* ColProducts Section */}
-      {colProducts.length > 0 && (
-        <section className="py-10">
-          <Container>
-            <h2 className="text-2xl font-bold mb-5">Avtomobillar</h2>
+        {/* Cars Section */}
+        {colProducts.length > 0 && (
+          <section className="py-10">
+            <h2 className="text-2xl sm:text-3xl font-bold mb-6">Avtomobillar</h2>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {/* First 2 ColProduct highlight */}
-              {colProducts.slice(0, 2).map(card => (
-                <ColProductCard key={card._id} card={card} />
-              ))}
-
-              {/* Remaining RowProducts */}
-              {colProducts.slice(2, visibleColProducts).map(product => (
-                <RowProductCard key={product._id} product={product} />
+            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+              {colProducts.slice(0, visibleColProducts).map((card) => (
+                <ColProductCard
+                  key={card._id}
+                  card={card}
+                  className="bg-white text-black border border-gray-200 shadow-sm hover:shadow-md transition"
+                />
               ))}
             </div>
 
             {visibleColProducts < colProducts.length && (
-              <div className="mt-8 flex justify-center">
+              <div className="mt-6 flex justify-center">
                 <button
                   onClick={handleShowMoreCars}
-                  className="px-6 py-3 rounded-lg bg-primary text-white font-semibold hover:bg-primary/90 transition"
+                  className="px-6 py-3 rounded-lg bg-black text-white font-medium hover:bg-black/80 transition"
                 >
-                  Yana 10 mashina
+                  Yana 10 ta yuklash
                 </button>
               </div>
             )}
-          </Container>
-        </section>
-      )}
+          </section>
+        )}
 
-      {/* Promotion Banner */}
-      <section className="py-10">
-        <PromotionBanner />
-      </section>
-
-      {/* Category Swiper */}
-      <section className="py-10">
-        <Container>
-          <CategorySwiper />
-        </Container>
-      </section>
-
-      {/* Laptops Section */}
-      {laptops.length > 0 && (
+        {/* Promo Banner */}
         <section className="py-10">
-          <Container>
-            <h2 className="text-2xl font-bold mb-5">Laptops</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
-              {laptops.map(product => (
-                <RowProductCard key={product._id} product={product} />
+          <PromotionBanner className="bg-white border border-gray-200 rounded-xl shadow-sm" />
+        </section>
+
+        {/* Category */}
+        <section className="py-10">
+          <CategorySwiper className="bg-white text-black" />
+        </section>
+
+        {/* Laptops */}
+        {laptops.length > 0 && (
+          <section className="py-10">
+            <h2 className="text-2xl sm:text-3xl font-bold mb-6">Laptops</h2>
+
+            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+              {laptops.map((product) => (
+                <RowProductCard
+                  key={product._id}
+                  product={product}
+                  className="bg-white text-black border border-gray-200 shadow-sm hover:shadow-md transition"
+                />
               ))}
             </div>
-          </Container>
-        </section>
-      )}
+          </section>
+        )}
 
-      {/* All Products Section */}
-      {products.length > 0 && (
-        <section className="py-10">
-          <Container>
-            <h2 className="text-2xl font-bold mb-5">Barcha mahsulotlar</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
-              {products.map(product => (
-                <RowProductCard key={product._id} product={product} />
+        {/* All Products */}
+        {products.length > 0 && (
+          <section className="py-10">
+            <h2 className="text-2xl sm:text-3xl font-bold mb-6">Barcha mahsulotlar</h2>
+
+            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+              {products.map((product) => (
+                <RowProductCard
+                  key={product._id}
+                  product={product}
+                  className="bg-white text-black border border-gray-200 shadow-sm hover:shadow-md transition"
+                />
               ))}
             </div>
-          </Container>
-        </section>
-      )}
+          </section>
+        )}
 
-      {/* Another Promotion Banner */}
-      <section className="py-10">
-        <PromotionBanner />
-      </section>
+        <section className="py-10 ">
+          <PromotionBanner className="bg-white border border-gray-200 rounded-xl shadow-sm " />
+        </section>
+      </Container>
     </main>
+
   );
 };
 

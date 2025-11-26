@@ -28,27 +28,30 @@ const SwiperBanner = () => {
 
   if (loading)
     return (
-      <p className="text-center my-5 text-gray-500 font-medium">
+      <p className="text-center my-5 text-base-content font-medium">
         Loading banners...
       </p>
     );
 
   if (banners.length === 0)
     return (
-      <p className="text-center my-5 text-gray-500 font-medium">
+      <p className="text-center my-5 text-base-content font-medium">
         Bannerlar mavjud emas
       </p>
     );
 
+  // ===== Responsive height: mobile 300px, sm 350px, md 400px, lg 450px =====
+  const bannerHeightClass = "h-[300px] w-[100%] sm:h-[350px] md:h-[400px] lg:h-[450px]";
+
   return (
-    <Container>
-      <div className="my-5">
+
+      <div className="my-5 w-full">
         {banners.length === 1 ? (
           <a
             href={banners[0].link || "#"}
             target={banners[0].link ? "_blank" : "_self"}
             rel="noopener noreferrer"
-            className="block overflow-hidden rounded-2xl w-full cursor-pointer relative aspect-[16/5] sm:aspect-[16/6] md:aspect-[16/5]"
+            className={`block overflow-hidden rounded-2xl w-full cursor-pointer relative ${bannerHeightClass}`}
             aria-label={banners[0].title || "Promotion Banner"}
           >
             <img
@@ -80,7 +83,7 @@ const SwiperBanner = () => {
                   href={banner.link || "#"}
                   target={banner.link ? "_blank" : "_self"}
                   rel="noopener noreferrer"
-                  className="block overflow-hidden rounded-2xl w-full cursor-pointer relative aspect-[16/5] sm:aspect-[16/6] md:aspect-[16/5]"
+                  className={`block overflow-hidden rounded-2xl w-full cursor-pointer relative ${bannerHeightClass}`}
                   aria-label={banner.title || "Promotion Banner"}
                 >
                   <img
@@ -100,7 +103,7 @@ const SwiperBanner = () => {
           </Swiper>
         )}
       </div>
-    </Container>
+
   );
 };
 

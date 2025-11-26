@@ -1,10 +1,11 @@
+// main.jsx
 import React, { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
 
 // Redux
 import { Provider } from "react-redux";
-import { store, persistor } from "./redux/store";
+import { store, persistor } from "./redux/store.js";
 import { PersistGate } from "redux-persist/integration/react";
 
 // Router
@@ -27,20 +28,23 @@ import Register from "./pages/Register.jsx";
 import TelegramCallback from "./pages/TelegramCallback.jsx";
 import FilteredProducts from "./pages/FilteredProducts.jsx";
 import SingleProducts from "./pages/SingleProducts.jsx";
-import SingleColProductPage from "./pages/SingleProducts.jsx"; // ✅ Shu import qo‘shildi
+import SingleColProductPage from "./pages/SingleProducts.jsx";
 import Korzinka from "./pages/Korzinka.jsx";
 import Favorites from "./pages/Fovorites.jsx";
 import Rasrochka from "./pages/Rasrochka.jsx";
-import SellOnPage from "./pages/SellOn.jsx";
+// import SellOnPage from "./pages/SellOn.jsx";
 import Discount from "./pages/Discount.jsx";
 import News from "./pages/News.jsx";
 
 // Toast
 import { Toaster } from "react-hot-toast";
+import SellCard from "./components/shared/SellCard.jsx";
 
-// Router config
+
+// Router configuration with SEO meta
 const router = createBrowserRouter(
   [
+    // Profile routes
     {
       path: "/profile",
       element: (
@@ -60,12 +64,18 @@ const router = createBrowserRouter(
           ),
         },
       ],
-      errorElement: <div>Profile page not found</div>,
+      errorElement: (
+        <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
+          <h1 className="text-3xl font-bold text-gray-600">Profile page not found</h1>
+        </div>
+      ),
     },
     { path: "/verify-account", element: <PrivateRouter><VerifyAccount /></PrivateRouter> },
     { path: "/login", element: <Login /> },
     { path: "/register", element: <Register /> },
     { path: "/telegram/callback", element: <TelegramCallback /> },
+
+    // Main app routes
     {
       path: "/",
       element: <App />,
@@ -78,23 +88,23 @@ const router = createBrowserRouter(
         { path: "news", element: <News /> },
         { path: "discount", element: <Discount /> },
         { path: "products/:id", element: <SingleProducts /> },
-        { path: "col-products/:id", element: <SingleColProductPage /> }, // ✅ Shu qo‘shildi
-        { path: "sell-on", element: <SellOnPage /> },
+        { path: "col-products/:id", element: <SingleColProductPage /> },
+        { path: "sell-card", element: <SellCard /> }, 
       ],
     },
+
+    // 404 page
     {
       path: "*",
       element: (
-        <div className="min-h-screen flex items-center justify-center bg-gray-50">
-          <div className="text-center">
+        <div className="min-h-screen flex items-center justify-center bg-gray-50 p-6">
+          <div className="text-center max-w-md">
             <h1 className="text-6xl font-bold text-gray-300 mb-4">404</h1>
-            <h2 className="text-2xl font-semibold text-gray-600 mb-4">
-              Page Not Found
-            </h2>
+            <h2 className="text-2xl font-semibold text-gray-600 mb-4">Page Not Found</h2>
             <p className="text-gray-500 mb-8">
               The page you're looking for doesn't exist.
             </p>
-            <a href="/" className="btn btn-primary">
+            <a href="/" className="btn btn-primary w-full">
               Back to Home
             </a>
           </div>
@@ -105,21 +115,21 @@ const router = createBrowserRouter(
   { basename: "/" }
 );
 
-// Render
+// Render app
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <HelmetProvider>
       <Provider store={store}>
         <PersistGate
           loading={
-            <div className="min-h-screen flex items-center justify-center">
+            <div className="min-h-screen flex items-center justify-center bg-gray-50">
               <div className="loading loading-spinner loading-lg"></div>
             </div>
           }
           persistor={persistor}
         >
           <RouterProvider router={router} />
-          <Toaster position="top-right" reverseOrder={false} />
+          <Toaster position="top-right" reverseOrder={false} /> 
         </PersistGate>
       </Provider>
     </HelmetProvider>

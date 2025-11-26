@@ -1,148 +1,139 @@
-// DiscountCard.jsx
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 import toast from "react-hot-toast";
+import { useDispatch } from "react-redux";
+import { addToCart } from "../../../redux/slices/cartSlice";
 
-export default function DiscountCard() {
+export default function Discount() {
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [time, setTime] = useState({ hours: 6, minutes: 0, seconds: 0 });
+  const [remaining, setRemaining] = useState(0);
 
-  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+  const dispatch = useDispatch();
+  const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
-  // Fetch one discounted product
-  useEffect(() => {
-    const fetchDiscountProduct = async () => {
-      try {
-        setLoading(true);
-        const res = await fetch(`${API_URL}/products?discount=true&limit=1`);
-        const data = await res.json();
-        if (data.success && data.products.length > 0) {
-          setProduct(data.products[0]);
-        } else {
-          setProduct(null);
-        }
-      } catch (err) {
-        console.error("Discount product olishda xato:", err);
-      } finally {
-        setLoading(false);
+  const fetchDiscountProduct = async () => {
+    try {
+      setLoading(true);
+      const res = await fetch(`${apiUrl}/discount-cards/active/products`);
+      const data = await res.json();
+
+      if (data?.products?.length > 0) {
+        const p = data.products[0];
+        setProduct(p);
+
+        const expires = new Date(p.product1.showProduct1Until).getTime();
+        setRemaining(Math.max(expires - Date.now(), 0));
+      } else {
+        setProduct(null);
       }
-    };
+    } catch (err) {
+      console.error("Discount fetch error:", err);
+      setProduct(null);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchDiscountProduct();
   }, []);
 
-  // Countdown timer
   useEffect(() => {
-    const timer = setInterval(() => {
-      setTime((prev) => {
-        let { hours, minutes, seconds } = prev;
-        if (seconds > 0) seconds -= 1;
-        else {
-          seconds = 59;
-          if (minutes > 0) minutes -= 1;
-          else {
-            minutes = 59;
-            if (hours > 0) hours -= 1;
-          }
-        }
-        return { hours, minutes, seconds };
-      });
+    if (!product) return;
+
+    const interval = setInterval(() => {
+      const expires = new Date(product.product1.showProduct1Until).getTime();
+      const diff = Math.max(expires - Date.now(), 0);
+      setRemaining(diff);
+      if (diff <= 0) clearInterval(interval);
     }, 1000);
-    return () => clearInterval(timer);
-  }, []);
 
-  const formatTime = (num) => String(num).padStart(2, "0");
+    return () => clearInterval(interval);
+  }, [product]);
 
-  if (loading)
-    return (
-      <p className="text-center py-10 text-gray-500 font-medium">
-        Loading discount product...
-      </p>
+  const formatTime = (ms) => {
+    if (ms <= 0) return "00:00:00";
+    const totalSec = Math.floor(ms / 1000);
+    const h = Math.floor(totalSec / 3600);
+    const m = Math.floor((totalSec % 3600) / 60);
+    const s = totalSec % 60;
+    return [h, m, s].map((v) => String(v).padStart(2, "0")).join(":");
+  };
+
+  if (loading) return <p className="text-center py-20 text-lg">Yuklanmoqda...</p>;
+  if (!product) return <p className="text-center py-20 text-lg">Chegirma mavjud emas</p>;
+
+  const { product1, discountPercent } = product;
+  const { name, price, originalPrice, image } = product1;
+
+  const handleAddToCart = () => {
+    dispatch(
+      addToCart({
+        id: product1._id,
+        title: product1.name,
+        price: product1.price,
+        image: product1.image,
+        quantity: 1,
+      })
     );
-
-  if (!product)
-    return (
-      <p className="text-center py-10 text-gray-500 font-medium">
-        Discount product not available
-      </p>
-    );
+    toast.success("Savatga qo‘shildi!");
+  };
 
   return (
-    <article
-      className="flex flex-col bg-base-100 rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition-transform duration-300 w-full sm:w-64 md:w-72 lg:w-80 group hover:-translate-y-1"
-      itemScope
-      itemType="https://schema.org/Product"
-    >
-      {/* Header: Title + Timer */}
-      <header className="flex justify-between items-center p-4 border-b border-base-200">
-        <h2 className="font-bold text-lg" itemProp="name">
-          Товар дня
-        </h2>
-        <div className="flex gap-1 text-sm font-mono" aria-label="Time left for discount">
-          <span className="px-1 py-0.5 border border-base-300 rounded">{formatTime(time.hours)}</span>:
-          <span className="px-1 py-0.5 border border-base-300 rounded">{formatTime(time.minutes)}</span>:
-          <span className="px-1 py-0.5 border border-base-300 rounded">{formatTime(time.seconds)}</span>
-        </div>
-      </header>
+    <div className="max-w-sm mx-auto bg-white shadow-sm hover:shadow-md transition-all duration-300 rounded-2xl overflow-hidden border border-gray-200 mt-10">
+      <Helmet>
+        <title>{name} — Chegirma | ShopMarket</title>
+        <meta name="description" content={`Chegirma: ${name}`} />
+      </Helmet>
 
-      {/* Product Image */}
-      <Link
-        to={`/products/${product._id}`}
-        aria-label={`Перейти к продукту ${product.title}`}
-        className="relative w-full"
-        itemProp="url"
-      >
+      {/* IMAGE */}
+      <div className="relative">
         <img
-          src={product.thumbnail || "https://via.placeholder.com/400x400?text=No+Image"}
-          alt={product.title}
-          className="w-full h-56 sm:h-64 md:h-72 object-cover rounded-t-2xl transition-transform duration-300 group-hover:scale-105"
-          itemProp="image"
-          loading="lazy"
+          src={image || "https://via.placeholder.com/400x300"}
+          alt={name}
+          className="w-full h-64 object-cover bg-gray-50"
         />
-      </Link>
 
-      {/* Product Info */}
-      <div className="p-4 flex flex-col gap-2">
-        <Link to={`/products/${product._id}`} className="hover:underline" itemProp="url">
-          <h3 className="text-md font-semibold line-clamp-2" itemProp="name">
-            {product.title}
-          </h3>
-        </Link>
+        {/* DISCOUNT BADGE */}
+        {discountPercent && (
+          <span className="absolute top-3 left-3 bg-red-500 text-white px-3 py-1 rounded-lg text-sm font-semibold shadow-sm">
+            -{discountPercent}%
+          </span>
+        )}
 
-        <p className="text-sm text-gray-600 line-clamp-3" itemProp="description">
-          {product.description}
-        </p>
+        {/* TIMER */}
+        {remaining > 0 && (
+          <span className="absolute top-3 right-3 bg-white border border-gray-200 text-gray-800 px-3 py-1 rounded-lg text-sm font-mono shadow-sm">
+            {formatTime(remaining)}
+          </span>
+        )}
+      </div>
 
-        <div className="flex items-center gap-2 mt-1">
-          <p className="text-lg font-bold text-primary" itemProp="price">
-            {Number(product.price).toLocaleString("ru-RU")} UZS
+      {/* BODY */}
+      <div className="p-5 flex flex-col gap-3">
+        <h2 className="font-semibold text-lg text-black line-clamp-2">{name}</h2>
+
+        <div className="flex items-center gap-3 mt-1">
+          <p className="text-xl font-bold text-black">
+            {price?.toLocaleString("ru-RU")} UZS
           </p>
-          {product.discountPercentage > 0 && (
-            <p className="text-xs line-through text-gray-400">
-              {Number(product.price * (1 + product.discountPercentage / 100)).toLocaleString("ru-RU")} UZS
+
+          {originalPrice && (
+            <p className="text-sm line-through text-gray-500">
+              {originalPrice?.toLocaleString("ru-RU")} UZS
             </p>
           )}
         </div>
 
-        {/* Action Buttons */}
-        <div className="mt-3 flex gap-2">
-          <button
-            className="btn btn-outline btn-primary flex-1 hover:bg-primary hover:text-white transition-colors duration-300"
-            aria-label="Savatga qo'shish"
-            onClick={() => toast.success(`${product.title} savatga qo‘shildi`)}
-          >
-            Savatga
-          </button>
-          <button
-            className="btn btn-outline btn-secondary flex-1 hover:bg-secondary hover:text-white transition-colors duration-300"
-            aria-label="Bo‘lib to‘lash"
-            onClick={() => toast.success(`Bo‘lib to‘lash funksiyasi hozircha demo`)}
-          >
-            Bo‘lib to‘lash
-          </button>
-        </div>
+        {/* ADD TO CART */}
+        <button
+          onClick={handleAddToCart}
+          className="mt-3 w-full py-3 bg-black text-white rounded-xl font-medium hover:bg-gray-800 transition"
+        >
+          Savatga
+        </button>
       </div>
-    </article>
+    </div>
   );
 }
