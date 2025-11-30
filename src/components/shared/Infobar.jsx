@@ -34,7 +34,7 @@ const InfoBar = ({ onStartShopping }) => {
             className="flex items-center gap-2 bg-gray-100 text-gray-900 hover:bg-gray-200 px-4 py-2 rounded-lg font-medium shadow-md transition"
           >
             <ShoppingBag className="w-4 h-4" />
-            Начать покупку
+            елестромаркет
           </button>
         </div>
       </Container>
