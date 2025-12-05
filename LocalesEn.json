@@ -1,0 +1,94 @@
+{
+    "subNavbar": {
+        "menu": "Menu",
+        "allProducts": "All Products",
+        "allProductsSub": "Full Products",
+        "lottery": "Lottery",
+        "lotterySub": "New Prizes",
+        "new": "New",
+        "newSub": "Every Day",
+        "installment": "Installment",
+        "phoneLabel": "Call Us",
+        "sell": "Sell",
+        "lang": "Language"
+    },
+    "infobar": {
+        "specialOffer": "Special offer",
+        "from": "from",
+        "bestCars": "Best cars at the best price",
+        "shopNow": "Shop Now"
+    },
+    "sellCard": {
+        "pageTitle": "AION Electric Cars — Start Selling",
+        "heroTitle": "Start with AION Electric Cars",
+        "heroTitleHighlight": "Selling",
+        "heroDesc": "AION — next-generation electric cars. Premium quality, power, and eco-safety.",
+        "features": {
+            "distanceTitle": "450 km range",
+            "distanceDesc": "Long distance on one charge.",
+            "warrantyTitle": "5-year warranty",
+            "warrantyDesc": "Official service support.",
+            "qualityTitle": "Premium Quality",
+            "qualityDesc": "Tested and verified.",
+            "ratingTitle": "High Rating",
+            "ratingDesc": "Most reliable brand."
+        },
+        "startSelling": "Start Selling",
+        "premiumModels": "AION Premium Models",
+        "modelTitle": "AION S — Premium Sedan",
+        "modelDesc": "Created with electric technologies and modern design.",
+        "modelFeatures": {
+            "rating": "4.9 star rating",
+            "speed": "0–100 km/h: 6.7s",
+            "onlineService": "Online service monitoring"
+        },
+        "galleryTitle": "AION Model Gallery",
+        "modalTitle": "Seller Information",
+        "form": {
+            "fullName": "Full Name",
+            "region": "Where are you from? (Tashkent, Samarkand...)",
+            "carModel": "Your car model (AION S, AION Y...)",
+            "aboutYou": "Brief info about yourself",
+            "aboutCar": "About your car",
+            "cancel": "Cancel",
+            "submit": "Submit",
+            "sending": "Sending..."
+        },
+        "successMessage": "Data sent successfully!",
+        "errorMessage": "An error occurred!"
+    },
+    "home": {
+        "pageTitle": "ShopMarket — Online Store",
+        "pageDescription": "ShopMarket — cars and electronics sections. Fast delivery.",
+        "banners": "Banners",
+        "cars": "Cars",
+        "loadMore": "Load 10 more",
+        "promoTitle": "Super Discounts",
+        "promoSubtitle": "Only today — best prices!",
+        "promoButton": "See more",
+        "laptops": "Laptops",
+        "allProducts": "All Products"
+    },
+    "about": "AutoMarket – Premium quality electronic cars. Best offers only here!",
+    "quickLinks": "Quick Links",
+    "links": {
+        "allProducts": "All Products",
+        "lottery": "Lotteries",
+        "news": "News",
+        "installment": "Installment"
+    },
+    "contact": "Contact",
+    "social": "Social Networks",
+    "rights": "All rights reserved.",
+    
+        "products": {
+            "gotoProduct": "Go to product",
+            "addedToCart": "Added to cart",
+            "addToCart": "Add to cart",
+            "addedToFavorite": "Added to favorites",
+            "removedFromFavorite": "Removed from favorites",
+            "toggleFavorite": "Toggle favorite",
+            "months": "months"
+        }
+    
+}

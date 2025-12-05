@@ -1,0 +1,92 @@
+{
+    "subNavbar": {
+        "menu": "Menyu",
+        "allProducts": "Barcha mahsulotlar",
+        "allProductsSub": "To‘liq tovarlar",
+        "lottery": "O‘yinlar",
+        "lotterySub": "Yangi sovrinlar",
+        "new": "Yangi",
+        "newSub": "Har kuni",
+        "installment": "Rassrochka",
+        "phoneLabel": "Qo‘ng‘iroq qiling",
+        "sell": "Sotish",
+        "lang": "Til"
+    },
+    "infobar": {
+        "specialOffer": "Maxsus taklif",
+        "from": "dan",
+        "bestCars": "Eng yaxshi avtomobillar qulay narxlarda",
+        "shopNow": "Sotib olish"
+    },
+    "sellCard": {
+        "pageTitle": "AION Elektron Mashinalar — Sotishni Boshlang",
+        "heroTitle": "AION Elektron Mashinalar Bilan",
+        "heroTitleHighlight": "Sotishni Boshlang",
+        "heroDesc": "AION — yangi avlod elektron mashinalari. Premium sifat, quvvat va ekologik xavfsizlik.",
+        "features": {
+            "distanceTitle": "450 km masofa",
+            "distanceDesc": "Bir quvvatlashda uzoq masofa.",
+            "warrantyTitle": "5 yillik kafolat",
+            "warrantyDesc": "Rasmiy servis xizmati.",
+            "qualityTitle": "Premium sifat",
+            "qualityDesc": "Sinovdan o'tgan.",
+            "ratingTitle": "Yuqori baho",
+            "ratingDesc": "Eng ishonchli brend."
+        },
+        "startSelling": "Sotishni Boshlash",
+        "premiumModels": "AION Premium Modellari",
+        "modelTitle": "AION S — Premium Sedan",
+        "modelDesc": "Elektr texnologiyalari va zamonaviy dizayn uyg‘unligi bilan yaratilgan.",
+        "modelFeatures": {
+            "rating": "4.9 yulduzli reyting",
+            "speed": "0–100 km/h: 6.7s",
+            "onlineService": "Online servis monitoring"
+        },
+        "galleryTitle": "AION Model Galereyasi",
+        "modalTitle": "Sotuvchi Ma'lumotlari",
+        "form": {
+            "fullName": "Ism Familiya",
+            "region": "Qayerdansiz? (Toshkent, Samarqand...)",
+            "carModel": "Mashinangiz modeli (AION S, AION Y...)",
+            "aboutYou": "O'zingiz haqingizda qisqacha",
+            "aboutCar": "Mashinangiz haqida",
+            "cancel": "Bekor qilish",
+            "submit": "Yuborish",
+            "sending": "Yuborilmoqda..."
+        },
+        "successMessage": "Ma'lumotlar muvaffaqiyatli yuborildi!",
+        "errorMessage": "Xatolik yuz berdi!"
+    },
+    "home": {
+        "pageTitle": "ShopMarket — Onlayn do'kon",
+        "pageDescription": "ShopMarket — avtomobillar va texnika bo‘limlari. Tez yetkazib berish.",
+        "banners": "Bannerlar",
+        "cars": "Avtomobillar",
+        "loadMore": "Yana 10 ta yuklash",
+        "promoTitle": "Super Chegirmalar",
+        "promoSubtitle": "Faqat bugun — eng yaxshi narxlar!",
+        "promoButton": "Ko‘proq ko‘rish",
+        "laptops": "Noutbuklar",
+        "allProducts": "Barcha mahsulotlar"
+    },
+    "about": "AutoMarket – eng sifatli elektron avtomobillar. Eng yaxshi narxlar faqat bizda!",
+    "quickLinks": "Tezkor havolalar",
+    "links": {
+        "allProducts": "Barcha mahsulotlar",
+        "lottery": "O'yinlar",
+        "news": "Yangiliklar",
+        "installment": "Bo'lib to'lash"
+    },
+    "contact": "Kontaktlar",
+    "social": "Ijtimoiy tarmoqlar",
+    "rights": "Barcha huquqlar himoyalangan.",
+    "products": {
+        "gotoProduct": "Mahsulotga o'tish",
+        "addedToCart": "Savatchaga qo‘shildi",
+        "addToCart": "Savatchaga qo‘shish",
+        "addedToFavorite": "Sevimlilarga qo‘shildi",
+        "removedFromFavorite": "Sevimlilardan olib tashlandi",
+        "toggleFavorite": "Sevimlilarga qo‘shish/olib tashlash",
+        "months": "oy"
+    }
+}

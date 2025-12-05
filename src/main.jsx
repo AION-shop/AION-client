@@ -1,4 +1,3 @@
-// main.jsx
 import React, { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
@@ -32,16 +31,18 @@ import SingleColProductPage from "./pages/SingleProducts.jsx";
 import Korzinka from "./pages/Korzinka.jsx";
 import Favorites from "./pages/Fovorites.jsx";
 import Rasrochka from "./pages/Rasrochka.jsx";
-// import SellOnPage from "./pages/SellOn.jsx";
 import Discount from "./pages/Discount.jsx";
 import News from "./pages/News.jsx";
+import SellCard from "./components/shared/SellCard.jsx";
+import "./i18n";
 
 // Toast
 import { Toaster } from "react-hot-toast";
-import SellCard from "./components/shared/SellCard.jsx";
 
+// Lang Context
+import { LangProvider } from "../LangContext.jsx";
 
-// Router configuration with SEO meta
+// Router configuration
 const router = createBrowserRouter(
   [
     // Profile routes
@@ -55,14 +56,7 @@ const router = createBrowserRouter(
         </PrivateRouter>
       ),
       children: [
-        {
-          index: true,
-          element: (
-            <VerifyGuard>
-              <Home />
-            </VerifyGuard>
-          ),
-        },
+        { index: true, element: <VerifyGuard><Home /></VerifyGuard> },
       ],
       errorElement: (
         <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
@@ -89,7 +83,7 @@ const router = createBrowserRouter(
         { path: "discount", element: <Discount /> },
         { path: "products/:id", element: <SingleProducts /> },
         { path: "col-products/:id", element: <SingleColProductPage /> },
-        { path: "sell-card", element: <SellCard /> }, 
+        { path: "sell-card", element: <SellCard /> },
       ],
     },
 
@@ -104,9 +98,7 @@ const router = createBrowserRouter(
             <p className="text-gray-500 mb-8">
               The page you're looking for doesn't exist.
             </p>
-            <a href="/" className="btn btn-primary w-full">
-              Back to Home
-            </a>
+            <a href="/" className="btn btn-primary w-full">Back to Home</a>
           </div>
         </div>
       ),
@@ -128,8 +120,10 @@ createRoot(document.getElementById("root")).render(
           }
           persistor={persistor}
         >
-          <RouterProvider router={router} />
-          <Toaster position="top-right" reverseOrder={false} /> 
+          <LangProvider>
+            <RouterProvider router={router} />
+            <Toaster position="top-right" reverseOrder={false} />
+          </LangProvider>
         </PersistGate>
       </Provider>
     </HelmetProvider>

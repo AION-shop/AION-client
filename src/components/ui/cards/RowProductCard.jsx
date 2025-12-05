@@ -4,12 +4,16 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { addToCart } from "../../../redux/slices/cartSlice";
 import toast from "react-hot-toast";
+import { useTranslation } from "react-i18next";
 
 export default function RowProductCard({ product }) {
   const [isFavorite, setIsFavorite] = useState(false);
   const [months, setMonths] = useState(12);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { t } = useTranslation("products"); // products namespace ishlatiladi
+
+
 
   if (!product) return null;
 
@@ -34,22 +38,25 @@ export default function RowProductCard({ product }) {
       })
     );
 
-    toast.success(`${product.title} savatga qo‘shildi!`);
+    toast.success(`${product.title} ${t.addedToCart}`);
   };
 
   const handleFavorite = (e) => {
     e.stopPropagation();
     setIsFavorite(!isFavorite);
 
-    isFavorite
-      ? toast(`Yoqtirilganlardan olib tashlandi`)
-      : toast.success(`Yoqtirilganlarga qo‘shildi`);
+    if (!isFavorite) {
+      toast.success(t.addedToFavorite);
+    } else {
+      toast(t.removedFromFavorite);
+    }
   };
 
   return (
     <article
       onClick={handleCardClick}
       className="group bg-white rounded-2xl shadow-sm hover:shadow-lg border border-gray-200 transition-all duration-300 cursor-pointer flex flex-col"
+      aria-label={`${t.gotoProduct} ${product.title}`}
     >
       {/* IMAGE */}
       <figure className="relative bg-gray-50 h-56 sm:h-64 overflow-hidden flex items-center justify-center rounded-t-2xl">
@@ -61,7 +68,7 @@ export default function RowProductCard({ product }) {
 
         {/* LIKE */}
         <button
-          aria-label="Yoqtirish"
+          aria-label={t.toggleFavorite}
           onClick={handleFavorite}
           className={`absolute top-3 right-3 w-9 h-9 flex items-center justify-center rounded-full 
             bg-white border border-gray-200 shadow-md hover:shadow-lg transition-all
@@ -73,7 +80,7 @@ export default function RowProductCard({ product }) {
 
         {/* COMPARE */}
         <button
-          aria-label="Taqqoslash"
+          aria-label={t.compareProduct}
           onClick={(e) => e.stopPropagation()}
           className="absolute top-3 right-14 w-9 h-9 flex items-center justify-center rounded-full 
             bg-white border border-gray-200 shadow-md hover:shadow-lg text-gray-700"
@@ -88,7 +95,9 @@ export default function RowProductCard({ product }) {
           {product.title}
         </h2>
 
-        <p className="text-xs text-gray-500 mt-1">{product.category}</p>
+        <p className="text-xs text-gray-500 mt-1">
+          {product.category || product.brand}
+        </p>
 
         <div className="mt-3 flex flex-col gap-2">
           <p className="text-xl font-bold text-black">
@@ -96,7 +105,7 @@ export default function RowProductCard({ product }) {
           </p>
 
           <span className="text-xs sm:text-sm font-medium bg-gray-100 text-gray-700 px-3 py-1 rounded-full border border-gray-300 inline-block w-fit">
-            {installmentPrice.toLocaleString()} UZS × {months} oy
+            {installmentPrice.toLocaleString()} × {months} {t.months}
           </span>
         </div>
 
@@ -110,14 +119,13 @@ export default function RowProductCard({ product }) {
                 setMonths(m);
               }}
               className={`px-3 py-1 text-xs rounded-md border transition-all
-                ${
-                  months === m
-                    ? "bg-black text-white border-black"
-                    : "border-gray-300 text-gray-700 hover:bg-gray-100"
+                ${months === m
+                  ? "bg-black text-white border-black"
+                  : "border-gray-300 text-gray-700 hover:bg-gray-100"
                 }
               `}
             >
-              {m} oy
+              {m} {t.months}
             </button>
           ))}
         </div>
@@ -129,7 +137,7 @@ export default function RowProductCard({ product }) {
             bg-black text-white rounded-xl hover:bg-gray-800 transition-all w-full"
         >
           <ShoppingCart className="w-5 h-5" />
-          Savatga
+          {t.addToCart}
         </button>
       </div>
     </article>

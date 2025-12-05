@@ -1,11 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Heart, ShoppingCart } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { addToCart } from "../../../redux/slices/cartSlice";
 import toast from "react-hot-toast";
+import { LangContext } from "../../../../LangContext";
 
 export default function ColProductCard({ card }) {
+  const { t } = useContext(LangContext); // i18n kontekst
   const [isFavorite, setIsFavorite] = useState(false);
   const [months, setMonths] = useState(12);
   const navigate = useNavigate();
@@ -32,7 +34,7 @@ export default function ColProductCard({ card }) {
       })
     );
 
-    toast.success(`${card.title} savatga qo‘shildi!`);
+    toast.success(`${card.title} ${t.products?.addedToCart || "savatga qo‘shildi"}!`);
   };
 
   return (
@@ -41,6 +43,7 @@ export default function ColProductCard({ card }) {
       className="group relative overflow-hidden rounded-2xl cursor-pointer 
       bg-white border border-gray-200 shadow-sm hover:shadow-md
       transition-all duration-300 flex flex-col"
+      aria-label={`${t.products?.gotoProduct || "Go to product"}: ${card.title}`}
     >
       {/* IMAGE */}
       <div className="relative h-36 sm:h-44 md:h-48 flex items-center justify-center bg-gray-50 rounded-t-2xl overflow-hidden">
@@ -57,13 +60,14 @@ export default function ColProductCard({ card }) {
             setIsFavorite(!isFavorite);
 
             !isFavorite
-              ? toast.success("Sevimlilarga qo‘shildi!")
-              : toast("Sevimlilardan olib tashlandi");
+              ? toast.success(t.products?.addedToFavorite || "Sevimlilarga qo‘shildi!")
+              : toast(t.products?.removedFromFavorite || "Sevimlilardan olib tashlandi");
           }}
           className={`absolute top-3 right-3 w-8 h-8 flex items-center justify-center 
           rounded-full bg-white border border-gray-200 hover:bg-gray-100 
           text-gray-700 shadow-sm transition-all
           ${isFavorite ? "text-red-500" : ""}`}
+          aria-label={t.products?.toggleFavorite || "Toggle favorite"}
         >
           <Heart className="w-4 h-4" />
         </button>
@@ -85,7 +89,7 @@ export default function ColProductCard({ card }) {
           </p>
 
           <span className="text-[11px] text-gray-800 px-2 py-[3px] rounded-full bg-gray-100 w-fit">
-            {installmentPrice.toLocaleString()} × {months} oy
+            {installmentPrice.toLocaleString()} × {months} {t.products?.months || "oy"}
           </span>
         </div>
 
@@ -105,7 +109,7 @@ export default function ColProductCard({ card }) {
                   : "border-gray-300 text-gray-700 hover:bg-gray-100"
               }`}
             >
-              {m} oy
+              {m} {t.products?.months || "oy"}
             </button>
           ))}
         </div>
@@ -115,9 +119,10 @@ export default function ColProductCard({ card }) {
           onClick={handleAddCart}
           className="mt-3 w-full flex items-center justify-center gap-2 text-sm px-3 py-2 
           bg-black hover:bg-gray-800 text-white rounded-xl transition shadow-sm"
+          aria-label={t.products?.addToCart || "Add to cart"}
         >
           <ShoppingCart className="w-4 h-4" />
-          Savatga
+          {t.products?.addToCart || "Savatga"}
         </button>
       </div>
     </article>

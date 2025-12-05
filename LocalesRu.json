@@ -1,0 +1,94 @@
+{
+    "subNavbar": {
+        "menu": "Меню",
+        "allProducts": "Все товары",
+        "allProductsSub": "Полный товар",
+        "lottery": "Розыгрыши",
+        "lotterySub": "Новые призы",
+        "new": "Новинки",
+        "newSub": "Каждый день",
+        "installment": "Рассрочка",
+        "phoneLabel": "Звоните",
+        "sell": "Продавайте",
+        "lang": "Язык"
+    },
+    "infobar": {
+        "specialOffer": "Специальное предложение",
+        "from": "от",
+        "bestCars": "Лучшие автомобили по выгодной цене",
+        "shopNow": "Купить сейчас"
+    },
+    "sellCard": {
+        "pageTitle": "AION Электромобили — Начать Продажу",
+        "heroTitle": "Начните с AION Электромобилей",
+        "heroTitleHighlight": "Продажу",
+        "heroDesc": "AION — электромобили нового поколения. Премиум качество, мощность и экологическая безопасность.",
+        "features": {
+            "distanceTitle": "450 км пробега",
+            "distanceDesc": "Дальность на одной зарядке.",
+            "warrantyTitle": "5 лет гарантии",
+            "warrantyDesc": "Официальное сервисное обслуживание.",
+            "qualityTitle": "Премиум качество",
+            "qualityDesc": "Пройдено тестирование.",
+            "ratingTitle": "Высокий рейтинг",
+            "ratingDesc": "Самый надежный бренд."
+        },
+        "startSelling": "Начать Продажу",
+        "premiumModels": "Премиум Модели AION",
+        "modelTitle": "AION S — Премиум Седан",
+        "modelDesc": "Создан с использованием электро-технологий и современного дизайна.",
+        "modelFeatures": {
+            "rating": "Рейтинг 4.9 звезды",
+            "speed": "0–100 км/ч: 6.7с",
+            "onlineService": "Онлайн мониторинг сервиса"
+        },
+        "galleryTitle": "Галерея Моделей AION",
+        "modalTitle": "Информация о Продавце",
+        "form": {
+            "fullName": "ФИО",
+            "region": "Откуда вы? (Ташкент, Самарканд...)",
+            "carModel": "Модель автомобиля (AION S, AION Y...)",
+            "aboutYou": "Коротко о себе",
+            "aboutCar": "О вашем автомобиле",
+            "cancel": "Отмена",
+            "submit": "Отправить",
+            "sending": "Отправка..."
+        },
+        "successMessage": "Данные успешно отправлены!",
+        "errorMessage": "Произошла ошибка!"
+    },
+    "home": {
+        "pageTitle": "ShopMarket — Онлайн магазин",
+        "pageDescription": "ShopMarket — автомобили и техника. Быстрая доставка.",
+        "banners": "Баннеры",
+        "cars": "Автомобили",
+        "loadMore": "Загрузить ещё 10",
+        "promoTitle": "Супер Скидки",
+        "promoSubtitle": "Только сегодня — лучшие цены!",
+        "promoButton": "Смотреть больше",
+        "laptops": "Ноутбуки",
+        "allProducts": "Все товары"
+    },
+    "about": "AutoMarket – Электронные автомобили высшего качества. Лучшие цены только у нас!",
+    "quickLinks": "Быстрые ссылки",
+    "links": {
+        "allProducts": "Все товары",
+        "lottery": "Розыгрыши",
+        "news": "Новинки",
+        "installment": "Рассрочка"
+    },
+    "contact": "Контакты",
+    "social": "Мы в социальных сетях",
+    "rights": "Все права защищены.",
+    
+        "products": {
+            "gotoProduct": "Перейти к товару",
+            "addedToCart": "Добавлено в корзину",
+            "addToCart": "В корзину",
+            "addedToFavorite": "Добавлено в избранное",
+            "removedFromFavorite": "Удалено из избранного",
+            "toggleFavorite": "Добавить/удалить из избранного",
+            "months": "мес"
+        }
+    
+}
