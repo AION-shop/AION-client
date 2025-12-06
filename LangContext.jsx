@@ -1,7 +1,7 @@
 import { createContext, useState } from "react";
-import uz from "../client/LocalesUz.json";
-import ru from "../client/LocalesRu.json";
-import en from "../client/LocalesEn.json";
+import uz from "./LocalesUz.json";
+import ru from "./LocalesRu.json";
+import en from "./LocalesEn.json";
 
 export const LangContext = createContext();
 
