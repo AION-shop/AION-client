@@ -18,7 +18,7 @@ const ProfileImage = ({
 
   const handleImageLoad = () => {
     setImageLoading(false);
-    setImageError(false);
+    setImageError(false); //image error 
   };
 
   if (!src || imageError) {
