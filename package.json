@@ -14,11 +14,12 @@
     "node": "20.x"
   },
   "dependencies": {
+    "@react-google-maps/api": "^2.20.7",
     "@reduxjs/toolkit": "^2.8.2",
     "@tailwindcss/vite": "^4.1.12",
     "axios": "^1.12.2",
     "crypto": "^1.0.1",
-    "framer-motion": "^12.23.12",
+    "framer-motion": "^12.23.25",
     "heroicons": "^2.2.0",
     "i18next": "^25.6.3",
     "i18next-http-backend": "^3.0.2",

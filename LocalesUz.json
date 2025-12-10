@@ -88,5 +88,24 @@
         "removedFromFavorite": "Sevimlilardan olib tashlandi",
         "toggleFavorite": "Sevimlilarga qo‘shish/olib tashlash",
         "months": "oy"
+    },
+    "general": {
+        "models": "Modellar",
+        "filters": "Filtrlar",
+        "open_filters": "Filtrlarni ochish",
+        "found_products": "Topildi: {{count}} avtomobil",
+        "no_products_found": "Bu turkumda avtomobillar topilmadi"
+    },
+    "installment_page": {
+        "title": "Avtomobillar Rassrochka",
+        "meta_description": "AION V, AION Y, AION S, AION MAX avtomobillari uchun qulay rassrochka shartlari."
+    },
+    "categories": {
+        "all": "Barcha Modellar",
+        "AION V": "AION V",
+        "AION Y": "AION Y",
+        "AION S": "AION S",
+        "AION MAX": "AION MAX",
+        "new": "Yangi kelganlar"
     }
 }

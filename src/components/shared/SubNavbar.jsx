@@ -1,15 +1,5 @@
 import React, { useState, useContext } from "react";
-import {
-  ShoppingCart,
-  Phone,
-  Globe,
-  Gift,
-  Star,
-  BarChart2,
-  Menu,
-  X,
-  ChevronDown,
-} from "lucide-react";
+import { Phone, Globe, Gift, Star, BarChart2, Menu, X, ChevronDown, Home as HomeIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 import Container from "./Container";
 import { LangContext } from "../../../LangContext";
@@ -20,117 +10,97 @@ const SubNavbar = () => {
   const [isLangDropdownOpen, setIsLangDropdownOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  // Menu items
+  const toggleMobileMenu = () => setIsMobileMenuOpen(prev => !prev);
+  const toggleLangDropdown = () => setIsLangDropdownOpen(prev => !prev);
+  const handleLangChange = (newLang) => {
+    setLang(newLang);
+    i18n.changeLanguage(newLang);
+    setIsLangDropdownOpen(false);
+  };
+
   const menuItems = [
-    {
-      label: t.subNavbar?.allProducts || "Barcha mahsulotlar",
-      subLabel: t.subNavbar?.allProductsSub || "",
-      icon: <BarChart2 />,
-      link: "/row-product",
-    },
-    {
-      label: t.subNavbar?.lottery || "O‘yinlar",
-      subLabel: t.subNavbar?.lotterySub || "",
-      icon: <Gift />,
-      link: "/lottery",
-    },
-    {
-      label: t.subNavbar?.new || "Yangi",
-      subLabel: t.subNavbar?.newSub || "",
-      icon: <Star />,
-      link: "/news",
-    },
+    { label: t.subNavbar?.allProducts || "Barcha mahsulotlar", subLabel: t.subNavbar?.allProductsSub || "Keng assortiment", icon: <BarChart2 className="w-5 h-5" />, link: "/col-product" },
+    { label: t.subNavbar?.lottery || "O‘yinlar", subLabel: t.subNavbar?.lotterySub || "Sovg'alar yutib oling", icon: <Gift className="w-5 h-5" />, link: "/lottery" },
+    { label: t.subNavbar?.new || "Yangi", subLabel: t.subNavbar?.newSub || "Eng so'nggi modellar", icon: <Star className="w-5 h-5" />, link: "/news" },
   ];
 
   return (
-    <>
-      {/* --- Desktop Navbar --- */}
-      <nav className="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
+    <section className="w-full">
+      <nav className="relative w-full z-50 bg-black/50 backdrop-blur-md">
         <Container>
-          <div className="px-2 sm:px-4 py-2 flex items-center justify-between flex-wrap gap-3">
+          <div className="px-4 py-4 flex items-center justify-between gap-4">
+            {/* Left Section */}
+            <div className="flex items-center gap-3">
+              {/* Home Icon */}
+              <Link to="/" className="p-2 rounded-lg hover:bg-white/20 transition-all duration-200">
+                <HomeIcon size={24} className="text-white" />
+              </Link>
 
-            {/* Left side */}
-            <div className="flex items-center gap-2">
               <button
-                onClick={() => setIsMobileMenuOpen(true)}
-                className="lg:hidden btn btn-ghost btn-square btn-sm"
+                onClick={toggleMobileMenu}
+                className="lg:hidden p-2 rounded-lg hover:bg-white/20 transition-all duration-200"
               >
-                <Menu size={22} className="text-black" />
+                {isMobileMenuOpen ? <X size={24} className="text-white" /> : <Menu size={24} className="text-white" />}
               </button>
 
               <Link
                 to="/rasrochka"
-                className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-black font-semibold rounded-lg text-xs sm:text-sm transition"
+                className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-semibold rounded-lg text-sm transition-all duration-300"
               >
-                <span className="font-bold text-sm">0%</span> {t.subNavbar?.installment || "Rassrochka"}
+                <span className="font-bold text-base">0%</span> {t.subNavbar?.installment || "Rassrochka"}
               </Link>
             </div>
 
-            {/* Center menu */}
-            <div className="hidden lg:flex gap-4 flex-1 justify-center">
-              {menuItems.map((item) => (
+            {/* Center Menu - Desktop */}
+            <div className="hidden lg:flex gap-4 justify-center flex-1">
+              {menuItems.map(item => (
                 <Link
                   key={item.label}
                   to={item.link}
-                  className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100 transition"
+                  className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-white/20 transition-all duration-300 group"
                 >
-                  <span className="text-lg text-black">{item.icon}</span>
+                  <span className="text-white group-hover:text-blue-400">{item.icon}</span>
                   <div>
-                    <p className="text-sm font-medium text-black">{item.label}</p>
-                    <p className="text-xs text-gray-600">{item.subLabel}</p>
+                    <p className="text-sm font-semibold text-white group-hover:text-blue-400">{item.label}</p>
+                    <p className="hidden xl:block text-xs text-gray-200 group-hover:text-blue-200">{item.subLabel}</p>
                   </div>
                 </Link>
               ))}
             </div>
 
-            {/* Right side */}
-            <div className="flex items-center gap-2">
-
+            {/* Right Section */}
+            <div className="flex items-center gap-2 sm:gap-3">
               <a
                 href="tel:+998952100550"
-                className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg hover:bg-gray-100 transition"
+                className="hidden sm:flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-white/20 transition-all duration-200 group"
               >
-                <Phone size={18} className="text-black" />
-                <div>
-                  <p className="text-xs text-gray-600">{t.subNavbar?.phoneLabel || "Qo‘ng‘iroq qiling"}</p>
-                  <p className="text-sm font-semibold text-black">
-                    +998 95 210 05 50
-                  </p>
+                <Phone size={18} className="text-white group-hover:animate-bounce" />
+                <div className="hidden md:block">
+                  <p className="text-xs text-gray-200">{t.subNavbar?.phoneLabel || "Qo'ng'iroq qiling"}</p>
+                  <p className="text-sm font-semibold text-white">+998 95 210 05 50</p>
                 </div>
               </a>
 
-              <Link
-                to="/sell-card"
-                className="btn btn-sm px-3 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition"
-              >
-                <ShoppingCart size={16} />
-                <span className="text-sm">{t.subNavbar?.sell || "Sotish"}</span>
-              </Link>
-
-              {/* Language Switch */}
               <div className="relative">
                 <button
-                  onClick={() => setIsLangDropdownOpen(!isLangDropdownOpen)}
-                  className="flex items-center gap-1 border border-gray-300 rounded-lg px-2 py-1 text-sm hover:bg-gray-100 transition text-black"
+                  onClick={toggleLangDropdown}
+                  className="flex items-center gap-2 border border-gray-300 rounded-lg px-3 py-2 text-sm hover:bg-white/20 hover:border-blue-400 transition-all duration-300 text-white shadow-sm"
                 >
-                  <Globe size={16} /> {lang.toUpperCase()}
+                  <Globe size={16} className="text-blue-200" />
+                  <span className="font-medium">{lang.toUpperCase()}</span>
                   <ChevronDown
                     size={14}
-                    className={`${isLangDropdownOpen ? "rotate-180" : ""} transition`}
+                    className={`transform transition-transform duration-300 ${isLangDropdownOpen ? "rotate-180" : ""}`}
                   />
                 </button>
 
                 {isLangDropdownOpen && (
-                  <div className="absolute bottom-10 right-0 w-28 bg-white border border-gray-300 rounded-lg shadow-md py-1 z-50 animate-slide-up">
-                    {["uz", "ru", "en"].map((l) => (
+                  <div className="absolute top-full mt-2 right-0 w-32 bg-white border border-gray-200 rounded-lg shadow-2xl py-1 z-50 animate-slideDown">
+                    {["uz", "ru", "en"].map(l => (
                       <button
                         key={l}
-                        onClick={() => {
-                          setLang(l);
-                          i18n.changeLanguage(l);
-                          setIsLangDropdownOpen(false);
-                        }}
-                        className={`px-3 py-1 w-full text-left text-sm hover:bg-gray-100 ${lang === l ? "font-bold text-blue-600" : "text-black"}`}
+                        onClick={() => handleLangChange(l)}
+                        className={`px-4 py-2 w-full text-left text-sm hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 transition-all duration-200 ${lang === l ? "font-bold text-blue-600 bg-blue-50" : "text-gray-700"}`}
                       >
                         {l.toUpperCase()}
                       </button>
@@ -140,58 +110,26 @@ const SubNavbar = () => {
               </div>
             </div>
           </div>
-        </Container>
-      </nav>
 
-      {/* --- Mobile Sidebar --- */}
-      {isMobileMenuOpen && (
-        <div className="fixed inset-0 z-50 flex lg:hidden">
-          <div
-            className="absolute inset-0 bg-black/30 backdrop-blur-sm"
-            onClick={() => setIsMobileMenuOpen(false)}
-          />
-
-          <div className="relative w-72 max-w-[300px] bg-white shadow-2xl h-full flex flex-col z-50 animate-slide-right">
-            <div className="flex items-center justify-between px-4 py-3 border-b">
-              <h2 className="text-lg font-semibold text-black">{t.subNavbar?.menu || "Menyu"}</h2>
-
-              <button onClick={() => setIsMobileMenuOpen(false)}>
-                <X size={22} className="text-black" />
-              </button>
-            </div>
-
-            <div className="flex-1 p-4 space-y-3 overflow-y-auto">
-              {menuItems.map((item) => (
+          {/* Mobile Menu */}
+          {isMobileMenuOpen && (
+            <div className="lg:hidden bg-white shadow-lg mt-2 rounded-lg overflow-hidden animate-slideDown">
+              {menuItems.map(item => (
                 <Link
                   key={item.label}
-                  onClick={() => setIsMobileMenuOpen(false)}
                   to={item.link}
-                  className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100 transition"
+                  className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors border-b last:border-b-0"
+                  onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  <span className="text-xl text-black">{item.icon}</span>
-                  <div>
-                    <p className="text-sm font-medium text-black">{item.label}</p>
-                    <p className="text-xs text-gray-600">{item.subLabel}</p>
-                  </div>
+                  <span className="text-gray-600">{item.icon}</span>
+                  <span className="text-gray-800">{item.label}</span>
                 </Link>
               ))}
-
-              <div className="divider"></div>
-
-              <a
-                href="tel:+998952100550"
-                className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100"
-              >
-                <Phone size={18} className="text-black" />
-                <span className="text-sm font-medium text-black">
-                  +998 95 210 05 50
-                </span>
-              </a>
             </div>
-          </div>
-        </div>
-      )}
-    </>
+          )}
+        </Container>
+      </nav>
+    </section>
   );
 };
 

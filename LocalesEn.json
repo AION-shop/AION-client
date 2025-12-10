@@ -80,15 +80,33 @@
     "contact": "Contact",
     "social": "Social Networks",
     "rights": "All rights reserved.",
-    
-        "products": {
-            "gotoProduct": "Go to product",
-            "addedToCart": "Added to cart",
-            "addToCart": "Add to cart",
-            "addedToFavorite": "Added to favorites",
-            "removedFromFavorite": "Removed from favorites",
-            "toggleFavorite": "Toggle favorite",
-            "months": "months"
-        }
-    
+    "products": {
+        "gotoProduct": "Go to product",
+        "addedToCart": "Added to cart",
+        "addToCart": "Add to cart",
+        "addedToFavorite": "Added to favorites",
+        "removedFromFavorite": "Removed from favorites",
+        "toggleFavorite": "Toggle favorite",
+        "months": "months"
+    },
+    "general": {
+        "models": "Models",
+        "filters": "Filters",
+        "open_filters": "Open filters",
+        "found_products": "Found: {{count}} vehicles",
+        "no_products_found": "No vehicles found in this category"
+        
+    },
+    "installment_page": {
+        "title": "Vehicles Installment Plan",
+        "meta_description": "Convenient installment plan available for AION V, AION Y, AION S, AION MAX, and other vehicles."
+    },
+    "categories": {
+        "all": "All Models",
+        "AION V": "AION V",
+        "AION Y": "AION Y",
+        "AION S": "AION S",
+        "AION MAX": "AION MAX",
+        "new": "New Arrivals"
+    }
 }

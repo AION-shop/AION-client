@@ -1,22 +1,19 @@
-import React from 'react'
-import InfoBar from '../shared/Infobar'
-import SubNavbar from '../shared/SubNavbar'
-import Navbar from '../shared/Navbar'
+import React from "react";
+import InfoBar from "../shared/Infobar";
+import SubNavbar from "../shared/SubNavbar";
 
-import BannerSection from '../ui/promotions/SwiperBanner'
-import Container from '../shared/Container'
+const InfoBarHeight = 56; // InfoBar balandligi px da
 
 const Header = () => {
   return (
-    <div>
-
-      
+    <>
+      {/* InfoBar */}
       <InfoBar />
-       <SubNavbar />
-      
- 
-    </div>
-  )
-}
 
-export default Header
+      {/* SubNavbar */}
+      <SubNavbar />
+    </>
+  );
+};
+
+export default Header;

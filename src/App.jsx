@@ -4,7 +4,7 @@ import { Link, Outlet } from 'react-router-dom'
 import Header from './components/layouts/Header'
 
 import Navbar from './components/shared/Navbar'
-import CategorySwiper from './components/ui/promotions/CategorySwiper'
+import CategorySwiper from './components/ui/promotions/Discover'
 import BannerSection from './components/ui/promotions/SwiperBanner'
 import Footer from './components/layouts/Footer'
 

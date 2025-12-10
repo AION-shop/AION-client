@@ -14,26 +14,22 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 
 // Guards
-import PrivateRouter from "./guard/PrivateRouter.jsx";
-import VerifyGuard from "./guard/VerifyGuard.jsx";
+// import PrivateRouter from "./guard/PrivateRouter.jsx";
+// import VerifyGuard from "./guard/VerifyGuard.jsx";
 
 // Pages
 import App from "./App.jsx";
 import Home from "./pages/Home.jsx";
-import UserProfile from "./pages/Profile.jsx";
-import VerifyAccount from "./pages/verfiyPage.jsx";
-import Login from "./pages/Login.jsx";
-import Register from "./pages/Register.jsx";
-import TelegramCallback from "./pages/TelegramCallback.jsx";
+// import Login from "./pages/Login.jsx";
+// import Register from "./pages/Register.jsx";
+// import UserProfile from "./pages/Profile.jsx";
 import FilteredProducts from "./pages/FilteredProducts.jsx";
-import SingleProducts from "./pages/SingleProducts.jsx";
-import SingleColProductPage from "./pages/SingleProducts.jsx";
-import Korzinka from "./pages/Korzinka.jsx";
-import Favorites from "./pages/Fovorites.jsx";
+import SingleColProductPage from "./pages/SingleProducts.jsx"; // single product sahifasi
 import Rasrochka from "./pages/Rasrochka.jsx";
-import Discount from "./pages/Discount.jsx";
 import News from "./pages/News.jsx";
 import SellCard from "./components/shared/SellCard.jsx";
+import Offerta from "./pages/Offerta.jsx";
+
 import "./i18n";
 
 // Toast
@@ -42,52 +38,37 @@ import { Toaster } from "react-hot-toast";
 // Lang Context
 import { LangProvider } from "../LangContext.jsx";
 
-// Router configuration
+// Root element
+const container = document.getElementById("root");
+const root = createRoot(container);
+
 const router = createBrowserRouter(
   [
-    // Profile routes
-    {
-      path: "/profile",
-      element: (
-        <PrivateRouter>
-          <VerifyGuard>
-            <UserProfile />
-          </VerifyGuard>
-        </PrivateRouter>
-      ),
-      children: [
-        { index: true, element: <VerifyGuard><Home /></VerifyGuard> },
-      ],
-      errorElement: (
-        <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
-          <h1 className="text-3xl font-bold text-gray-600">Profile page not found</h1>
-        </div>
-      ),
-    },
-    { path: "/verify-account", element: <PrivateRouter><VerifyAccount /></PrivateRouter> },
-    { path: "/login", element: <Login /> },
-    { path: "/register", element: <Register /> },
-    { path: "/telegram/callback", element: <TelegramCallback /> },
+    // Auth related routes (commented out in original)
+    // { path: "/login", element: <Login /> },
+    // { path: "/register", element: <Register /> },
+    // { path: "/profile", element: <PrivateRouter><VerifyGuard><UserProfile /></VerifyGuard></PrivateRouter> },
 
-    // Main app routes
+    // MAIN ROUTES
     {
       path: "/",
       element: <App />,
       children: [
         { index: true, element: <Home /> },
         { path: "categories/:category", element: <FilteredProducts /> },
-        { path: "korzinka", element: <Korzinka /> },
-        { path: "favorites", element: <Favorites /> },
         { path: "rasrochka", element: <Rasrochka /> },
         { path: "news", element: <News /> },
-        { path: "discount", element: <Discount /> },
-        { path: "products/:id", element: <SingleProducts /> },
-        { path: "col-products/:id", element: <SingleColProductPage /> },
         { path: "sell-card", element: <SellCard /> },
+        { path: "offerta", element: <Offerta /> },
+        
+        // Single Product Route:
+        // Sizda ikkita bir xil route bor edi, bittasini qoldirdim, 
+        // uchinchi tomon SingleColProductPage komponentini ishlatsin deb belgiladim
+        { path: "col-products/:id", element: <SingleColProductPage /> }, 
       ],
     },
 
-    // 404 page
+    // 404 fallback page
     {
       path: "*",
       element: (
@@ -98,7 +79,10 @@ const router = createBrowserRouter(
             <p className="text-gray-500 mb-8">
               The page you're looking for doesn't exist.
             </p>
-            <a href="/" className="btn btn-primary w-full">Back to Home</a>
+            {/* O'zgartirildi: button emas, a href orqali uy sahifaga qaytish */}
+            <a href="/" className="px-6 py-3 bg-black text-white font-semibold rounded-lg hover:bg-gray-800 transition shadow-md">
+              Back to Home
+            </a>
           </div>
         </div>
       ),
@@ -107,15 +91,15 @@ const router = createBrowserRouter(
   { basename: "/" }
 );
 
-// Render app
-createRoot(document.getElementById("root")).render(
+// Render application
+root.render(
   <StrictMode>
     <HelmetProvider>
       <Provider store={store}>
         <PersistGate
           loading={
             <div className="min-h-screen flex items-center justify-center bg-gray-50">
-              <div className="loading loading-spinner loading-lg"></div>
+              <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-black"></div>
             </div>
           }
           persistor={persistor}
@@ -129,3 +113,4 @@ createRoot(document.getElementById("root")).render(
     </HelmetProvider>
   </StrictMode>
 );
+

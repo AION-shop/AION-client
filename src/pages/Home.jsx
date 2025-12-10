@@ -1,198 +1,120 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { Helmet } from "react-helmet-async";
-import { useTranslation } from "react-i18next";
-
-// Components
 import Container from "../components/shared/Container";
-import BannerSection from "../components/ui/promotions/SwiperBanner";
-import CategorySwiper from "../components/ui/promotions/CategorySwiper";
-import PromotionBanner from "../components/ui/promotions/PromotionBanner";
-import ColProductCard from "../components/ui/cards/ColProductCard";
-import RowProductCard from "../components/ui/cards/RowProductCard";
-import DiscountCard from "../components/ui/cards/DiscountCard";
-import BannerCard from "../components/ui/promotions/BannerCard";
+import CategorySwiper from "../components/ui/promotions/Discover";
+import ColProductCard from "../components/ui/cards/Products";
+import SubNavbar from "../components/shared/SubNavbar";
+import Hero from "../components/shared/Hero";
 
-const Home = () => {
-  const { t } = useTranslation("home"); // <-- namespace: "home"
+const getApiUrl = () => import.meta.env.VITE_API_URL ;
 
-  const [products, setProducts] = useState([]);
+export default function Home() {
   const [colProducts, setColProducts] = useState([]);
-  const [laptops, setLaptops] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [visibleColProducts, setVisibleColProducts] = useState(6);
+  const [visibleCardIndex, setVisibleCardIndex] = useState(null);
 
-  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
-
-  const fetchProducts = async () => {
-    try {
-      const resMain = await fetch(`${API_URL}/products`);
-      const dataMain = await resMain.json();
-
-      const resCol = await fetch(`${API_URL}/col-products`);
-      const dataCol = await resCol.json();
-
-      setProducts(dataMain.products || []);
-      setColProducts(dataCol.products || []);
-
-    } catch (err) {
-      console.error("Server error:", err);
-      setProducts([]);
-      setColProducts([]);
-    }
-  };
+  const API_URL = useMemo(() => getApiUrl(), []);
 
   useEffect(() => {
-    const fetchAll = async () => {
-      setLoading(true);
-      await Promise.all([fetchProducts()]);
-      setLoading(false);
+    const fetchProducts = async () => {
+      try {
+        const res = await fetch(`${API_URL}/col-products`);
+        if (!res.ok) throw new Error("Network error");
+        const json = await res.json();
+        const items = Array.isArray(json) ? json : json.products || [];
+        setColProducts(items);
+      } catch (error) {
+        console.error("Error fetching:", error);
+        setColProducts([]);
+      } finally {
+        setLoading(false);
+      }
     };
-    fetchAll();
-  }, []);
+    fetchProducts();
+  }, [API_URL]);
 
-  const handleShowMoreCars = () => setVisibleColProducts(prev => prev + 10);
+  // Intersection Observer for darkBg effect
+  useEffect(() => {
+    if (!colProducts.length) return;
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-white">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-black"></div>
-      </div>
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          const idx = parseInt(entry.target.dataset.index, 10);
+          if (entry.isIntersecting) setVisibleCardIndex(idx);
+          else setVisibleCardIndex((prev) => (prev === idx ? null : prev));
+        });
+      },
+      { threshold: 0.7 }
     );
-  }
+
+    document.querySelectorAll(".observe-card").forEach((el) => observer.observe(el));
+    return () => observer.disconnect();
+  }, [colProducts]);
+
+  const darkBg = visibleCardIndex !== null;
+
+  if (loading)
+    return (
+      <main className="min-h-screen flex items-center justify-center bg-white">
+        <div className="animate-spin h-16 w-16 border-t-4 border-b-4 border-black rounded-full"></div>
+      </main>
+    );
 
   return (
-    <main className="bg-white text-black">
+    <main className={`overflow-x-hidden transition-colors duration-700 ${darkBg ? "bg-black text-white" : "bg-white text-gray-900"}`}>
       <Helmet>
-        <title>{t("pageTitle")}</title>
-        <meta name="description" content={t("pageDescription")} />
+        <title>GAC Aion</title>
+        <meta
+          name="description"
+          content="Discover popular cars and latest electric vehicles from our selection."
+        />
       </Helmet>
 
+    
+      {/* Hero Section */}
+      <Hero />
+
+      {/* Content */}
       <Container>
+        {/* Popular Products */}
+        <section className="py-16">
+          <div className="flex flex-col md:flex-row items-center justify-between mb-8 gap-4">
+            <h2 className="text-3xl md:text-4xl font-bold">Popular GAC Aion Models</h2>
+            <span className={`text-sm px-4 py-2 rounded-full border ${darkBg ? "bg-white/10 border-white/20 text-white" : "bg-gray-100 border-gray-300 text-gray-700"}`}>
+              {colProducts.length} items available
+            </span>
+          </div>
 
-        {/* Banner Section */}
-        <section className="py-10">
-          <h2 className="text-2xl sm:text-3xl font-bold mb-6">
-            {t("banners")}
-          </h2>
-
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
-            <div className="lg:col-span-2">
-              <BannerSection className="bg-white border border-gray-200 shadow-sm rounded-xl" />
-
-              <div className="lg:hidden mt-4">
-                <DiscountCard
-                  apiUrl={API_URL}
-                  className="bg-white text-black border border-gray-200 shadow-sm"
-                />
+          {/* Desktop Grid */}
+          <div className="hidden md:grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {colProducts.map((card, idx) => (
+              <div key={idx} className="observe-card" data-index={idx}>
+                <ColProductCard card={card} />
               </div>
-            </div>
+            ))}
+          </div>
 
-            <div className="hidden lg:flex flex-col gap-4">
-              <DiscountCard
-                apiUrl={API_URL}
-                className="bg-white text-black border border-gray-200 shadow-sm"
-              />
-            </div>
+          {/* Mobile Scroll */}
+          <div className="md:hidden flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory">
+            {colProducts.map((card, idx) => (
+              <div key={idx} className="min-w-[80vw] snap-center observe-card" data-index={idx}>
+                <ColProductCard card={card} />
+              </div>
+            ))}
           </div>
         </section>
 
-        {/* Cars Section */}
-        {colProducts.length > 0 && (
-          <section className="py-10">
-            <h2 className="text-2xl sm:text-3xl font-bold mb-6">
-              {t("cars")}
-            </h2>
-
-            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
-              {colProducts.slice(0, visibleColProducts).map((card) => (
-                <ColProductCard
-                  key={card._id}
-                  card={card}
-                  className="bg-white text-black border border-gray-200 shadow-sm hover:shadow-md transition"
-                />
-              ))}
-            </div>
-
-            {/* Load More */}
-            {visibleColProducts < colProducts.length && (
-              <div className="mt-6 flex justify-center">
-                <button
-                  onClick={handleShowMoreCars}
-                  className="px-6 py-3 rounded-lg bg-black text-white font-medium hover:bg-black/80 transition"
-                >
-                  {t("loadMore")}
-                </button>
-              </div>
-            )}
-          </section>
-        )}
-
-        {/* Promo Banner */}
-        <section className="py-10">
-          <BannerCard
-            img="https://cs14.pikabu.ru/post_img/2021/04/06/5/og_og_1617693587238169452.jpg"
-            title={t("promoTitle")}
-            subtitle={t("promoSubtitle")}
-            buttonText={t("promoButton")}
-            onClick={() => console.log("Button bosildi")}
-            className="rounded-xl"
-          />
+        {/* Discover Section */}
+        <section className="py-16">
+          <h2 className={`text-4xl md:text-6xl font-bold mb-12 text-center ${darkBg ? "text-white" : "text-gray-900"}`}>
+            Discover Our Collection
+          </h2>
+          <div className="max-w-7xl mx-auto px-4">
+            <CategorySwiper darkMode={darkBg} />
+          </div>
         </section>
-
-        {/* Category Swiper */}
-        <section className="py-10">
-          <CategorySwiper className="bg-white text-black" />
-        </section>
-
-        {/* Laptops */}
-        {laptops.length > 0 && (
-          <section className="py-10">
-            <h2 className="text-2xl sm:text-3xl font-bold mb-6">
-              {t("laptops")}
-            </h2>
-
-            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
-              {laptops.map((product) => (
-                <RowProductCard
-                  key={product._id}
-                  product={product}
-                  className="bg-white text-black border border-gray-200 shadow-sm hover:shadow-md transition"
-                />
-              ))}
-            </div>
-          </section>
-        )}
-
-        {/* All Products */}
-        {products.length > 0 && (
-          <section className="py-10">
-            <h2 className="text-2xl sm:text-3xl font-bold mb-6">
-              {t("allProducts")}
-            </h2>
-
-            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
-              {products.map((product, index) => (
-                <React.Fragment key={product._id}>
-                  <RowProductCard
-                    product={product}
-                    className="bg-white text-black border border-gray-200 shadow-sm hover:shadow-md transition"
-                  />
-
-                  {/* Har 10 ta mahsulotdan keyin banner */}
-                  {(index + 1) % 10 === 0 && (
-                    <div className="col-span-2 sm:col-span-2 md:col-span-3 lg:col-span-4 my-6">
-                      <PromotionBanner className="bg-white border border-gray-200 rounded-xl shadow-sm" />
-                    </div>
-                  )}
-                </React.Fragment>
-              ))}
-            </div>
-          </section>
-        )}
-
       </Container>
     </main>
   );
-};
-
-export default Home;
+}

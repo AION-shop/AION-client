@@ -1,360 +1,262 @@
-// src/pages/SingleColProductPage.jsx
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
+import Container from "../components/shared/Container";
 import {
   Heart,
   Share2,
-  Truck,
-  Shield,
-  RotateCcw,
-  BatteryCharging,
+  ChevronLeft,
+  Star,
   Zap,
-  MapPin,
+  Shield,
+  Award,
+  Gauge,
+  ShoppingCart,
 } from "lucide-react";
-import { useDispatch } from "react-redux";
-import { addToCart } from "../redux/slices/cartSlice";
-import { Helmet } from "react-helmet-async";
-import toast from "react-hot-toast";
+
+const getApiUrl = () => import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
 export default function SingleColProductPage() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const dispatch = useDispatch();
-
   const [product, setProduct] = useState(null);
-  const [images, setImages] = useState([]);
   const [selectedImage, setSelectedImage] = useState(0);
+  const [activeTab, setActiveTab] = useState("overview");
   const [loading, setLoading] = useState(true);
-  const [isFavorite, setIsFavorite] = useState(false);
-  const [installmentMonths, setInstallmentMonths] = useState(36);
 
-  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+  const API_URL = useMemo(() => getApiUrl(), []);
+  const goBack = useCallback(() => navigate(-1), [navigate]);
 
-  // 🔹 Productni backenddan olish
+  // Product load
   useEffect(() => {
     const fetchProduct = async () => {
-      setLoading(true);
       try {
-        // 1️⃣ Col-Productni tekshirish birinchi
-        let res = await fetch(`${API_URL}/col-products/${id}`);
-        let data = await res.json();
-
-        // Agar col-product topilsa
-        if (data.success && data.product) {
-          setProduct(data.product);
-          const imgs =
-            data.product.images?.length > 0
-              ? data.product.images
-              : data.product.thumbnail
-                ? [data.product.thumbnail]
-                : ["https://via.placeholder.com/1200x800?text=No+image"];
-          setImages(imgs);
-          setSelectedImage(0);
-        } else {
-          // Agar col-product topilmasa, normal productni fetch qilamiz
-          res = await fetch(`${API_URL}/products/${id}`);
-          data = await res.json();
-
-          if (data.success && data.product) {
-            setProduct(data.product);
-            const imgs =
-              data.product.images?.length > 0
-                ? data.product.images
-                : data.product.thumbnail
-                  ? [data.product.thumbnail]
-                  : ["https://via.placeholder.com/1200x800?text=No+image"];
-            setImages(imgs);
-            setSelectedImage(0);
-          } else {
-            // Hech narsa topilmasa
-            setProduct(null);
-          }
-        }
+        const res = await fetch(`${API_URL}/col-products/${id}`);
+        const data = await res.json();
+        if (!data.success) throw new Error("Product not found");
+        setProduct(data.product);
       } catch (err) {
-        console.error("Product olishda xato:", err);
-        setProduct(null);
+        console.error(err);
       } finally {
         setLoading(false);
       }
     };
-
     fetchProduct();
-  }, [id]);
+  }, [id, API_URL]);
 
+  // Views +1 faqat bir marta
+  useEffect(() => {
+    if (!product) return;
+    const updateViews = async () => {
+      try {
+        await fetch(`${API_URL}/col-products/${id}/view`, { method: "PUT" });
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    updateViews();
+  }, [id, API_URL, product]);
 
   if (loading)
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="w-full max-w-5xl p-6">
-          <div className="animate-pulse space-y-4">
-            <div className="h-72 sm:h-96 bg-gray-200 rounded-xl"></div>
-            <div className="h-6 bg-gray-200 rounded w-1/3"></div>
-            <div className="h-4 bg-gray-200 rounded w-2/3"></div>
-          </div>
-        </div>
-      </div>
+      <div className="min-h-screen flex items-center justify-center">Loading...</div>
     );
-
   if (!product)
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 p-6">
-        <div className="max-w-md w-full">
-          <div className="alert alert-error shadow-lg">
-            <div>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="stroke-current flex-shrink-0 h-6 w-6"
-                fill="none"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M10 14l2-2 2 2m0-6l-2 2-2-2"
-                />
-              </svg>
-              <span>
-                Mahsulot topilmadi. Bosh sahifaga qaytish uchun{" "}
-                <button className="link" onClick={() => navigate("/")}>
-                  bu yerni bosing
-                </button>
-                .
-              </span>
-            </div>
-          </div>
-        </div>
+      <div className="min-h-screen flex items-center justify-center">
+        Product not found
       </div>
     );
 
-  const basePrice = Number(product.price || 0);
-  const discount = Number(product.discountPercentage || 0);
-  const discountedPrice = Math.round(basePrice - (basePrice * discount) / 100);
+  const images =
+    product.images?.length > 0 ? product.images : [product.thumbnail || "https://via.placeholder.com/600"];
 
-  const handleToggleFavorite = () => {
-    setIsFavorite((s) => !s);
-    toast(isFavorite ? "Favoritdan o'chirildi" : "Favoritga qo'shildi");
-  };
-
-  const handleShare = async () => {
-    const url = window.location.href;
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: product.title,
-          text: product.description || "",
-          url,
-        });
-      } catch { }
-    } else {
-      await navigator.clipboard.writeText(url);
-      toast.success("Havola nusxalandi");
-    }
-  };
-
-  const handleReserve = () => {
-    dispatch(
-      addToCart({
-        id: product._id,
-        name: product.title,
-        price: discountedPrice,
-        image: images[0],
-        quantity: 1,
-      })
-    );
-    toast.success("Mahsulot savatga qo'shildi (rezerv qilindi)");
-  };
+  const tabs = [
+    { id: "overview", label: "Umumiy ma'lumot", icon: Gauge },
+    { id: "specs", label: "Texnik xususiyatlar", icon: Award },
+    { id: "features", label: "Xususiyatlari", icon: Zap },
+    { id: "warranty", label: "Kafolat", icon: Shield },
+  ];
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-12">
+    <div className="min-h-screen bg-gray-50 animate-fadeIn text-gray-800">
       <Helmet>
-        <title>{product.title} — AION Uzbekistan</title>
+        <title>{product.title} | AutoMarket</title>
         <meta
           name="description"
-          content={product.description || `${product.title} haqida batafsil ma'lumot.`}
+          content={product.description?.substring(0, 150) || "Product details"}
         />
-        <meta name="keywords" content={`AION, ${product.title}, ${product.category || ""}`} />
-        <meta property="og:title" content={product.title} />
-        <meta property="og:description" content={product.description || ""} />
-        <meta property="og:image" content={images[0]} />
-        <meta property="og:type" content="product" />
-        <link rel="canonical" href={window.location.href} />
       </Helmet>
 
-      <div className="mx-auto px-4 lg:px-6 pt-6 max-w-7xl">
-        {/* Breadcrumb */}
-        <nav className="text-sm mb-4 text-gray-500" aria-label="breadcrumb">
-          <ol className="flex gap-2 items-center">
-            <li>
-              <button className="link link-hover" onClick={() => navigate("/")}>
-                Bosh sahifa
-              </button>
-            </li>
-            <li>/</li>
-            <li className="capitalize">{product.category || "AION"}</li>
-            <li>/</li>
-            <li className="font-semibold">{product.title}</li>
-          </ol>
-        </nav>
-
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          {/* Images */}
-          <div className="lg:col-span-5 space-y-4">
-            <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
-              <div className="relative flex items-center justify-center bg-white p-4">
-                <img
-                  src={images[selectedImage]}
-                  alt={product.title}
-                  className="w-full max-h-[460px] object-contain"
-                />
-                <div className="absolute top-3 right-3 flex gap-3 z-20">
-                  <button
-                    onClick={handleToggleFavorite}
-                    aria-label={isFavorite ? "Remove favorite" : "Add favorite"}
-                    className={`w-10 h-10 rounded-full flex items-center justify-center shadow-md transition ${isFavorite ? "bg-red-500 text-white" : "bg-gray-700 hover:bg-gray-800"
-                      }`}
-                  >
-                    <Heart size={18} />
-                  </button>
-                  <button
-                    onClick={handleShare}
-                    aria-label="Share product"
-                    className="w-10 h-10 rounded-full flex items-center justify-center shadow-md bg-gray-700 hover:bg-gray-800 "
-                  >
-                    <Share2 size={18} />
-                  </button>
-                </div>
-              </div>
+      {/* Header */}
+      <header className="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
+        <Container>
+          <div className="py-4 flex items-center justify-between">
+            <button
+              onClick={goBack}
+              className="flex items-center gap-2 text-gray-700 hover:text-blue-600 p-2 rounded-full hover:bg-gray-100 transition"
+            >
+              <ChevronLeft className="w-5 h-5" />
+              <span className="hidden sm:inline text-sm font-medium">
+                Galereyaga qaytish
+              </span>
+            </button>
+            <div className="flex gap-3">
+              <Heart className="w-5 h-5 text-gray-600 hover:text-red-500 transition" />
+              <Share2 className="w-5 h-5 text-gray-600 hover:text-blue-500 transition" />
             </div>
+          </div>
+        </Container>
+      </header>
 
-            {/* Thumbnails */}
-            <div className="flex gap-3 overflow-x-auto py-2">
+      {/* Product */}
+      <Container>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 py-8 lg:py-12">
+          {/* Left - Images */}
+          <div className="space-y-4 lg:sticky lg:top-20 h-fit">
+            <div className="relative bg-gray-100 rounded-2xl overflow-hidden shadow-xl">
+              <img
+                src={images[selectedImage]}
+                alt={product.title}
+                className="w-full h-[400px] lg:h-[500px] object-cover transition-transform hover:scale-105"
+              />
+            </div>
+            <div className="flex gap-3 overflow-x-auto pb-2">
               {images.map((img, idx) => (
                 <button
                   key={idx}
                   onClick={() => setSelectedImage(idx)}
-                  className={`min-w-[84px] h-16 rounded-lg overflow-hidden border transition ${idx === selectedImage ? "border-blue-600 shadow-lg" : "border-gray-300"
-                    }`}
+                  className={`w-20 h-20 rounded-xl overflow-hidden border-2 ${
+                    idx === selectedImage
+                      ? "border-blue-600 shadow-md"
+                      : "border-gray-300 hover:border-gray-400"
+                  }`}
                 >
-                  <img src={img} alt={`${product.title} - ${idx + 1}`} className="w-full h-full object-cover" />
+                  <img src={img} alt="" className="w-full h-full object-cover" />
                 </button>
               ))}
             </div>
           </div>
 
-          {/* Details */}
-          <div className="lg:col-span-5 space-y-6">
-            <h1 className="text-3xl sm:text-4xl font-bold leading-tight text-black">{product.title}</h1>
-            <p className="text-base text-gray-700">{product.description}</p>
+          {/* Right - Details */}
+          <div className="flex flex-col gap-8">
+            <h1 className="text-3xl lg:text-5xl font-extrabold text-gray-900">
+              {product.title}
+            </h1>
 
-            <div className="grid grid-cols-2 gap-4 mt-3">
-              <Spec title="Narx" value={`${discountedPrice.toLocaleString()} so'm`} />
-              <Spec title="Kategoriya" value={product.category || "—"} />
-              <Spec title="Asl narxi" value={`${basePrice.toLocaleString()} so'm`} />
-              <Spec title="Chegirma" value={`${discount}%`} />
-              <Spec title="Battery Options" value={product.batteryOptions?.join(", ") || "—"} />
-              <Spec title="Maksimal masofa" value={`${product.maxRange || 0} km`} />
-              <Spec title="Tezlanish" value={`${product.acceleration || 0} s`} />
-              <Spec title="Kuch" value={`${product.power || 0} kW`} />
-              <Spec title="Reviews" value={product.reviewsCount || 0} />
+            <div className="flex items-center gap-3">
+              {[...Array(5)].map((_, i) => (
+                <Star
+                  key={i}
+                  className={`w-5 h-5 ${
+                    i < Math.round(product.rating || 0)
+                      ? "text-yellow-400"
+                      : "text-gray-300"
+                  }`}
+                />
+              ))}
+              <span className="text-sm text-gray-600">
+                {product.reviewsCount || 0} reviews • {product.views || 0} views
+              </span>
             </div>
 
-            {/* Installment */}
-            <div className="mt-4">
-              <p className="text-sm text-gray-600 mb-2">Rasrochka muddatini tanlang</p>
-              <div className="flex gap-2">
-                {[12, 24, 36].map((m) => (
-                  <button
-                    key={m}
-                    onClick={() => setInstallmentMonths(m)}
-                    className={`px-3 py-1 rounded-md border text-sm ${installmentMonths === m
-                      ? "bg-blue-600 text-white border-blue-600"
-                      : "border-gray-300 text-gray-700"
-                      }`}
-                  >
-                    {m} oy
-                  </button>
-                ))}
-              </div>
-              <div className="mt-3 text-sm text-gray-700">
-                <span className="font-semibold">
-                  {Math.round(discountedPrice / installmentMonths).toLocaleString()}
-                </span>{" "}
-                so'm / oy ({installmentMonths} oy)
-              </div>
-            </div>
+            <p className="text-gray-700">
+              {product.description || "Mahsulot tavsifi mavjud emas"}
+            </p>
 
-            {/* Features */}
-            <div className="mt-4 space-y-3">
-              <Feature icon={<Zap />} text="Regenerativ tormozlash" />
-              <Feature icon={<MapPin />} text="Navigatsiya va OTA yangilanishlar" />
-              <Feature icon={<BatteryCharging />} text="Tez quvvatlashni qo‘llab-quvvatlaydi" />
-            </div>
-          </div>
-
-          {/* Sidebar */}
-          <div className="lg:col-span-2 w-full">
-            <div className="rounded-2xl shadow-lg p-6 flex flex-col gap-4 border border-gray-200 bg-white sticky top-6 lg:top-28">
-              {/* Price */}
-              <div className="space-y-1">
-                <p className="text-3xl font-bold text-black">{discountedPrice.toLocaleString()} so'm</p>
-                {discount > 0 && (
-                  <p className="text-sm line-through text-gray-400">{basePrice.toLocaleString()} so'm</p>
-                )}
-                <p className="text-sm text-gray-600 font-semibold">
-                  {Math.round(discountedPrice / installmentMonths).toLocaleString()} so'm / {installmentMonths} oy
-                </p>
-              </div>
-
-              {/* Reserve button */}
-              <button
-                onClick={handleReserve}
-                className="btn btn-primary w-full py-3 rounded-xl hover:bg-blue-700 transition-colors text-white text-base"
-              >
-                Rezervga olish
+            <div className="py-6 border-t border-b border-gray-200">
+              <p className="text-4xl font-bold text-blue-600 mb-3">
+                ${product.price?.toLocaleString() || 0}
+              </p>
+              <p className="text-sm text-gray-500 mt-1">Yetkazib berish bepul</p>
+              <button className="mt-6 w-full flex items-center justify-center gap-3 bg-black text-white px-6 py-3 rounded-lg hover:bg-gray-800 transition-transform hover:scale-105">
+                <ShoppingCart className="w-5 h-5" /> Savatga qo'shish
               </button>
+            </div>
 
-              <div className="divider my-2"></div>
+            {/* Tabs */}
+            <div>
+              <div className="flex gap-1 border-b border-gray-200 mb-6 overflow-x-auto">
+                {tabs.map((tab) => {
+                  const Icon = tab.icon;
+                  return (
+                    <button
+                      key={tab.id}
+                      onClick={() => setActiveTab(tab.id)}
+                      className={`px-4 py-3 flex items-center gap-2 whitespace-nowrap ${
+                        activeTab === tab.id
+                          ? "border-b-2 border-blue-600 font-semibold text-gray-900"
+                          : "text-gray-500 hover:text-gray-900"
+                      }`}
+                    >
+                      <Icon className="w-4 h-4" /> {tab.label}
+                    </button>
+                  );
+                })}
+              </div>
 
-              {/* Info */}
-              <div className="space-y-3 text-sm">
-                <InfoItem icon={<Truck className="text-blue-600" />} text="Tez yetkazib berish" />
-                <InfoItem icon={<Shield className="text-blue-600" />} text="5 yil rasmiy kafolat" />
-                <InfoItem icon={<RotateCcw className="text-blue-600" />} text="14 kun ichida qaytarish" />
+              <div className="space-y-4">
+                {activeTab === "overview" && <div>{product.description}</div>}
+
+                {activeTab === "specs" && (
+                  <div className="space-y-2">
+                    <div className="flex justify-between py-2 px-4 bg-white rounded-lg shadow-sm">
+                      <span>Max Range (km)</span>{" "}
+                      <span>{product.maxRange || "-"}</span>
+                    </div>
+                    <div className="flex justify-between py-2 px-4 bg-white rounded-lg shadow-sm">
+                      <span>Acceleration (0-100 km/h)</span>{" "}
+                      <span>{product.acceleration || "-"}</span>
+                    </div>
+                    <div className="flex justify-between py-2 px-4 bg-white rounded-lg shadow-sm">
+                      <span>Power (kW)</span> <span>{product.power || "-"}</span>
+                    </div>
+                    <div className="flex justify-between py-2 px-4 bg-white rounded-lg shadow-sm">
+                      <span>Top Speed (km/h)</span>{" "}
+                      <span>{product.topSpeed || "-"}</span>
+                    </div>
+                    <div className="flex justify-between py-2 px-4 bg-white rounded-lg shadow-sm">
+                      <span>Drivetrain</span> <span>{product.drivetrain || "-"}</span>
+                    </div>
+                    <div className="flex justify-between py-2 px-4 bg-white rounded-lg shadow-sm">
+                      <span>Charging Time</span>{" "}
+                      <span>{product.chargingTime || "-"}</span>
+                    </div>
+                  </div>
+                )}
+
+                {activeTab === "features" && (
+                  <ul className="space-y-2">
+                    {product.features?.length > 0 ? (
+                      product.features.map((f, i) => (
+                        <li key={i} className="flex items-center gap-2">
+                          <Zap className="w-5 h-5 text-blue-500" /> {f}
+                        </li>
+                      ))
+                    ) : (
+                      <p>Qo'shimcha xususiyatlar mavjud emas</p>
+                    )}
+                  </ul>
+                )}
+
+                {activeTab === "warranty" && (
+                  <div className="p-4 bg-blue-50 border-l-4 border-blue-500 text-blue-700 rounded-lg">
+                    <p className="font-semibold mb-2">5 Yillik Kengaytirilgan Kafolat</p>
+                    <p>
+                      Avtomobilga 5 yil yoki 100,000 km masofagacha kafolat beriladi.
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
           </div>
-
         </div>
-      </div>
-    </div>
-  );
-}
+      </Container>
 
-// Helper components
-function Spec({ title, value }) {
-  return (
-    <div>
-      <p className="text-sm text-gray-500">{title}</p>
-      <p className="font-medium text-gray-800">{value}</p>
-    </div>
-  );
-}
-
-function Feature({ icon, text }) {
-  return (
-    <div className="flex items-center gap-3 text-gray-700">
-      <span className="w-6 h-6 flex items-center justify-center">{icon}</span>
-      <span className="text-sm">{text}</span>
-    </div>
-  );
-}
-
-function InfoItem({ icon, text }) {
-  return (
-    <div className="flex items-center gap-3 text-sm text-gray-700">
-      <span className="w-5 h-5 flex items-center justify-center text-blue-600">{icon}</span>
-      <span>{text}</span>
+      <style>{`
+        .animate-fadeIn { animation: fadeIn 0.5s ease-out forwards; }
+        @keyframes fadeIn { from {opacity:0} to {opacity:1} }
+      `}</style>
     </div>
   );
 }

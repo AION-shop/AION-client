@@ -80,15 +80,32 @@
     "contact": "Контакты",
     "social": "Мы в социальных сетях",
     "rights": "Все права защищены.",
-    
-        "products": {
-            "gotoProduct": "Перейти к товару",
-            "addedToCart": "Добавлено в корзину",
-            "addToCart": "В корзину",
-            "addedToFavorite": "Добавлено в избранное",
-            "removedFromFavorite": "Удалено из избранного",
-            "toggleFavorite": "Добавить/удалить из избранного",
-            "months": "мес"
-        }
-    
+    "products": {
+        "gotoProduct": "Перейти к товару",
+        "addedToCart": "Добавлено в корзину",
+        "addToCart": "В корзину",
+        "addedToFavorite": "Добавлено в избранное",
+        "removedFromFavorite": "Удалено из избранного",
+        "toggleFavorite": "Добавить/удалить из избранного",
+        "months": "мес"
+    },
+    "general": {
+        "models": "Модели",
+        "filters": "Фильтры",
+        "open_filters": "Открыть фильтры",
+        "found_products": "Найдено: {{count}} автомобилей",
+        "no_products_found": "В этой категории товары не найдены"
+    },
+    "installment_page": {
+        "title": "Автомобили в рассрочку",
+        "meta_description": "Удобная рассрочка на автомобили AION V, AION Y, AION S, AION MAX и другие продукты."
+    },
+    "categories": {
+        "all": "Все модели",
+        "AION V": "AION V",
+        "AION Y": "AION Y",
+        "AION S": "AION S",
+        "AION MAX": "AION MAX",
+        "new": "Новинки"
+    }
 }

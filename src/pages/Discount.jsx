@@ -8,7 +8,7 @@ export default function Discount() {
   const [loading, setLoading] = useState(true);
   const [remaining, setRemaining] = useState(0);
 
-  const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+  const apiUrl = import.meta.env.VITE_API_URL ;
 
   // Mahsulotni olish
   useEffect(() => {
