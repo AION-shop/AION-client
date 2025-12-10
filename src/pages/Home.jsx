@@ -18,7 +18,7 @@ export default function Home() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const res = await fetch(`${API_URL}/col-products`);
+        const res = await fetch(`${API_URL}/api/col-products`);
         if (!res.ok) throw new Error("Network error");
         const json = await res.json();
         const items = Array.isArray(json) ? json : json.products || [];
@@ -64,7 +64,7 @@ export default function Home() {
   return (
     <main className={`overflow-x-hidden transition-colors duration-700 ${darkBg ? "bg-black text-white" : "bg-white text-gray-900"}`}>
       <Helmet>
-        <title>GAC Aion</title>
+        <title>Gac Aion</title>
         <meta
           name="description"
           content="Discover popular cars and latest electric vehicles from our selection."

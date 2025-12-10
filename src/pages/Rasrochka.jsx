@@ -48,7 +48,7 @@ const Rasrochka = () => {
       try {
         setLoading(true);
         // Using environment variable robustly
-        const res = await fetch(`${API_URL}/col-products?limit=2000`);
+        const res = await fetch(`${API_URL}/api/col-products?limit=2000`);
         const data = await res.json();
         let fetched = data.products || [];
 

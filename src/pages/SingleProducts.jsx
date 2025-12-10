@@ -31,7 +31,7 @@ export default function SingleColProductPage() {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const res = await fetch(`${API_URL}/col-products/${id}`);
+        const res = await fetch(`${API_URL}/api/col-products/${id}`);
         const data = await res.json();
         if (!data.success) throw new Error("Product not found");
         setProduct(data.product);

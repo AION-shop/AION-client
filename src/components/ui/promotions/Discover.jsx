@@ -10,7 +10,7 @@ export default function DiscoverSection() {
   useEffect(() => {
     const getCategories = async () => {
       try {
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/categories`);
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/categories`);
         const data = await response.json();
         setDiscoverItems(data); // data: [{id, name, icon, slug}, ...]
       } catch (err) {

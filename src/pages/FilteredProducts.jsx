@@ -9,7 +9,7 @@ const FilteredProducts = () => {
 
     const requestProducts =  async () => {
         try {
-            const request = await fetch(import.meta.env.VITE_API_URL + `/products/category/${category}`)
+            const request = await fetch(import.meta.env.VITE_API_URL + `/api/products/category/${category}`)
             const response = await request.json()
             console.log("azim dumba: ", response)
         } catch(e) {
