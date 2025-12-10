@@ -19,7 +19,7 @@ const SwiperBanner = () => {
         setLoading(false);
       })
       .catch((err) => {
-        console.error("Bannerlarni olishda xato:", err);
+        
         setLoading(false);
       });
   }, []);

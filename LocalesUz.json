@@ -9,14 +9,14 @@
         "newSub": "Har kuni",
         "installment": "Rassrochka",
         "phoneLabel": "Qo‘ng‘iroq qiling",
-        "sell": "Sotish",
         "lang": "Til"
     },
     "infobar": {
         "specialOffer": "Maxsus taklif",
         "from": "dan",
         "bestCars": "Eng yaxshi avtomobillar qulay narxlarda",
-        "shopNow": "Sotib olish"
+        "shopNow": "Sotib olish",
+        "sell": "Sotish"
     },
     "sellCard": {
         "pageTitle": "AION Elektron Mashinalar — Sotishni Boshlang",
@@ -58,16 +58,9 @@
         "errorMessage": "Xatolik yuz berdi!"
     },
     "home": {
-        "pageTitle": "ShopMarket — Onlayn do'kon",
-        "pageDescription": "ShopMarket — avtomobillar va texnika bo‘limlari. Tez yetkazib berish.",
-        "banners": "Bannerlar",
-        "cars": "Avtomobillar",
-        "loadMore": "Yana 10 ta yuklash",
-        "promoTitle": "Super Chegirmalar",
-        "promoSubtitle": "Faqat bugun — eng yaxshi narxlar!",
-        "promoButton": "Ko‘proq ko‘rish",
-        "laptops": "Noutbuklar",
-        "allProducts": "Barcha mahsulotlar"
+        "popularModels": "Mashhur GAC Aion modellari",
+        "itemsAvailable": "{{count}} ta mavjud",
+        "discoverCollection": "Bizning kollektsiyamizni kashf eting"
     },
     "about": "AutoMarket – eng sifatli elektron avtomobillar. Eng yaxshi narxlar faqat bizda!",
     "quickLinks": "Tezkor havolalar",
@@ -107,5 +100,11 @@
         "AION S": "AION S",
         "AION MAX": "AION MAX",
         "new": "Yangi kelganlar"
+    },
+    "hero": {
+        "heroHeading": " Gac Aion elektron ",
+        "heroSub": "Ijro, hashamat va innovatsiya mukammal uyg‘unligi.",
+        "heroButton": "Batafsil kashf eting",
+        "scrollText": "Pastga"
     }
 }

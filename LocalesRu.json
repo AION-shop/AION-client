@@ -9,14 +9,14 @@
         "newSub": "Каждый день",
         "installment": "Рассрочка",
         "phoneLabel": "Звоните",
-        "sell": "Продавайте",
         "lang": "Язык"
     },
     "infobar": {
         "specialOffer": "Специальное предложение",
         "from": "от",
         "bestCars": "Лучшие автомобили по выгодной цене",
-        "shopNow": "Купить сейчас"
+        "shopNow": "Купить сейчас",
+        "sell": "Продавайте"
     },
     "sellCard": {
         "pageTitle": "AION Электромобили — Начать Продажу",
@@ -58,16 +58,9 @@
         "errorMessage": "Произошла ошибка!"
     },
     "home": {
-        "pageTitle": "ShopMarket — Онлайн магазин",
-        "pageDescription": "ShopMarket — автомобили и техника. Быстрая доставка.",
-        "banners": "Баннеры",
-        "cars": "Автомобили",
-        "loadMore": "Загрузить ещё 10",
-        "promoTitle": "Супер Скидки",
-        "promoSubtitle": "Только сегодня — лучшие цены!",
-        "promoButton": "Смотреть больше",
-        "laptops": "Ноутбуки",
-        "allProducts": "Все товары"
+        "popularModels": "Популярные модели GAC Aion",
+        "itemsAvailable": "Доступно {{count}} штук",
+        "discoverCollection": "Откройте нашу коллекцию"
     },
     "about": "AutoMarket – Электронные автомобили высшего качества. Лучшие цены только у нас!",
     "quickLinks": "Быстрые ссылки",
@@ -107,5 +100,11 @@
         "AION S": "AION S",
         "AION MAX": "AION MAX",
         "new": "Новинки"
+    },
+    "hero": {
+        "heroHeading": "GAC Aion электромобилей",
+        "heroSub": "Идеальное сочетание производительности, роскоши и инноваций.",
+        "heroButton": "Узнать больше",
+        "scrollText": "Прокрутка"
     }
 }

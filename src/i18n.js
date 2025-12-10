@@ -16,7 +16,8 @@ const resources = {
     home: en.home,
     footer: en.footer,
     products: en.products, 
-    korzinka: en.korzinka
+    korzinka: en.korzinka,
+    hero: en.hero
   },
   ru: {
     subNavbar: ru.subNavbar,
@@ -25,7 +26,8 @@ const resources = {
     home: ru.home,
     footer: ru.footer,
     products: ru.products,
-    korzinka: ru.korzinka
+    korzinka: ru.korzinka,
+    hero: ru.hero
   },
   uz: {
     subNavbar: uz.subNavbar,
@@ -34,7 +36,8 @@ const resources = {
     home: uz.home,
     footer: uz.footer,
     products: uz.products,
-    korzinka: uz.korzinka
+    korzinka: uz.korzinka,
+    hero: uz.hero
   },
 };
 
@@ -45,7 +48,7 @@ i18n.use(initReactI18next).init({
   fallbackLng: "uz",
   debug: false, // O'chirilgan holatda yaxshiroq
 
-  ns: ["subNavbar", "infobar", "sellCard", "home", "footer", "products" , "korzinka"],
+  ns: ["subNavbar", "infobar", "sellCard", "home", "footer", "products" , "korzinka" ,"hero"],
   defaultNS: "home", // defaultNS ni 'home' ga o'zgartirdim, 'subNavbar' o'rniga
 
   interpolation: {

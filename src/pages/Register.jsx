@@ -44,7 +44,7 @@ export default function Register() {
       navigate("/");
 
     } catch (err) {
-      console.error(err);
+      
       toast.error("Server xatosi!");
     } finally {
       setLoading(false);

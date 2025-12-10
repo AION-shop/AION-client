@@ -40,7 +40,7 @@ export default function Login() {
       navigate("/"); // Kirishdan keyin bosh sahifaga
 
     } catch (err) {
-      console.error(err);
+      
       toast.error("Server xatosi!");
     } finally {
       setLoading(false);

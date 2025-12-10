@@ -5,15 +5,15 @@ import Container from '../components/shared/Container'
 const FilteredProducts = () => {
     const { category } = useParams()
 
-    console.log(category)
+   
 
     const requestProducts =  async () => {
         try {
             const request = await fetch(import.meta.env.VITE_API_URL + `/api/products/category/${category}`)
             const response = await request.json()
-            console.log("azim dumba: ", response)
+            
         } catch(e) {
-            console.log("Server error:" , e)
+           
         } finally {
 
         }

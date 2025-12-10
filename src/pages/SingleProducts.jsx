@@ -36,7 +36,7 @@ export default function SingleColProductPage() {
         if (!data.success) throw new Error("Product not found");
         setProduct(data.product);
       } catch (err) {
-        console.error(err);
+       
       } finally {
         setLoading(false);
       }
@@ -49,9 +49,9 @@ export default function SingleColProductPage() {
     if (!product) return;
     const updateViews = async () => {
       try {
-        await fetch(`${API_URL}/col-products/${id}/view`, { method: "PUT" });
+        await fetch(`${API_URL}/api/col-products/${id}/view`, { method: "PUT" });
       } catch (err) {
-        console.error(err);
+        
       }
     };
     updateViews();

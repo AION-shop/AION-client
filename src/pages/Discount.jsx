@@ -30,7 +30,7 @@ export default function Discount() {
           setProduct(null);
         }
       } catch (err) {
-        console.error("DiscountCard fetch error:", err);
+      
         setProduct(null);
       } finally {
         setLoading(false);

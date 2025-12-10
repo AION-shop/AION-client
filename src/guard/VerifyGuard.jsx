@@ -8,7 +8,7 @@ const VerifyGuard = ({ children }) => {
     const navigate = useNavigate()
 
     useEffect(() => {
-        console.log("SARDOR: ", user)
+        
         if(!user) {
             navigate('/verify-account')
         }

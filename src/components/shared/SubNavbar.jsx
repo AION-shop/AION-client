@@ -28,9 +28,11 @@ const SubNavbar = () => {
     <section className="w-full">
       <nav className="relative w-full z-50 bg-black/50 backdrop-blur-md">
         <Container>
-          <div className="px-4 py-4 flex items-center justify-between gap-4">
-            {/* Left Section */}
-            <div className="flex items-center gap-3">
+          {/* Umumiy padding va gapni ixchamladik */}
+          <div className="px-2 py-4 flex items-center justify-between gap-1">
+
+            {/* Left Section - gap-1 ga o'zgartirildi */}
+            <div className="flex items-center gap-1">
               {/* Home Icon */}
               <Link to="/" className="p-2 rounded-lg hover:bg-white/20 transition-all duration-200">
                 <HomeIcon size={24} className="text-white" />
@@ -45,13 +47,15 @@ const SubNavbar = () => {
 
               <Link
                 to="/rasrochka"
-                className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-semibold rounded-lg text-sm transition-all duration-300"
+                // Padding px-2.5 va text-xs ni saqlab qoldik
+                className="flex items-center gap-1.5 px-2.5 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-semibold rounded-lg text-xs sm:text-sm transition-all duration-300 whitespace-nowrap"
               >
-                <span className="font-bold text-base">0%</span> {t.subNavbar?.installment || "Rassrochka"}
+                <span className="font-bold text-sm sm:text-base">0%</span>
+                {t.subNavbar?.installment || "Rassrochka"}
               </Link>
             </div>
 
-            {/* Center Menu - Desktop */}
+            {/* Center Menu - Desktop (o'zgarishsiz) */}
             <div className="hidden lg:flex gap-4 justify-center flex-1">
               {menuItems.map(item => (
                 <Link
@@ -68,14 +72,15 @@ const SubNavbar = () => {
               ))}
             </div>
 
-            {/* Right Section */}
-            <div className="flex items-center gap-2 sm:gap-3">
+            {/* Right Section - gap-1 ga o'zgartirildi, endi til tanlash va telefon yonma-yon turadi */}
+            <div className="flex items-center gap-1">
               <a
                 href="tel:+998952100550"
-                className="hidden sm:flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-white/20 transition-all duration-200 group"
+                // Telefon raqami bloki endi faqat md ekranlarda ko'rinadi (mobil uchun yashirin)
+                className="hidden md:flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-white/20 transition-all duration-200 group whitespace-nowrap"
               >
                 <Phone size={18} className="text-white group-hover:animate-bounce" />
-                <div className="hidden md:block">
+                <div>
                   <p className="text-xs text-gray-200">{t.subNavbar?.phoneLabel || "Qo'ng'iroq qiling"}</p>
                   <p className="text-sm font-semibold text-white">+998 95 210 05 50</p>
                 </div>
@@ -84,7 +89,8 @@ const SubNavbar = () => {
               <div className="relative">
                 <button
                   onClick={toggleLangDropdown}
-                  className="flex items-center gap-2 border border-gray-300 rounded-lg px-3 py-2 text-sm hover:bg-white/20 hover:border-blue-400 transition-all duration-300 text-white shadow-sm"
+                  // Til tugmasi paddingini yanada ixchamladik: px-2
+                  className="flex items-center gap-1.5 border border-gray-300 rounded-lg px-2 py-2 text-sm hover:bg-white/20 hover:border-blue-400 transition-all duration-300 text-white shadow-sm"
                 >
                   <Globe size={16} className="text-blue-200" />
                   <span className="font-medium">{lang.toUpperCase()}</span>
@@ -111,7 +117,7 @@ const SubNavbar = () => {
             </div>
           </div>
 
-          {/* Mobile Menu */}
+          {/* Mobile Menu (o'zgarishsiz) */}
           {isMobileMenuOpen && (
             <div className="lg:hidden bg-white shadow-lg mt-2 rounded-lg overflow-hidden animate-slideDown">
               {menuItems.map(item => (

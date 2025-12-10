@@ -14,7 +14,7 @@ export default function DiscoverSection() {
         const data = await response.json();
         setDiscoverItems(data); // data: [{id, name, icon, slug}, ...]
       } catch (err) {
-        console.error("Error fetching discover items:", err);
+        
       } finally {
         setLoading(false);
       }

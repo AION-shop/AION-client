@@ -1,14 +1,15 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { Helmet } from "react-helmet-async";
+import { useTranslation } from "react-i18next";
 import Container from "../components/shared/Container";
 import CategorySwiper from "../components/ui/promotions/Discover";
 import ColProductCard from "../components/ui/cards/Products";
-import SubNavbar from "../components/shared/SubNavbar";
 import Hero from "../components/shared/Hero";
 
-const getApiUrl = () => import.meta.env.VITE_API_URL ;
+const getApiUrl = () => import.meta.env.VITE_API_URL;
 
 export default function Home() {
+  const { t } = useTranslation();
   const [colProducts, setColProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [visibleCardIndex, setVisibleCardIndex] = useState(null);
@@ -24,7 +25,7 @@ export default function Home() {
         const items = Array.isArray(json) ? json : json.products || [];
         setColProducts(items);
       } catch (error) {
-        console.error("Error fetching:", error);
+        
         setColProducts([]);
       } finally {
         setLoading(false);
@@ -33,7 +34,6 @@ export default function Home() {
     fetchProducts();
   }, [API_URL]);
 
-  // Intersection Observer for darkBg effect
   useEffect(() => {
     if (!colProducts.length) return;
 
@@ -67,22 +67,20 @@ export default function Home() {
         <title>Gac Aion</title>
         <meta
           name="description"
-          content="Discover popular cars and latest electric vehicles from our selection."
+          content={t("discoverCollection")}
         />
       </Helmet>
 
-    
       {/* Hero Section */}
       <Hero />
 
-      {/* Content */}
       <Container>
         {/* Popular Products */}
         <section className="py-16">
           <div className="flex flex-col md:flex-row items-center justify-between mb-8 gap-4">
-            <h2 className="text-3xl md:text-4xl font-bold">Popular GAC Aion Models</h2>
+            <h2 className="text-3xl md:text-4xl font-bold">{t("popularModels")}</h2>
             <span className={`text-sm px-4 py-2 rounded-full border ${darkBg ? "bg-white/10 border-white/20 text-white" : "bg-gray-100 border-gray-300 text-gray-700"}`}>
-              {colProducts.length} items available
+              {t("itemsAvailable", { count: colProducts.length })}
             </span>
           </div>
 
@@ -108,7 +106,7 @@ export default function Home() {
         {/* Discover Section */}
         <section className="py-16">
           <h2 className={`text-4xl md:text-6xl font-bold mb-12 text-center ${darkBg ? "text-white" : "text-gray-900"}`}>
-            Discover Our Collection
+            {t("discoverCollection")}
           </h2>
           <div className="max-w-7xl mx-auto px-4">
             <CategorySwiper darkMode={darkBg} />

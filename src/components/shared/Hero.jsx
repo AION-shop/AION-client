@@ -1,6 +1,8 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 const Hero = () => {
+    const { t } = useTranslation('hero'); // namespace kichik harf
     const [isLoaded, setIsLoaded] = useState(false);
 
     useEffect(() => {
@@ -44,17 +46,17 @@ const Hero = () => {
                 <div className="max-w-4xl">
                     {/* Animated Heading */}
                     <h1 className={`text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-extrabold text-white drop-shadow-2xl leading-tight transition-all duration-1000 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-10'}`}>
-                        The new Cayenne Electric
+                        {t("heroHeading")}
                     </h1>
                     
                     {/* Animated Paragraph */}
                     <p className={`mt-3 sm:mt-4 md:mt-6 text-gray-100 text-sm sm:text-base md:text-lg lg:text-xl drop-shadow-lg max-w-2xl mx-auto transition-all duration-1000 delay-300 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-                        Experience the perfect blend of performance, luxury and innovation.
+                        {t("heroSub")}
                     </p>
                     
                     {/* Animated Button */}
                     <button className={`mt-6 sm:mt-8 md:mt-10 px-6 sm:px-8 md:px-10 py-2.5 sm:py-3 md:py-4 bg-white text-black rounded-lg font-semibold text-sm sm:text-base md:text-lg hover:bg-gray-100 transition-all duration-300 shadow-2xl hover:scale-105 active:scale-95 hover:shadow-white/50 relative overflow-hidden group ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'} delay-500`}>
-                        <span className="relative z-10">Discover more</span>
+                        <span className="relative z-10">{t("heroButton")}</span>
                         <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></span>
                     </button>
                 </div>
@@ -63,7 +65,7 @@ const Hero = () => {
             {/* Bottom Scroll Indicator */}
             <div className={`absolute bottom-8 left-1/2 -translate-x-1/2 z-20 transition-all duration-1000 delay-700 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'}`}>
                 <div className="flex flex-col items-center gap-2 animate-bounce-slow">
-                    <span className="text-white/70 text-xs uppercase tracking-wider">Scroll</span>
+                    <span className="text-white/70 text-xs uppercase tracking-wider">{t("scrollText")}</span>
                     <div className="w-6 h-10 border-2 border-white/50 rounded-full flex items-start justify-center p-1">
                         <div className="w-1.5 h-3 bg-white/70 rounded-full animate-scroll"></div>
                     </div>
@@ -105,7 +107,7 @@ const Hero = () => {
                 .delay-1000 { animation-delay: 1s; }
             `}</style>
         </section>
-    )
-}
+    );
+};
 
-export default Hero
+export default Hero;
