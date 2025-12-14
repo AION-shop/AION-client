@@ -1,15 +1,16 @@
 {
     "subNavbar": {
         "menu": "Меню",
-        "allProducts": "Все товары",
-        "allProductsSub": "Полный товар",
-        "lottery": "Розыгрыши",
-        "lotterySub": "Новые призы",
+        "allProducts": "Коментарие",
+        "allProductsSub": "Полный коментарии",
+        "lottery": "Модели",
+        "lotterySub": "Новые модели",
         "new": "Новинки",
         "newSub": "Каждый день",
         "installment": "Рассрочка",
         "phoneLabel": "Звоните",
-        "lang": "Язык"
+        "lang": "Язык",
+        "login": "вход"
     },
     "infobar": {
         "specialOffer": "Специальное предложение",
@@ -106,5 +107,39 @@
         "heroSub": "Идеальное сочетание производительности, роскоши и инноваций.",
         "heroButton": "Узнать больше",
         "scrollText": "Прокрутка"
+    },
+    "brake": {
+        "brakeTitle": "Тормозная система",
+        "brakeSubtitle": "Новый стандарт безопасности и контроля",
+        "frontBrake": "Передние тормоза",
+        "frontBrakeValue": "Вентилируемый диск",
+        "rearBrake": "Задние тормоза",
+        "rearBrakeValue": "Дисковые тормоза",
+        "abs": "ABS",
+        "absValue": "Против блокировки колес",
+        "ebd": "EBD",
+        "ebdValue": "Электронное распределение силы",
+        "esp": "ESP",
+        "espValue": "Электронная система стабилизации",
+        "brakeAssist": "Brake Assist",
+        "brakeAssistValue": "Помощь при торможении",
+        "batteryTitle": "Батарея и мощность",
+        "batterySubtitle": "Современная технология хранения энергии",
+        "batteryType": "Тип батареи",
+        "batteryTypeDesc": "Литий-железо-фосфат - безопасная и долговечная",
+        "power": "Мощность",
+        "powerDesc": "Эквивалент 204 л.с.",
+        "interiorTitle": "Интерьер",
+        "interiorSubtitle": "Современный дизайн и комфорт",
+        "digitalPanel": "Цифровая панель",
+        "digitalPanelDesc": "Цветная цифровая панель приборов",
+        "sensorScreen": "Сенсорный экран",
+        "sensorScreenDesc": "Большой мультимедийный экран",
+        "climate": "Климат-контроль",
+        "climateValue": "Автоматический",
+        "climateDesc": "Двухзонная система климата",
+        "panorama": "Панорамная крыша",
+        "panoramaValue": "Электрическая",
+        "panoramaDesc": "Электрическая панорамная шторка"
     }
 }

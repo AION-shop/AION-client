@@ -13,24 +13,20 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 // Helmet
 import { HelmetProvider } from "react-helmet-async";
 
-// Guards
-// import PrivateRouter from "./guard/PrivateRouter.jsx";
-// import VerifyGuard from "./guard/VerifyGuard.jsx";
-
 // Pages
 import App from "./App.jsx";
 import Home from "./pages/Home.jsx";
-// import Login from "./pages/Login.jsx";
-// import Register from "./pages/Register.jsx";
-// import UserProfile from "./pages/Profile.jsx";
-import FilteredProducts from "./pages/FilteredProducts.jsx";
-import SingleColProductPage from "./pages/SingleProducts.jsx"; // single product sahifasi
+import Login from "./pages/Login.jsx";
+import SingleColProductPage from "./pages/SingleProducts.jsx";
 import Rasrochka from "./pages/Rasrochka.jsx";
 import News from "./pages/News.jsx";
 import SellCard from "./components/shared/SellCard.jsx";
 import Offerta from "./pages/Offerta.jsx";
+import AboutCar from "./components/ui/promotions/AboutCar.jsx";
+import Models from "./pages/Models.jsx";
+import Feedback from "./components/shared/Feedback.jsx";
+import VerifyPage from "./pages/verfiyPage.jsx";
 
-import "./i18n";
 
 // Toast
 import { Toaster } from "react-hot-toast";
@@ -44,10 +40,10 @@ const root = createRoot(container);
 
 const router = createBrowserRouter(
   [
-    // Auth related routes (commented out in original)
-    // { path: "/login", element: <Login /> },
-    // { path: "/register", element: <Register /> },
-    // { path: "/profile", element: <PrivateRouter><VerifyGuard><UserProfile /></VerifyGuard></PrivateRouter> },
+    // Auth routes
+    { path: "/login", element: <Login /> },
+    { path: "/verify-account", element: <VerifyPage /> },
+
 
     // MAIN ROUTES
     {
@@ -55,20 +51,20 @@ const router = createBrowserRouter(
       element: <App />,
       children: [
         { index: true, element: <Home /> },
-        { path: "categories/:category", element: <FilteredProducts /> },
+        { path: "AboutCar", element: <AboutCar /> },
+        { path: "Feedbacks", element: <Feedback /> },
         { path: "rasrochka", element: <Rasrochka /> },
+        { path: "models", element: <Models /> },
         { path: "news", element: <News /> },
         { path: "sell-card", element: <SellCard /> },
         { path: "offerta", element: <Offerta /> },
-        
-        // Single Product Route:
-        // Sizda ikkita bir xil route bor edi, bittasini qoldirdim, 
-        // uchinchi tomon SingleColProductPage komponentini ishlatsin deb belgiladim
-        { path: "col-products/:id", element: <SingleColProductPage /> }, 
+        { path: "col-products/:id", element: <SingleColProductPage /> },
+        { path: "about-car/:id", element: <AboutCar /> },
+
       ],
     },
 
-    // 404 fallback page
+    // 404 fallback
     {
       path: "*",
       element: (
@@ -76,11 +72,11 @@ const router = createBrowserRouter(
           <div className="text-center max-w-md">
             <h1 className="text-6xl font-bold text-gray-300 mb-4">404</h1>
             <h2 className="text-2xl font-semibold text-gray-600 mb-4">Page Not Found</h2>
-            <p className="text-gray-500 mb-8">
-              The page you're looking for doesn't exist.
-            </p>
-            {/* O'zgartirildi: button emas, a href orqali uy sahifaga qaytish */}
-            <a href="/" className="px-6 py-3 bg-black text-white font-semibold rounded-lg hover:bg-gray-800 transition shadow-md">
+            <p className="text-gray-500 mb-8">The page you're looking for doesn't exist.</p>
+            <a
+              href="/"
+              className="px-6 py-3 bg-black text-white font-semibold rounded-lg hover:bg-gray-800 transition shadow-md"
+            >
               Back to Home
             </a>
           </div>
@@ -91,7 +87,6 @@ const router = createBrowserRouter(
   { basename: "/" }
 );
 
-// Render application
 root.render(
   <StrictMode>
     <HelmetProvider>
@@ -106,11 +101,22 @@ root.render(
         >
           <LangProvider>
             <RouterProvider router={router} />
-            <Toaster position="top-right" reverseOrder={false} />
+            <Toaster
+              position="top-right"        // o‘ng yuqori
+              reverseOrder={false}        // eski toastlar pastga
+              toastOptions={{
+                duration: 3000,           // 3 soniya ko‘rinadi
+                style: {
+                  background: "#333",
+                  color: "#fff",
+                  fontWeight: "500",
+                },
+              }}
+            />
           </LangProvider>
+
         </PersistGate>
       </Provider>
     </HelmetProvider>
   </StrictMode>
 );
-

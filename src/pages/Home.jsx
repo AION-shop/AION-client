@@ -2,9 +2,10 @@ import React, { useEffect, useState, useMemo } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import Container from "../components/shared/Container";
-import CategorySwiper from "../components/ui/promotions/Discover";
+import CategorySwiper from "../components/ui/cards/PopularCars";
 import ColProductCard from "../components/ui/cards/Products";
 import Hero from "../components/shared/Hero";
+import Loading from "../components/layouts/Loading"; // <- import qildik
 
 const getApiUrl = () => import.meta.env.VITE_API_URL;
 
@@ -25,7 +26,6 @@ export default function Home() {
         const items = Array.isArray(json) ? json : json.products || [];
         setColProducts(items);
       } catch (error) {
-        
         setColProducts([]);
       } finally {
         setLoading(false);
@@ -54,24 +54,15 @@ export default function Home() {
 
   const darkBg = visibleCardIndex !== null;
 
-  if (loading)
-    return (
-      <main className="min-h-screen flex items-center justify-center bg-white">
-        <div className="animate-spin h-16 w-16 border-t-4 border-b-4 border-black rounded-full"></div>
-      </main>
-    );
+  if (loading) return <Loading />; // <- bu yerda Loading ishlatiladi
 
   return (
     <main className={`overflow-x-hidden transition-colors duration-700 ${darkBg ? "bg-black text-white" : "bg-white text-gray-900"}`}>
       <Helmet>
         <title>Gac Aion</title>
-        <meta
-          name="description"
-          content={t("discoverCollection")}
-        />
+        <meta name="description" content={t("discoverCollection")} />
       </Helmet>
 
-      {/* Hero Section */}
       <Hero />
 
       <Container>
@@ -79,7 +70,11 @@ export default function Home() {
         <section className="py-16">
           <div className="flex flex-col md:flex-row items-center justify-between mb-8 gap-4">
             <h2 className="text-3xl md:text-4xl font-bold">{t("popularModels")}</h2>
-            <span className={`text-sm px-4 py-2 rounded-full border ${darkBg ? "bg-white/10 border-white/20 text-white" : "bg-gray-100 border-gray-300 text-gray-700"}`}>
+            <span
+              className={`text-sm px-4 py-2 rounded-full border ${
+                darkBg ? "bg-white/10 border-white/20 text-white" : "bg-gray-100 border-gray-300 text-gray-700"
+              }`}
+            >
               {t("itemsAvailable", { count: colProducts.length })}
             </span>
           </div>

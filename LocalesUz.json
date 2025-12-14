@@ -1,15 +1,16 @@
 {
     "subNavbar": {
         "menu": "Menyu",
-        "allProducts": "Barcha mahsulotlar",
-        "allProductsSub": "To‘liq tovarlar",
-        "lottery": "O‘yinlar",
-        "lotterySub": "Yangi sovrinlar",
+        "allProducts": "Izoh",
+        "allProductsSub": "To‘liq izohlar",
+        "lottery": "Modellar",
+        "lotterySub": "Yangi modellar ",
         "new": "Yangi",
         "newSub": "Har kuni",
         "installment": "Rassrochka",
         "phoneLabel": "Qo‘ng‘iroq qiling",
-        "lang": "Til"
+        "lang": "Til",
+        "login": "kirish"
     },
     "infobar": {
         "specialOffer": "Maxsus taklif",
@@ -106,5 +107,39 @@
         "heroSub": "Ijro, hashamat va innovatsiya mukammal uyg‘unligi.",
         "heroButton": "Batafsil kashf eting",
         "scrollText": "Pastga"
+    },
+    "brake": {
+        "brakeTitle": "Tormoz tizimi",
+        "brakeSubtitle": "Xavfsizlik va nazoratning yangi standartlari",
+        "frontBrake": "Old tormozlar",
+        "frontBrakeValue": "Ventilyatsiyali disk",
+        "rearBrake": "Orqa tormozlar",
+        "rearBrakeValue": "Disk tormozlar",
+        "abs": "ABS tizimi",
+        "absValue": "Avtomatik bloklanishga qarshi",
+        "ebd": "EBD",
+        "ebdValue": "Elektron kuch taqsimoti",
+        "esp": "ESP",
+        "espValue": "Elektronik barqarorlik dasturi",
+        "brakeAssist": "Brake Assist",
+        "brakeAssistValue": "Tormozlashda yordam",
+        "batteryTitle": "Batareya va quvvat",
+        "batterySubtitle": "Zamonaviy energiya saqlash texnologiyasi",
+        "batteryType": "Batareya turi",
+        "batteryTypeDesc": "Lithium Iron Phosphate - xavfsiz va uzoq muddatli",
+        "power": "Quvvat",
+        "powerDesc": "204 ot kuchi teng quvvat",
+        "interiorTitle": "Ichki holat",
+        "interiorSubtitle": "Zamonaviy dizayn va qulaylik",
+        "digitalPanel": "Digital Panel",
+        "digitalPanelDesc": "Rangdor raqamli asboblar paneli",
+        "sensorScreen": "Sensor ekran",
+        "sensorScreenDesc": "Katta markaziy multimediya ekrani",
+        "climate": "Iqlim nazorati",
+        "climateValue": "Avtomatik",
+        "climateDesc": "Ikki zonali iqlim tizimi",
+        "panorama": "Panorama tom",
+        "panoramaValue": "Elektr",
+        "panoramaDesc": "Elektr pardali panoramik shisha"
     }
 }

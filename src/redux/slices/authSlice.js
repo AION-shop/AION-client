@@ -1,16 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-// Boshlang'ich holatni localStorage'dan olish
 let storedUser = null;
 try {
   const userData = localStorage.getItem("user");
-  if (userData) {
-    storedUser = JSON.parse(userData);
-  }
-} catch (err) {
-  console.warn("Failed to parse user from localStorage:", err);
-  storedUser = null;
-}
+  if (userData) storedUser = JSON.parse(userData);
+} catch {}
 
 const initialState = {
   user: storedUser,
@@ -26,7 +20,6 @@ const authSlice = createSlice({
       state.user = action.payload.user;
       state.token = action.payload.token;
       state.isAuth = true;
-
       localStorage.setItem("user", JSON.stringify(action.payload.user));
       localStorage.setItem("token", action.payload.token);
     },
@@ -34,7 +27,6 @@ const authSlice = createSlice({
       state.user = null;
       state.token = null;
       state.isAuth = false;
-
       localStorage.removeItem("user");
       localStorage.removeItem("token");
     },

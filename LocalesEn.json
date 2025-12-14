@@ -1,15 +1,16 @@
 {
     "subNavbar": {
-        "menu": "Menu",
-        "allProducts": "All Products",
-        "allProductsSub": "Full Products",
-        "lottery": "Lottery",
-        "lotterySub": "New Prizes",
-        "new": "New",
-        "newSub": "Every Day",
-        "installment": "Installment",
-        "phoneLabel": "Call Us",
-        "lang": "Language"
+        "menu": "Menyu",
+        "allProducts": "Fikr-mulohazalar",
+        "allProductsSub": "To‘liq fikr-mulohazalar",
+        "lottery": "Modellar",
+        "lotterySub": "Yangi modellar",
+        "new": "Yangi",
+        "newSub": "Har kuni",
+        "installment": "Bo‘lib to‘lash",
+        "phoneLabel": "Bizga qo‘ng‘iroq qiling",
+        "lang": "Til",
+        "login": "Kirish"
     },
     "infobar": {
         "specialOffer": "Special offer",
@@ -19,92 +20,126 @@
         "sell": "Sell"
     },
     "sellCard": {
-        "pageTitle": "AION Electric Cars — Start Selling",
-        "heroTitle": "Start with AION Electric Cars",
-        "heroTitleHighlight": "Selling",
-        "heroDesc": "AION — next-generation electric cars. Premium quality, power, and eco-safety.",
+        "pageTitle": "AION Elektr Avtomobillari — Sotishni boshlang",
+        "heroTitle": "AION Elektr Avtomobillari bilan boshlang",
+        "heroTitleHighlight": "Sotish",
+        "heroDesc": "AION — yangi avlod elektr avtomobillari. Premium sifat, quvvat va ekologik xavfsizlik.",
         "features": {
-            "distanceTitle": "450 km range",
-            "distanceDesc": "Long distance on one charge.",
-            "warrantyTitle": "5-year warranty",
-            "warrantyDesc": "Official service support.",
-            "qualityTitle": "Premium Quality",
-            "qualityDesc": "Tested and verified.",
-            "ratingTitle": "High Rating",
-            "ratingDesc": "Most reliable brand."
+            "distanceTitle": "450 km masofa",
+            "distanceDesc": "Bir to‘liq zaryaddan uzoq masofa.",
+            "warrantyTitle": "5 yillik kafolat",
+            "warrantyDesc": "Rasmiy xizmat ko‘rsatish qo‘llab-quvvatlashi.",
+            "qualityTitle": "Premium sifat",
+            "qualityDesc": "Sinovdan o‘tgan va tasdiqlangan.",
+            "ratingTitle": "Yuqori reyting",
+            "ratingDesc": "Eng ishonchli brend."
         },
-        "startSelling": "Start Selling",
-        "premiumModels": "AION Premium Models",
+        "startSelling": "Sotishni boshlang",
+        "premiumModels": "AION Premium modellari",
         "modelTitle": "AION S — Premium Sedan",
-        "modelDesc": "Created with electric technologies and modern design.",
+        "modelDesc": "Elektr texnologiyalari va zamonaviy dizayn bilan yaratilgan.",
         "modelFeatures": {
-            "rating": "4.9 star rating",
+            "rating": "4.9 yulduzli reyting",
             "speed": "0–100 km/h: 6.7s",
-            "onlineService": "Online service monitoring"
+            "onlineService": "Onlayn xizmat nazorati"
         },
-        "galleryTitle": "AION Model Gallery",
-        "modalTitle": "Seller Information",
+        "galleryTitle": "AION Model Galereyasi",
+        "modalTitle": "Sotuvchi ma’lumotlari",
         "form": {
-            "fullName": "Full Name",
-            "region": "Where are you from? (Tashkent, Samarkand...)",
-            "carModel": "Your car model (AION S, AION Y...)",
-            "aboutYou": "Brief info about yourself",
-            "aboutCar": "About your car",
-            "cancel": "Cancel",
-            "submit": "Submit",
-            "sending": "Sending..."
+            "fullName": "To‘liq ism",
+            "region": "Qaysi shahar/tuman (Toshkent, Samarqand...)",
+            "carModel": "Avtomobil modelingiz (AION S, AION Y...)",
+            "aboutYou": "O‘zingiz haqida qisqacha ma’lumot",
+            "aboutCar": "Avtomobil haqida",
+            "cancel": "Bekor qilish",
+            "submit": "Yuborish",
+            "sending": "Yuborilmoqda..."
         },
-        "successMessage": "Data sent successfully!",
-        "errorMessage": "An error occurred!"
+        "successMessage": "Ma’lumot muvaffaqiyatli yuborildi!",
+        "errorMessage": "Xatolik yuz berdi!"
     },
     "home": {
-        "popularModels": "Popular GAC Aion Models",
-        "itemsAvailable": "{{count}} items available",
-        "discoverCollection": "Discover Our Collection"
+        "popularModels": "Mashhur GAC Aion modellari",
+        "itemsAvailable": "{{count}} ta mavjud",
+        "discoverCollection": "Kolleksiyamizni kashf eting"
     },
-    "about": "AutoMarket – Premium quality electronic cars. Best offers only here!",
-    "quickLinks": "Quick Links",
+    "about": "AutoMarket – Premium sifatli elektron avtomobillar. Eng yaxshi takliflar faqat shu yerda!",
+    "quickLinks": "Tezkor havolalar",
     "links": {
-        "allProducts": "All Products",
-        "lottery": "Lotteries",
-        "news": "News",
-        "installment": "Installment"
+        "allProducts": "Barcha mahsulotlar",
+        "lottery": "Lotereyalar",
+        "news": "Yangiliklar",
+        "installment": "Bo‘lib to‘lash"
     },
-    "contact": "Contact",
-    "social": "Social Networks",
-    "rights": "All rights reserved.",
+    "contact": "Aloqa",
+    "social": "Ijtimoiy tarmoqlar",
+    "rights": "Barcha huquqlar himoyalangan.",
     "products": {
-        "gotoProduct": "Go to product",
-        "addedToCart": "Added to cart",
-        "addToCart": "Add to cart",
-        "addedToFavorite": "Added to favorites",
-        "removedFromFavorite": "Removed from favorites",
-        "toggleFavorite": "Toggle favorite",
-        "months": "months"
+        "gotoProduct": "Mahsulotga o‘tish",
+        "addedToCart": "Savatchaga qo‘shildi",
+        "addToCart": "Savatchaga qo‘shish",
+        "addedToFavorite": "Sevimlilarga qo‘shildi",
+        "removedFromFavorite": "Sevimlilardan o‘chirildi",
+        "toggleFavorite": "Sevimlini almashtirish",
+        "months": "oylar"
     },
     "general": {
-        "models": "Models",
-        "filters": "Filters",
-        "open_filters": "Open filters",
-        "found_products": "Found: {{count}} vehicles",
-        "no_products_found": "No vehicles found in this category"
+        "models": "Modellar",
+        "filters": "Filtrlar",
+        "open_filters": "Filtrlarni ochish",
+        "found_products": "Topildi: {{count}} ta transport vositasi",
+        "no_products_found": "Bu kategoriyada transport vositalari topilmadi"
     },
     "installment_page": {
-        "title": "Vehicles Installment Plan",
-        "meta_description": "Convenient installment plan available for AION V, AION Y, AION S, AION MAX, and other vehicles."
+        "title": "Transport vositalarini bo‘lib to‘lash",
+        "meta_description": "AION V, AION Y, AION S, AION MAX va boshqa transport vositalari uchun qulay bo‘lib to‘lash rejasi mavjud."
     },
     "categories": {
-        "all": "All Models",
+        "all": "Barcha modellari",
         "AION V": "AION V",
         "AION Y": "AION Y",
         "AION S": "AION S",
         "AION MAX": "AION MAX",
-        "new": "New Arrivals"
+        "new": "Yangi kelganlar"
     },
     "hero": {
-        "heroHeading": " Gac Aion electric",
-        "heroSub": "Experience the perfect blend of performance, luxury and innovation.",
-        "heroButton": "Discover more",
-        "scrollText": "Scroll"
+        "heroHeading": "GAC Aion elektr",
+        "heroSub": "Ishlash, hashamat va innovatsiyaning mukammal uyg‘unligini his eting.",
+        "heroButton": "Batafsil kashf eting",
+        "scrollText": "Pastga siljiting"
+    },
+    "brake": {
+        "brakeTitle": "Tormoz tizimi",
+        "brakeSubtitle": "Xavfsizlik va nazoratning yangi standarti",
+        "frontBrake": "Old tormozlar",
+        "frontBrakeValue": "Ventilyatsiyalangan disk",
+        "rearBrake": "Orqa tormozlar",
+        "rearBrakeValue": "Disk tormozlar",
+        "abs": "ABS",
+        "absValue": "Antiblokirovka tizimi",
+        "ebd": "EBD",
+        "ebdValue": "Elektron tormoz taqsimoti",
+        "esp": "ESP",
+        "espValue": "Elektron barqarorlik dasturi",
+        "brakeAssist": "Tormoz yordamchisi",
+        "brakeAssistValue": "Yordamchi tormozlash",
+        "batteryTitle": "Batareya va quvvat",
+        "batterySubtitle": "Zamonaviy energiya saqlash texnologiyasi",
+        "batteryType": "Batareya turi",
+        "batteryTypeDesc": "Lityum temir fosfat - xavfsiz va bardoshli",
+        "power": "Quvvat",
+        "powerDesc": "204 ot kuchiga teng",
+        "interiorTitle": "Salon",
+        "interiorSubtitle": "Zamonaviy dizayn va qulaylik",
+        "digitalPanel": "Raqamli panel",
+        "digitalPanelDesc": "Rangli raqamli panel",
+        "sensorScreen": "Sensor ekran",
+        "sensorScreenDesc": "Katta markaziy multimedia ekran",
+        "climate": "Iqlim boshqaruvi",
+        "climateValue": "Avtomatik",
+        "climateDesc": "Ikki zonali iqlim tizimi",
+        "panorama": "Panoramalik tom",
+        "panoramaValue": "Elektr",
+        "panoramaDesc": "Elektr panoramalik soyali"
     }
 }

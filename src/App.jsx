@@ -3,8 +3,8 @@ import './App.css'
 import { Link, Outlet } from 'react-router-dom'
 import Header from './components/layouts/Header'
 
-import Navbar from './components/shared/Navbar'
-import CategorySwiper from './components/ui/promotions/Discover'
+
+import CategorySwiper from './components/ui/cards/PopularCars'
 import BannerSection from './components/ui/promotions/SwiperBanner'
 import Footer from './components/layouts/Footer'
 
@@ -12,9 +12,7 @@ export default function App() {
   return (
     <>
       <Header />
-      <div className='sticky top-0 z-50'>
-         <Navbar />
-      </div>
+    
      
       {/* <div>
         <BannerSection

@@ -1,81 +1,114 @@
 import React, { useMemo } from "react";
-// ShoppingCart ikonkasi endi lucide-react dan import qilinadi
-import { ShoppingBag, Percent, ShoppingCart } from "lucide-react";
+import {
+  ShoppingBag,
+  Percent,
+  ShoppingCart,
+  LogOut,
+  User,
+} from "lucide-react";
 import { Link } from "react-router-dom";
 import Container from "../shared/Container";
+import { useSelector, useDispatch } from "react-redux";
+import { logout } from "../../redux/slices/authSlice";
 import { useTranslation } from "react-i18next";
 
 const InfoBar = () => {
-  const { t } = useTranslation("infobar");
-  // navigate va onStartShopping propslari ishlatilmayotganligi sababli olib tashlandi
+  const dispatch = useDispatch();
+  const { t } = useTranslation(["infobar", "subNavbar"]); // MUHIM
+  const { user, isAuth } = useSelector((state) => state.auth);
 
-  // Use useMemo to prevent recalculating colors on every render
-  const colors = useMemo(() => ["text-gray-300", "text-gray-400", "text-gray-500", "text-gray-200"], []);
+  const colors = useMemo(
+    () => ["text-blue-400", "text-purple-400", "text-pink-400", "text-cyan-400"],
+    []
+  );
 
   return (
-    <div
-      className="relative bg-gray-900 text-gray-100 overflow-hidden"
-      role="status"
-      aria-live="polite"
-    >
+    <div className="relative overflow-hidden bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 border-b border-white/10">
       <Container>
-        {/* Asosiy konteyner: flex-wrap qildik va gap-3 ga kamaytirdik */}
-        <div className="flex flex-wrap items-center justify-between py-3 md:py-4 gap-3">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 py-3">
 
-          {/* Main Offer Message */}
-          <div className="flex items-center gap-3 min-w-0 flex-1">
-            <ShoppingBag className="w-4 h-4 sm:w-5 sm:h-5 text-blue-400 flex-shrink-0" />
-            {/* Matn endi pastga tushadi, truncate olib tashlandi, text-xs sm:text-sm o'lcham berildi */}
-            <p className="text-xs sm:text-sm font-medium">
-              {t("specialOffer", "Maxsus chegirma")} {t("from", "dan")} <span className="font-bold text-white">AutoMarket</span> – {t("bestCars", "Eng yaxshi avtomobillar")}
+          {/* LEFT */}
+          <div className="flex items-center gap-2">
+            <div className="p-2 rounded-xl bg-blue-600/20 backdrop-blur">
+              <ShoppingBag className="text-blue-400" size={20} />
+            </div>
+
+            <p className="text-sm text-gray-200">
+              {t("infobar:specialOffer")} —{" "}
+              <span className="font-semibold text-white">
+                {t("infobar:bestCars")}
+              </span>
             </p>
           </div>
 
-          {/* Action Buttons Container */}
-          {/* Bu div flex-shrink-0 bo'lib qoladi, u o'z joyini saqlab qoladi */}
-          <div className="flex items-center gap-4 flex-shrink-0">
-
-            {/* Shop Now Button (Primary CTA) */}
+          {/* RIGHT */}
+          <div className="flex items-center gap-3 mt-2 sm:mt-0 flex-wrap">
             <Link
               to="/sell-card"
-              // Paddingni ixchamladik: px-3 py-2
-              className="flex items-center gap-2 px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition duration-300"
-              aria-label={t("sell", "Sotish")}
+              className="flex items-center gap-2 px-4 py-2 text-sm rounded-xl bg-blue-600 hover:bg-blue-700 transition hover:scale-105"
             >
               <ShoppingCart size={16} />
-              <span className="text-sm font-medium">{t("sell", "Sotish")}</span>
+              {t("infobar:sell")}
             </Link>
+
+            {isAuth ? (
+              <div className="flex items-center gap-2 px-3 py-2 rounded-xl">
+                <div className="w-9 h-9 rounded-full bg-gray-700 flex items-center justify-center text-white font-bold text-sm">
+                  {user?.firstName?.[0]?.toUpperCase() ||
+                    user?.email?.[0]?.toUpperCase() ||
+                    "U"}
+                </div>
+
+                <span className="text-sm font-medium max-w-[120px] truncate text-white">
+                  {user?.firstName || user?.email}
+                </span>
+
+                <button
+                  onClick={() => dispatch(logout())}
+                  className="p-2 rounded-lg hover:bg-red-500/20 transition"
+                  title="Logout"
+                >
+                  <LogOut size={16} />
+                </button>
+              </div>
+            ) : (
+              <Link
+                to="/login"
+                className="flex items-center gap-2 px-4 py-2 rounded-xl border border-white/20 hover:bg-white/5 transition"
+              >
+                <User size={16} />
+                {t("subNavbar:login")}
+              </Link>
+            )}
           </div>
         </div>
       </Container>
 
-      {/* Background decoration elements (o'zgarishsiz qoldi) */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        {[...Array(15)].map((_, i) => {
-          const randomColor = colors[Math.floor(Math.random() * colors.length)];
-          return (
-            <div
-              key={i}
-              className={`absolute opacity-20 animate-float`}
-              style={{
-                top: `${10 + Math.random() * 80}%`,
-                left: `${5 + Math.random() * 90}%`,
-                animationDelay: `${Math.random() * 3}s`,
-                transform: `scale(${0.5 + Math.random() * 0.8})`
-              }}
-            >
-              <Percent className={`w-4 h-4 ${randomColor}`} />
-            </div>
-          );
-        })}
+      {/* FLOAT ICONS */}
+      <div className="absolute inset-0 pointer-events-none">
+        {[...Array(8)].map((_, i) => (
+          <Percent
+            key={i}
+            className={`absolute opacity-20 animate-float ${
+              colors[i % colors.length]
+            }`}
+            style={{
+              top: `${Math.random() * 100}%`,
+              left: `${Math.random() * 100}%`,
+            }}
+            size={14}
+          />
+        ))}
       </div>
+
       <style>{`
         @keyframes float {
-          0%, 100% { transform: translateY(0) rotate(0deg); }
-          50% { transform: translateY(-8px) rotate(10deg); }
+          0% { transform: translateY(0) }
+          50% { transform: translateY(-10px) }
+          100% { transform: translateY(0) }
         }
         .animate-float {
-          animation: float 4s ease-in-out infinite;
+          animation: float 6s ease-in-out infinite;
         }
       `}</style>
     </div>
