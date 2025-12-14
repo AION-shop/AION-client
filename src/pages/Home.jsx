@@ -6,6 +6,7 @@ import CategorySwiper from "../components/ui/cards/PopularCars";
 import ColProductCard from "../components/ui/cards/Products";
 import Hero from "../components/shared/Hero";
 import Loading from "../components/layouts/Loading"; // <- import qildik
+import SwiperBanner from "../components/ui/promotions/SwiperBanner";
 
 const getApiUrl = () => import.meta.env.VITE_API_URL;
 
@@ -71,9 +72,8 @@ export default function Home() {
           <div className="flex flex-col md:flex-row items-center justify-between mb-8 gap-4">
             <h2 className="text-3xl md:text-4xl font-bold">{t("popularModels")}</h2>
             <span
-              className={`text-sm px-4 py-2 rounded-full border ${
-                darkBg ? "bg-white/10 border-white/20 text-white" : "bg-gray-100 border-gray-300 text-gray-700"
-              }`}
+              className={`text-sm px-4 py-2 rounded-full border ${darkBg ? "bg-white/10 border-white/20 text-white" : "bg-gray-100 border-gray-300 text-gray-700"
+                }`}
             >
               {t("itemsAvailable", { count: colProducts.length })}
             </span>
@@ -98,6 +98,10 @@ export default function Home() {
           </div>
         </section>
 
+        <section className="py-5">
+          <SwiperBanner />
+        </section>
+
         {/* Discover Section */}
         <section className="py-16">
           <h2 className={`text-4xl md:text-6xl font-bold mb-12 text-center ${darkBg ? "text-white" : "text-gray-900"}`}>
@@ -107,6 +111,9 @@ export default function Home() {
             <CategorySwiper darkMode={darkBg} />
           </div>
         </section>
+
+
+
       </Container>
     </main>
   );

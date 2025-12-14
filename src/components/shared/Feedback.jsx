@@ -58,25 +58,29 @@ const Feedback = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 p-4 md:p-8">
+    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 p-4 sm:p-8">
       <div className="max-w-5xl mx-auto">
         {/* Header */}
-        <div className="bg-white rounded-2xl shadow-lg p-6 md:p-8 mb-6 border border-gray-100 flex justify-between items-center">
+        <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-6 md:p-8 mb-6 border border-gray-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 sm:gap-0">
           <div className="flex items-center gap-3">
-            <div className="bg-black p-3 rounded-xl">
-              <MessageSquare className="w-8 h-8 text-white" />
+            <div className="bg-black p-2 sm:p-3 rounded-xl">
+              <MessageSquare className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
             </div>
             <div>
-              <h1 className="text-3xl md:text-4xl font-bold text-gray-800">Customer Feedback</h1>
-              <p className="text-gray-500 mt-1">Share your experience with us</p>
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800">
+                Customer Feedback
+              </h1>
+              <p className="text-gray-500 mt-1 text-sm sm:text-base">
+                Share your experience with us
+              </p>
             </div>
           </div>
 
           <button
             onClick={() => setIsModalOpen(true)}
-            className="bg-gradient-to-r bg-black text-white px-6 py-3 rounded-xl hover:shadow-lg hover:scale-105 transition-all duration-300 flex items-center gap-2 font-semibold"
+            className="bg-black text-white px-4 py-2 sm:px-6 sm:py-3 rounded-xl hover:shadow-lg hover:scale-105 transition-all duration-300 flex items-center gap-2 font-semibold text-sm sm:text-base"
           >
-            <Send className="w-5 h-5" />
+            <Send className="w-4 h-4 sm:w-5 sm:h-5" />
             Add Feedback
           </button>
         </div>
@@ -84,41 +88,55 @@ const Feedback = () => {
         {/* Feedback List */}
         <div className="space-y-4">
           {feedbacks.length === 0 ? (
-            <div className="bg-white rounded-2xl shadow-lg p-12 text-center border border-gray-100">
-              <div className="bg-gray-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
-                <MessageSquare className="w-10 h-10 text-gray-400" />
+            <div className="bg-white rounded-2xl shadow-lg p-6 sm:p-12 text-center border border-gray-100">
+              <div className="bg-gray-100 w-16 h-16 sm:w-20 sm:h-20 rounded-full flex items-center justify-center mx-auto mb-4">
+                <MessageSquare className="w-6 h-6 sm:w-10 sm:h-10 text-gray-400" />
               </div>
-              <p className="text-gray-500 text-lg font-medium">No feedbacks yet</p>
-              <p className="text-gray-400 mt-2">Be the first to share your experience!</p>
+              <p className="text-gray-500 text-base sm:text-lg font-medium">
+                No feedbacks yet
+              </p>
+              <p className="text-gray-400 mt-2 text-sm sm:text-base">
+                Be the first to share your experience!
+              </p>
             </div>
           ) : (
-            feedbacks.map((fb, index) => (
+            feedbacks.map((fb) => (
               <div
                 key={fb._id}
-                className="bg-white rounded-2xl shadow-md hover:shadow-xl p-6 border border-gray-100 transition-all duration-300 hover:scale-[1.02]"
+                className="bg-white rounded-2xl shadow-md hover:shadow-xl p-4 sm:p-6 border border-gray-100 transition-all duration-300 hover:scale-[1.02]"
               >
-                <div className="flex items-start justify-between mb-3">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-2 sm:mb-3 gap-2 sm:gap-0">
                   <div className="flex items-center gap-3">
-                    <div className="bg-gradient-to-br from-indigo-500 to-purple-600 w-12 h-12 rounded-full flex items-center justify-center">
-                      <User className="w-6 h-6 text-white" />
+                    <div className="bg-gradient-to-br from-indigo-500 to-purple-600 w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center">
+                      <User className="w-4 h-4 sm:w-6 sm:h-6 text-white" />
                     </div>
                     <div>
-                      <h4 className="font-bold text-gray-800 text-lg">{fb.name}</h4>
-                      <p className="text-gray-400 text-sm">{new Date(fb.date).toLocaleDateString()}</p>
+                      <h4 className="font-bold text-gray-800 text-sm sm:text-lg">
+                        {fb.name}
+                      </h4>
+                      <p className="text-gray-400 text-xs sm:text-sm">
+                        {new Date(fb.date).toLocaleDateString()}
+                      </p>
                     </div>
                   </div>
-                  <div className="flex gap-1">
+                  <div className="flex gap-1 mt-1 sm:mt-0">
                     {Array(5)
                       .fill(0)
                       .map((_, i) => (
                         <Star
                           key={i}
-                          className={`w-5 h-5 ${i < fb.rating ? "fill-yellow-400 text-yellow-400" : "text-gray-300"}`}
+                          className={`w-4 h-4 sm:w-5 sm:h-5 ${
+                            i < fb.rating
+                              ? "fill-yellow-400 text-yellow-400"
+                              : "text-gray-300"
+                          }`}
                         />
                       ))}
                   </div>
                 </div>
-                <p className="text-gray-700 leading-relaxed pl-15">{fb.comment}</p>
+                <p className="text-gray-700 leading-relaxed pl-12 sm:pl-15 text-sm sm:text-base">
+                  {fb.comment}
+                </p>
               </div>
             ))
           )}
@@ -127,51 +145,59 @@ const Feedback = () => {
 
       {/* Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-3xl shadow-2xl w-full max-w-lg p-8 relative">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-2 sm:p-4">
+          <div className="bg-white rounded-3xl shadow-2xl w-full max-w-xs sm:max-w-lg p-4 sm:p-8 relative">
             <button
               onClick={() => setIsModalOpen(false)}
-              className="absolute top-6 right-6 text-gray-400 hover:text-gray-600 hover:rotate-90 transition-all duration-300"
+              className="absolute top-4 right-4 sm:top-6 sm:right-6 text-gray-400 hover:text-gray-600 hover:rotate-90 transition-all duration-300"
             >
-              <X className="w-6 h-6" />
+              <X className="w-5 h-5 sm:w-6 sm:h-6" />
             </button>
 
             {!isAuth ? (
               <div className="text-center">
-                <h3 className="text-2xl font-bold mb-4">Iltimos, login qiling</h3>
+                <h3 className="text-xl sm:text-2xl font-bold mb-4">
+                  Iltimos, login qiling
+                </h3>
                 <button
                   onClick={() => navigate("/login")}
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-semibold"
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 sm:px-6 sm:py-3 rounded-xl font-semibold text-sm sm:text-base"
                 >
                   Login
                 </button>
               </div>
             ) : (
-              <div className="space-y-5">
+              <div className="space-y-4 sm:space-y-5">
                 <div>
-                  <label className="block text-gray-700 font-medium mb-2">Your Name</label>
+                  <label className="block text-gray-700 font-medium mb-1 sm:mb-2 text-sm sm:text-base">
+                    Your Name
+                  </label>
                   <input
                     type="text"
-                    className="text-black w-full border-2 border-gray-200 rounded-xl p-3 focus:border-indigo-500 focus:outline-none"
+                    className="text-black w-full border-2 border-gray-200 rounded-xl p-2 sm:p-3 text-sm sm:text-base focus:border-indigo-500 focus:outline-none"
                     value={user.firstName || user.email}
                     readOnly
                   />
                 </div>
 
                 <div>
-                  <label className="block text-gray-700 font-medium mb-2">Your Comment</label>
+                  <label className="block text-gray-700 font-medium mb-1 sm:mb-2 text-sm sm:text-base">
+                    Your Comment
+                  </label>
                   <textarea
-                    className="text-black w-full border-2 border-gray-200 rounded-xl p-3 focus:border-indigo-500 focus:outline-none resize-none"
+                    className="text-black w-full border-2 border-gray-200 rounded-xl p-2 sm:p-3 focus:border-indigo-500 focus:outline-none resize-none text-sm sm:text-base"
                     value={comment}
                     onChange={(e) => setComment(e.target.value)}
                     placeholder="Tell us about your experience..."
-                    rows={4}
+                    rows={3}
                   />
                 </div>
 
                 <div>
-                  <label className="block text-gray-700 font-medium mb-2">Rating</label>
-                  <div className="flex gap-2">
+                  <label className="block text-gray-700 font-medium mb-1 sm:mb-2 text-sm sm:text-base">
+                    Rating
+                  </label>
+                  <div className="flex gap-1 sm:gap-2">
                     {[1, 2, 3, 4, 5].map((star) => (
                       <button
                         key={star}
@@ -179,10 +205,10 @@ const Feedback = () => {
                         onClick={() => setRating(star)}
                         onMouseEnter={() => setHoverRating(star)}
                         onMouseLeave={() => setHoverRating(0)}
-                        className="transition-transform hover:scale-125"
+                        className="transition-transform hover:scale-110"
                       >
                         <Star
-                          className={`w-10 h-10 transition-colors ${
+                          className={`w-6 h-6 sm:w-10 sm:h-10 transition-colors ${
                             star <= (hoverRating || rating)
                               ? "fill-yellow-400 text-yellow-400"
                               : "text-gray-300 hover:text-yellow-300"
@@ -195,9 +221,9 @@ const Feedback = () => {
 
                 <button
                   onClick={handleSubmit}
-                  className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-3 rounded-xl hover:shadow-lg hover:scale-105 transition-all duration-300 font-semibold flex items-center justify-center gap-2"
+                  className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-2 sm:py-3 rounded-xl hover:shadow-lg hover:scale-105 transition-all duration-300 font-semibold flex items-center justify-center gap-2 text-sm sm:text-base"
                 >
-                  <Send className="w-5 h-5" />
+                  <Send className="w-4 h-4 sm:w-5 sm:h-5" />
                   Submit Feedback
                 </button>
               </div>
