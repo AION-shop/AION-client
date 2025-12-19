@@ -27,7 +27,6 @@ import Models from "./pages/Models.jsx";
 import Feedback from "./components/shared/Feedback.jsx";
 import VerifyPage from "./pages/verfiyPage.jsx";
 
-
 // Toast
 import { Toaster } from "react-hot-toast";
 
@@ -40,12 +39,9 @@ const root = createRoot(container);
 
 const router = createBrowserRouter(
   [
-    // Auth routes
     { path: "/login", element: <Login /> },
     { path: "/verify-account", element: <VerifyPage /> },
 
-
-    // MAIN ROUTES
     {
       path: "/",
       element: <App />,
@@ -60,11 +56,9 @@ const router = createBrowserRouter(
         { path: "offerta", element: <Offerta /> },
         { path: "col-products/:id", element: <SingleColProductPage /> },
         { path: "about-car/:id", element: <AboutCar /> },
-
       ],
     },
 
-    // 404 fallback
     {
       path: "*",
       element: (
@@ -102,19 +96,14 @@ root.render(
           <LangProvider>
             <RouterProvider router={router} />
             <Toaster
-              position="top-right"        // o‘ng yuqori
-              reverseOrder={false}        // eski toastlar pastga
+              position="top-right"
+              reverseOrder={false}
               toastOptions={{
-                duration: 3000,           // 3 soniya ko‘rinadi
-                style: {
-                  background: "#333",
-                  color: "#fff",
-                  fontWeight: "500",
-                },
+                duration: 3000,
+                style: { background: "#333", color: "#fff", fontWeight: "500" },
               }}
             />
           </LangProvider>
-
         </PersistGate>
       </Provider>
     </HelmetProvider>

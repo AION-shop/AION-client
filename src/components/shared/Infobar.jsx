@@ -48,7 +48,7 @@ const InfoBar = () => {
               className="flex items-center gap-2 px-4 py-2 text-sm rounded-xl bg-blue-600 hover:bg-blue-700 transition hover:scale-105"
             >
               <ShoppingCart size={16} />
-              {t("infobar:sell")}
+              {t("infobar:Look")}
             </Link>
 
             {isAuth ? (
