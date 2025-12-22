@@ -127,21 +127,32 @@ const Cloudy = () => {
   );
 };
 
-// 🌦 WeatherAnimation Component
-export default function WeatherAnimation({ locationId }) {
+// 🌦 Main Component
+export default function WeatherAnimation() {
   const [weather, setWeather] = useState(null);
 
   useEffect(() => {
-    const fetchWeather = async () => {
-      try {
-        const res = await axios.get(`${import.meta.env.VITE_API_URL}/locations/${locationId}/weather`);
-        setWeather(res.data.current.weather[0].main); // Snow, Rain, Clear, Clouds
-      } catch (err) {
-        console.log("Weather fetch error:", err);
-      }
-    };
-    fetchWeather();
-  }, [locationId]);
+    // 1️⃣ Foydalanuvchining geolokatsiyasini olish
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(async (position) => {
+        const { latitude, longitude } = position.coords;
+
+        try {
+          // 2️⃣ OpenWeatherMap API orqali ob-havoni olish
+          const res = await axios.get(
+            `${import.meta.env.VITE_API_WEATHER_URL}/weather?lat=${latitude}&lon=${longitude}&appid=${import.meta.env.VITE_WEATHER_API_KEY}`
+          );
+
+          const mainWeather = res.data.weather[0].main; // Snow, Rain, Clear, Clouds
+          setWeather(mainWeather);
+        } catch (err) {
+          console.log("Weather fetch error:", err);
+        }
+      });
+    } else {
+      console.log("Geolocation not supported");
+    }
+  }, []);
 
   if (!weather) return null;
 
@@ -150,7 +161,7 @@ export default function WeatherAnimation({ locationId }) {
       {weather === "Snow" && <Snow />}
       {weather === "Rain" && <Rain />}
       {weather === "Clear" && <Sunny />}
-      {weather === "Clouds" && <Cloudy />}
+      
     </div>
   );
 }

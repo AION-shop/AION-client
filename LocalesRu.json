@@ -1,99 +1,80 @@
 {
     "subNavbar": {
         "menu": "Меню",
-        "allProducts": "Коментарие",
-        "allProductsSub": "Полный коментарии",
+        "allProducts": "Отзывы",
+        "allProductsSub": "Смотреть все отзывы пользователей",
         "lottery": "Модели",
-        "lotterySub": "Новые модели",
-        "new": "Новинки",
+        "lotterySub": "Посмотреть модели",
+        "new": "Новые",
         "newSub": "Каждый день",
         "installment": "Рассрочка",
-        "phoneLabel": "Звоните",
+        "phoneLabel": "Позвоните нам",
         "lang": "Язык",
-        "login": "вход"
+        "login": "Войти"
     },
     "infobar": {
         "specialOffer": "Специальное предложение",
-        "from": "от",
-        "bestCars": "Лучшие автомобили по выгодной цене",
-        "shopNow": "Купить сейчас",
-        "sell": "посмотреть"
+        "bestCars": "Лучшие электромобили по лучшей цене",
+        "look": "Посмотреть",
+        "sellCardLink": "Начать продажу",
+        "contactUs": "Связаться с нами",
+        "phone": "Телефон",
+        "email": "Электронная почта"
     },
     "sellCard": {
-        "pageTitle": "AION Электромобили — Начать Продажу",
+        "pageTitle": "AION Электромобили — Начать продажу",
         "heroTitle": "Начните с AION Электромобилей",
-        "heroTitleHighlight": "Продажу",
-        "heroDesc": "AION — электромобили нового поколения. Премиум качество, мощность и экологическая безопасность.",
+        "heroTitleHighlight": "Продажа",
+        "heroDesc": "AION — это новое поколение электромобилей. Премиум качество, мощность и экологичность.",
         "features": {
-            "distanceTitle": "450 км пробега",
-            "distanceDesc": "Дальность на одной зарядке.",
-            "warrantyTitle": "5 лет гарантии",
-            "warrantyDesc": "Официальное сервисное обслуживание.",
+            "distanceTitle": "450 км диапазон",
+            "distanceDesc": "Большое расстояние на одной зарядке.",
+            "warrantyTitle": "Гарантия 5 лет",
+            "warrantyDesc": "Поддержка официального сервиса.",
             "qualityTitle": "Премиум качество",
-            "qualityDesc": "Пройдено тестирование.",
+            "qualityDesc": "Протестировано и сертифицировано.",
             "ratingTitle": "Высокий рейтинг",
-            "ratingDesc": "Самый надежный бренд."
+            "ratingDesc": "Один из самых надежных брендов."
         },
-        "startSelling": "Начать Продажу",
-        "premiumModels": "Премиум Модели AION",
-        "modelTitle": "AION S — Премиум Седан",
-        "modelDesc": "Создан с использованием электро-технологий и современного дизайна.",
+        "startSelling": "Начать продажу",
+        "premiumModels": "Премиум модели AION",
+        "modelTitle": "AION S — Премиум седан",
+        "modelDesc": "Создано с использованием электрических технологий и современного дизайна.",
         "modelFeatures": {
-            "rating": "Рейтинг 4.9 звезды",
+            "rating": "Рейтинг 4.9",
             "speed": "0–100 км/ч: 6.7с",
-            "onlineService": "Онлайн мониторинг сервиса"
+            "onlineService": "Онлайн контроль обслуживания"
         },
-        "galleryTitle": "Галерея Моделей AION",
-        "modalTitle": "Информация о Продавце",
+        "galleryTitle": "Галерея моделей AION",
+        "modalTitle": "Информация о продавце",
         "form": {
-            "fullName": "ФИО",
-            "region": "Откуда вы? (Ташкент, Самарканд...)",
-            "carModel": "Модель автомобиля (AION S, AION Y...)",
-            "aboutYou": "Коротко о себе",
-            "aboutCar": "О вашем автомобиле",
+            "fullName": "Полное имя",
+            "region": "Город / регион (Ташкент, Самарканд...)",
+            "carModel": "Модель вашего автомобиля (AION S, AION Y...)",
+            "aboutYou": "Краткая информация о вас",
+            "aboutCar": "О автомобиле",
             "cancel": "Отмена",
             "submit": "Отправить",
             "sending": "Отправка..."
         },
-        "successMessage": "Данные успешно отправлены!",
+        "successMessage": "Информация успешно отправлена!",
         "errorMessage": "Произошла ошибка!"
     },
     "home": {
         "popularModels": "Популярные модели GAC Aion",
-        "itemsAvailable": "Доступно {{count}} штук",
+        "itemsAvailable": "{{count}} доступно",
         "discoverCollection": "Откройте нашу коллекцию"
     },
-    "about": "AutoMarket – Электронные автомобили высшего качества. Лучшие цены только у нас!",
-    "quickLinks": "Быстрые ссылки",
-    "links": {
-        "allProducts": "Все товары",
-        "lottery": "Розыгрыши",
-        "news": "Новинки",
-        "installment": "Рассрочка"
-    },
-    "contact": "Контакты",
-    "social": "Мы в социальных сетях",
-    "rights": "Все права защищены.",
     "products": {
-        "gotoProduct": "Перейти к товару",
+        "gotoProduct": "Перейти к продукту",
         "addedToCart": "Добавлено в корзину",
-        "addToCart": "В корзину",
+        "addToCart": "Добавить в корзину",
         "addedToFavorite": "Добавлено в избранное",
         "removedFromFavorite": "Удалено из избранного",
-        "toggleFavorite": "Добавить/удалить из избранного",
-        "months": "мес"
+        "toggleFavorite": "Переключить избранное",
+        "months": "месяцы"
     },
-    "general": {
-        "models": "Модели",
-        "filters": "Фильтры",
-        "open_filters": "Открыть фильтры",
-        "found_products": "Найдено: {{count}} автомобилей",
-        "no_products_found": "В этой категории товары не найдены"
-    },
-    "installment_page": {
-        "title": "Автомобили в рассрочку",
-        "meta_description": "Удобная рассрочка на автомобили AION V, AION Y, AION S, AION MAX и другие продукты."
-    },
+    "categoriesTitle": "Модели",
     "categories": {
         "all": "Все модели",
         "AION V": "AION V",
@@ -102,11 +83,19 @@
         "AION MAX": "AION MAX",
         "new": "Новинки"
     },
+    "installment_page": {
+        "title": "Планы рассрочки",
+        "meta_description": "Доступны удобные планы рассрочки для AION V, AION Y, AION S, AION MAX и других автомобилей."
+    },
+    "general": {
+        "found_products": "Найдено: {{count}} автомобилей",
+        "no_products_found": "В этой категории нет автомобилей"
+    },
     "hero": {
-        "heroHeading": "GAC Aion электромобилей",
-        "heroSub": "Идеальное сочетание производительности, роскоши и инноваций.",
+        "heroHeading": "GAC Aion Электро",
+        "heroSub": "Испытайте идеальное сочетание производительности, роскоши и инноваций.",
         "heroButton": "Узнать больше",
-        "scrollText": "Прокрутка"
+        "scrollText": "Прокрутите вниз"
     },
     "brake": {
         "brakeTitle": "Тормозная система",
@@ -116,30 +105,48 @@
         "rearBrake": "Задние тормоза",
         "rearBrakeValue": "Дисковые тормоза",
         "abs": "ABS",
-        "absValue": "Против блокировки колес",
+        "absValue": "Антиблокировочная система",
         "ebd": "EBD",
-        "ebdValue": "Электронное распределение силы",
+        "ebdValue": "Электронное распределение тормозного усилия",
         "esp": "ESP",
-        "espValue": "Электронная система стабилизации",
-        "brakeAssist": "Brake Assist",
-        "brakeAssistValue": "Помощь при торможении",
+        "espValue": "Система электронного контроля устойчивости",
+        "brakeAssist": "Ассистент торможения",
+        "brakeAssistValue": "Помощь при экстренном торможении",
         "batteryTitle": "Батарея и мощность",
-        "batterySubtitle": "Современная технология хранения энергии",
+        "batterySubtitle": "Современные технологии хранения энергии",
         "batteryType": "Тип батареи",
-        "batteryTypeDesc": "Литий-железо-фосфат - безопасная и долговечная",
+        "batteryTypeDesc": "Литий-железо-фосфат — безопасно и надежно",
         "power": "Мощность",
-        "powerDesc": "Эквивалент 204 л.с.",
-        "interiorTitle": "Интерьер",
+        "powerDesc": "204 л.с.",
+        "interiorTitle": "Салон",
         "interiorSubtitle": "Современный дизайн и комфорт",
         "digitalPanel": "Цифровая панель",
-        "digitalPanelDesc": "Цветная цифровая панель приборов",
+        "digitalPanelDesc": "Цветной цифровой дисплей",
         "sensorScreen": "Сенсорный экран",
-        "sensorScreenDesc": "Большой мультимедийный экран",
+        "sensorScreenDesc": "Большой центральный мультимедийный экран",
         "climate": "Климат-контроль",
         "climateValue": "Автоматический",
-        "climateDesc": "Двухзонная система климата",
+        "climateDesc": "Двухзональная система",
         "panorama": "Панорамная крыша",
         "panoramaValue": "Электрическая",
         "panoramaDesc": "Электрическая панорамная шторка"
-    }
+    },
+    "feedback": {
+        "shareExperience": "Поделитесь своим опытом с нами",
+        "addFeedback": "Добавить отзыв",
+        "noFeedbacks": "Пока нет отзывов",
+        "beFirst": "Будьте первым, кто поделится опытом!",
+        "writeComment": "Пожалуйста, напишите отзыв",
+        "submitFeedback": "Отправить отзыв",
+        "loginPrompt": "Пожалуйста, войдите в систему",
+        "yourName": "Ваше имя",
+        "yourComment": "Ваш отзыв",
+        "commentPlaceholder": "Расскажите нам о своем опыте...",
+        "rating": "Оценка",
+        "fetchError": "Ошибка при получении отзывов",
+        "submitError": "Ошибка при отправке отзыва",
+        "anonymous": "Аноним"
+    },
+    "about": "AutoMarket — Премиум электромобили с лучшими предложениями.",
+    "rights": "Все права защищены."
 }

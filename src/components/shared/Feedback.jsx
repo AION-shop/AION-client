@@ -2,8 +2,10 @@ import React, { useState, useEffect } from "react";
 import { MessageSquare, Star, X, Send, User } from "lucide-react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const Feedback = () => {
+  const { t } = useTranslation();
   const [comment, setComment] = useState("");
   const [rating, setRating] = useState(5);
   const [hoverRating, setHoverRating] = useState(0);
@@ -23,7 +25,7 @@ const Feedback = () => {
       const data = await res.json();
       setFeedbacks(data);
     } catch (error) {
-      console.error("Feedbacklarni olishda xato:", error);
+      console.error(t("feedback.fetchError"), error);
     }
   };
 
@@ -33,7 +35,7 @@ const Feedback = () => {
 
   const handleSubmit = async () => {
     if (!comment) {
-      alert("Iltimos, feedback yozing");
+      alert(t("feedback.writeComment"));
       return;
     }
     try {
@@ -41,7 +43,7 @@ const Feedback = () => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          name: user?.firstName || user?.email || "Anonymous",
+          name: user?.firstName || user?.email || t("feedback.anonymous"),
           comment,
           rating,
         }),
@@ -53,7 +55,7 @@ const Feedback = () => {
       setRating(5);
       setIsModalOpen(false);
     } catch (error) {
-      console.error("Feedback yuborishda xato:", error);
+      console.error(t("feedback.submitError"), error);
     }
   };
 
@@ -68,10 +70,10 @@ const Feedback = () => {
             </div>
             <div>
               <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800">
-                Customer Feedback
+                {t("subNavbar.allProducts")}
               </h1>
               <p className="text-gray-500 mt-1 text-sm sm:text-base">
-                Share your experience with us
+                {t("feedback.shareExperience")}
               </p>
             </div>
           </div>
@@ -81,7 +83,7 @@ const Feedback = () => {
             className="bg-black text-white px-4 py-2 sm:px-6 sm:py-3 rounded-xl hover:shadow-lg hover:scale-105 transition-all duration-300 flex items-center gap-2 font-semibold text-sm sm:text-base"
           >
             <Send className="w-4 h-4 sm:w-5 sm:h-5" />
-            Add Feedback
+            {t("feedback.addFeedback")}
           </button>
         </div>
 
@@ -93,10 +95,10 @@ const Feedback = () => {
                 <MessageSquare className="w-6 h-6 sm:w-10 sm:h-10 text-gray-400" />
               </div>
               <p className="text-gray-500 text-base sm:text-lg font-medium">
-                No feedbacks yet
+                {t("feedback.noFeedbacks")}
               </p>
               <p className="text-gray-400 mt-2 text-sm sm:text-base">
-                Be the first to share your experience!
+                {t("feedback.beFirst")}
               </p>
             </div>
           ) : (
@@ -157,20 +159,20 @@ const Feedback = () => {
             {!isAuth ? (
               <div className="text-center">
                 <h3 className="text-xl sm:text-2xl font-bold mb-4">
-                  Iltimos, login qiling
+                  {t("feedback.loginPrompt")}
                 </h3>
                 <button
                   onClick={() => navigate("/login")}
                   className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 sm:px-6 sm:py-3 rounded-xl font-semibold text-sm sm:text-base"
                 >
-                  Login
+                  {t("subNavbar.login")}
                 </button>
               </div>
             ) : (
               <div className="space-y-4 sm:space-y-5">
                 <div>
                   <label className="block text-gray-700 font-medium mb-1 sm:mb-2 text-sm sm:text-base">
-                    Your Name
+                    {t("feedback.yourName")}
                   </label>
                   <input
                     type="text"
@@ -182,20 +184,20 @@ const Feedback = () => {
 
                 <div>
                   <label className="block text-gray-700 font-medium mb-1 sm:mb-2 text-sm sm:text-base">
-                    Your Comment
+                    {t("feedback.yourComment")}
                   </label>
                   <textarea
                     className="text-black w-full border-2 border-gray-200 rounded-xl p-2 sm:p-3 focus:border-indigo-500 focus:outline-none resize-none text-sm sm:text-base"
                     value={comment}
                     onChange={(e) => setComment(e.target.value)}
-                    placeholder="Tell us about your experience..."
+                    placeholder={t("feedback.commentPlaceholder")}
                     rows={3}
                   />
                 </div>
 
                 <div>
                   <label className="block text-gray-700 font-medium mb-1 sm:mb-2 text-sm sm:text-base">
-                    Rating
+                    {t("feedback.rating")}
                   </label>
                   <div className="flex gap-1 sm:gap-2">
                     {[1, 2, 3, 4, 5].map((star) => (
@@ -224,7 +226,7 @@ const Feedback = () => {
                   className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-2 sm:py-3 rounded-xl hover:shadow-lg hover:scale-105 transition-all duration-300 font-semibold flex items-center justify-center gap-2 text-sm sm:text-base"
                 >
                   <Send className="w-4 h-4 sm:w-5 sm:h-5" />
-                  Submit Feedback
+                  {t("feedback.submitFeedback")}
                 </button>
               </div>
             )}

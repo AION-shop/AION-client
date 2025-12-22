@@ -2,10 +2,12 @@ import React, { useEffect, useState, useCallback, useMemo } from "react";
 import { useLocation, Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { Menu, X } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import ColProductCard from "../components/ui/cards/Products";
 import Container from "../components/shared/Container";
 
 const Rasrochka = () => {
+  const { t } = useTranslation(); // <-- useTranslation hook
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState("all");
@@ -15,16 +17,15 @@ const Rasrochka = () => {
   const API_URL = import.meta.env.VITE_API_URL;
 
   const categories = useMemo(() => [
-    { id: "all", name: "Barcha Modellar" },
-    { id: "AION V", name: "AION V" },
-    { id: "AION Y", name: "AION Y" },
-    { id: "AION S", name: "AION S" },
-    { id: "AION MAX", name: "AION MAX" },
-    { id: "new", name: "Yangi kelganlar" },
-  ], []);
+    { id: "all", name: t("categories.all") },
+    { id: "AION V", name: t("categories.AION V") },
+    { id: "AION Y", name: t("categories.AION Y") },
+    { id: "AION S", name: t("categories.AION S") }, 
+    { id: "AION MAX", name: t("categories.AION MAX") },
+    { id: "new", name: t("categories.new") },
+  ], [t]);
 
   useEffect(() => {
-    // ... (useEffect logic o'zgarishsiz) ...
     const params = new URLSearchParams(location.search);
     const model = params.get("model");
     if (model) {
@@ -34,7 +35,6 @@ const Rasrochka = () => {
   }, [location.search, categories]);
 
   useEffect(() => {
-    // ... (fetchProducts logic o'zgarishsiz) ...
     const fetchProducts = async () => {
       try {
         setLoading(true);
@@ -68,27 +68,19 @@ const Rasrochka = () => {
     setSelectedCategory(id);
     setIsMobileMenuOpen(false);
   }, []);
-  
-  // --- O'zgartirilgan qism: activeCategoryName endi faqat tanlangan nomni qaytaradi ---
-  const activeCategoryName = useMemo(() => {
-    // Agar "all" tanlangan bo'lsa, "Rassrochka Avtomobillari" defolt sarlavha bo'ladi
-    if (selectedCategory === "all") {
-        return "Avtomobillar ";
-    }
-    // Aks holda, tanlangan kategoriyaning nomi chiqadi (masalan: "AION V")
-    return categories.find(c => c.id === selectedCategory)?.name || "Rassrochka Avtomobillari";
-  }, [selectedCategory, categories]);
-  // ----------------------------------------------------------------------------------
 
+  const activeCategoryName = useMemo(() => {
+    if (selectedCategory === "all") return t("installment_page.title");
+    return categories.find(c => c.id === selectedCategory)?.name || t("installment_page.title");
+  }, [selectedCategory, categories, t]);
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50 text-gray-900">
-
       <Helmet>
         <title>{activeCategoryName} | AutoMarket</title>
         <meta
           name="description"
-          content={`AION V, AION Y, AION S, AION MAX avtomobillari va boshqa mahsulotlar uchun qulay rassrochka shartlari. ${activeCategoryName} modelini ko'rish.`}
+          content={`${t("installment_page.meta_description")} ${activeCategoryName} modelini ko'rish.`}
         />
       </Helmet>
 
@@ -96,9 +88,7 @@ const Rasrochka = () => {
       <header className="lg:hidden sticky top-0 z-10 bg-white shadow-md">
         <Container>
           <div className="flex items-center justify-between py-4">
-            {/* Sarlavha: Faqat activeCategoryName qiymati chiqadi */}
             <h1 className="text-xl font-bold">{activeCategoryName}</h1>
-            
             <button
               onClick={() => setIsMobileMenuOpen(prev => !prev)}
               className="p-2 rounded-lg bg-black text-white hover:bg-gray-800 transition shadow-md"
@@ -109,85 +99,73 @@ const Rasrochka = () => {
           </div>
         </Container>
 
-        {/* Dropdown Mobile Menu */}
         {isMobileMenuOpen && (
           <div className="absolute top-full left-0 right-0 bg-white shadow-xl animate-slideDown overflow-y-auto">
-             <ul className="flex flex-col">
-                {categories.map(cat => (
-                  <li key={cat.id}>
-                    <Link
-                      to={cat.id === 'all' ? '/rasrochka' : `/rasrochka?model=${cat.id}`}
-                      onClick={() => handleCategoryChange(cat.id)}
-                      className={`block w-full text-left px-4 py-3 transition duration-200 ${
-                        selectedCategory === cat.id
-                          ? "bg-black text-white font-semibold"
-                          : "text-gray-700 hover:bg-gray-100"
-                      }`}
-                    >
-                      {cat.name}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
+            <ul className="space-y-3">
+              {categories.map(cat => (
+                <li key={cat.id}>
+                  <button
+                    onClick={() => handleCategoryChange(cat.id)}
+                    className={`w-full text-left px-4 py-3 rounded-lg font-medium transition-all duration-300
+          ${selectedCategory === cat.id ? "bg-black text-white shadow-lg font-semibold" : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"}`}
+                  >
+                    {cat.name}
+                  </button>
+                </li>
+              ))}
+            </ul>
+
           </div>
         )}
       </header>
 
-      {/* Main Content Area */}
+      {/* Main Content */}
       <div className="flex flex-1 relative">
-
-        {/* Sidebar Desktop: Bu yerda "Barcha Modellar" matni qoladi (designed behavior) */}
+        {/* Sidebar Desktop */}
         <aside className="hidden lg:block w-72 h-screen sticky top-0 p-6 bg-white border-r border-gray-100 shadow-sm">
-           <h3 className="text-2xl font-extrabold mb-6 text-gray-900">Modellar</h3>
-           <ul className="space-y-3">
-             {categories.map(cat => (
-               <li key={cat.id}>
-                 <button
-                   onClick={() => handleCategoryChange(cat.id)}
-                   className={`w-full text-left px-4 py-3 rounded-lg font-medium transition-all duration-300
-                     ${selectedCategory === cat.id ? "bg-black text-white shadow-lg font-semibold" : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"}`}
-                 >
-                   {cat.name}
-                 </button>
-               </li>
-             ))}
-           </ul>
+          <h3 className="text-2xl font-extrabold mb-6 text-gray-900">{t("Brands ")}</h3>
+          <ul className="space-y-3">
+            {categories.map(cat => (
+              <li key={cat.id}>
+                <button
+                  onClick={() => handleCategoryChange(cat.id)}
+                  className={`w-full text-left px-4 py-3 rounded-lg font-medium transition-all duration-300
+                    ${selectedCategory === cat.id ? "bg-black text-white shadow-lg font-semibold" : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"}`}
+                >
+                  {cat.name}
+                </button>
+              </li>
+            ))}
+          </ul>
         </aside>
 
-        {/* Main Content */}
+        {/* Products Grid */}
         <main className="flex-1 p-4 sm:p-6 lg:p-10">
           <Container>
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
-              {/* Sarlavha: Faqat activeCategoryName qiymati chiqadi */}
-              <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900">
-                {activeCategoryName}
-              </h1>
+              <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900">{activeCategoryName}</h1>
               <span className="text-gray-500 text-base">
-                Topildi: {products.length} avtomobil
+                {t("general.found_products", { count: products.length })}
               </span>
             </div>
 
-            {/* Products Grid (o'zgarishsiz) */}
             {loading ? (
-               <div className="flex items-center justify-center h-64">
-                 <div className="animate-spin rounded-full h-12 w-12 border-b-4 border-black"></div>
-               </div>
+              <div className="flex items-center justify-center h-64">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-4 border-black"></div>
+              </div>
             ) : products.length === 0 ? (
-               <div className="text-center py-20 text-gray-400 text-xl">
-                 Bu turkumda avtomobillar topilmadi
-               </div>
+              <div className="text-center py-20 text-gray-400 text-xl">{t("general.no_products_found")}</div>
             ) : (
-               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6 md:gap-8">
-                 {products.map(product => (
-                   <ColProductCard key={product._id} card={product} />
-                 ))}
-               </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6 md:gap-8">
+                {products.map(product => (
+                  <ColProductCard key={product._id} card={product} />
+                ))}
+              </div>
             )}
           </Container>
         </main>
       </div>
 
-      {/* Animations (o'zgarishsiz) */}
       <style>{`
         @keyframes fadeIn { from {opacity:0;} to {opacity:1;} }
         .animate-fadeIn { animation: fadeIn 0.5s ease-out forwards; }

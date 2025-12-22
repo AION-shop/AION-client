@@ -9,7 +9,7 @@ export default function App() {
   return (
     <div className="relative min-h-screen overflow-x-hidden">
       {/* ❄️ Animations overlay */}
-      <div className="pointer-events-none absolute inset-0 z-0">
+      <div className="pointer-events-none fixed inset-0 z-[999]">
         <SnowAnimation />
         <WeatherAnimation locationId="YOUR_LOCATION_ID" />
       </div>

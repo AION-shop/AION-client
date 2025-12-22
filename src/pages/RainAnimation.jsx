@@ -4,17 +4,15 @@ export default function RainAnimation() {
   const [drops, setDrops] = useState([]);
 
   useEffect(() => {
-    const newDrops = [];
-    for (let i = 0; i < 100; i++) {
-      newDrops.push({
-        id: i,
-        left: Math.random() * 100,
-        top: Math.random() * 100,
-        length: Math.random() * 15 + 10,
-        speed: Math.random() * 2 + 2,
-      });
-    }
-    setDrops(newDrops);
+    const count = window.innerWidth < 768 ? 50 : 100; // mobilga kamroq
+    const tempDrops = Array.from({ length: count }, (_, i) => ({
+      id: i,
+      left: Math.random() * 100,
+      top: Math.random() * 100,
+      length: window.innerWidth < 768 ? 8 + Math.random() * 10 : 10 + Math.random() * 15,
+      speed: 2 + Math.random() * 2,
+    }));
+    setDrops(tempDrops);
   }, []);
 
   return (

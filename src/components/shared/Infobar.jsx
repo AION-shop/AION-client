@@ -14,7 +14,7 @@ import { useTranslation } from "react-i18next";
 
 const InfoBar = () => {
   const dispatch = useDispatch();
-  const { t } = useTranslation(["infobar", "subNavbar"]); // MUHIM
+  const { t } = useTranslation(["infobar", "subNavbar"]);
   const { user, isAuth } = useSelector((state) => state.auth);
 
   const colors = useMemo(
@@ -23,7 +23,10 @@ const InfoBar = () => {
   );
 
   return (
-    <div className="relative overflow-hidden bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 border-b border-white/10">
+    <section
+      className="relative overflow-hidden bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 border-b border-white/10"
+      aria-label="Top information bar"
+    >
       <Container>
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3 py-3">
 
@@ -42,17 +45,20 @@ const InfoBar = () => {
           </div>
 
           {/* RIGHT */}
-          <div className="flex items-center gap-3 mt-2 sm:mt-0 flex-wrap">
+          <div className="flex items-center gap-3 flex-wrap">
+
             <Link
               to="/sell-card"
-              className="flex items-center gap-2 px-4 py-2 text-sm rounded-xl bg-blue-600 hover:bg-blue-700 transition hover:scale-105"
+              aria-label="View products"
+              className="flex items-center gap-2 px-4 py-2 text-sm rounded-xl bg-blue-600 text-white
+              hover:bg-blue-700 transition-transform hover:scale-105"
             >
               <ShoppingCart size={16} />
-              {t("infobar:Look")}
+              {t("infobar:look")}
             </Link>
 
             {isAuth ? (
-              <div className="flex items-center gap-2 px-3 py-2 rounded-xl">
+              <div className="flex items-center gap-2 px-3 py-2 rounded-xl ">
                 <div className="w-9 h-9 rounded-full bg-gray-700 flex items-center justify-center text-white font-bold text-sm">
                   {user?.firstName?.[0]?.toUpperCase() ||
                     user?.email?.[0]?.toUpperCase() ||
@@ -65,8 +71,8 @@ const InfoBar = () => {
 
                 <button
                   onClick={() => dispatch(logout())}
+                  aria-label="Logout"
                   className="p-2 rounded-lg hover:bg-red-500/20 transition"
-                  title="Logout"
                 >
                   <LogOut size={16} />
                 </button>
@@ -74,7 +80,8 @@ const InfoBar = () => {
             ) : (
               <Link
                 to="/login"
-                className="flex items-center gap-2 px-4 py-2 rounded-xl border border-white/20 hover:bg-white/5 transition"
+                aria-label="Login"
+                className="flex items-center gap-2 px-4 py-2 rounded-xl border border-white/20 text-white hover:bg-white/5 transition"
               >
                 <User size={16} />
                 {t("subNavbar:login")}
@@ -84,7 +91,7 @@ const InfoBar = () => {
         </div>
       </Container>
 
-      {/* FLOAT ICONS */}
+      {/* FLOATING ICONS */}
       <div className="absolute inset-0 pointer-events-none">
         {[...Array(8)].map((_, i) => (
           <Percent
@@ -103,15 +110,15 @@ const InfoBar = () => {
 
       <style>{`
         @keyframes float {
-          0% { transform: translateY(0) }
-          50% { transform: translateY(-10px) }
-          100% { transform: translateY(0) }
+          0% { transform: translateY(0); }
+          50% { transform: translateY(-10px); }
+          100% { transform: translateY(0); }  
         }
         .animate-float {
           animation: float 6s ease-in-out infinite;
         }
       `}</style>
-    </div>
+    </section>
   );
 };
 

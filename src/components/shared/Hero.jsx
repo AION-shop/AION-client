@@ -1,38 +1,71 @@
 import React, { useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
-import WeatherAnimation from "../../pages/WeatherAnimation";
+
+function WeatherAnimation({ weather }) {
+  // weather: "Clear", "Clouds", "Rain", etc.
+  return (
+    <div className="w-full h-full pointer-events-none relative">
+      {weather === "Clouds" && (
+        <div className="absolute w-40 h-20 bg-white/70 rounded-full blur-sm animate-[moveCloud_60s_linear_infinite]" />
+      )}
+      {weather === "Rain" && (
+        <div className="absolute w-full h-full">
+          {/* Yomg‘ir chiziqlari */}
+          {Array.from({ length: 50 }).map((_, i) => (
+            <div
+              key={i}
+              className="absolute w-[2px] h-6 bg-blue-400 opacity-70 animate-fall"
+              style={{
+                left: `${Math.random() * 100}%`,
+                animationDelay: `${Math.random() * 2}s`,
+              }}
+            />
+          ))}
+        </div>
+      )}
+      {/* Clear weather bo‘lsa hech narsa yoki quyosh animatsiyasi */}
+    </div>
+  );
+}
 
 const Hero = () => {
-    const { t } = useTranslation("hero");
-    const [isLoaded, setIsLoaded] = useState(false);
+  const [weather, setWeather] = useState("Clear");
+  const [isLoaded, setIsLoaded] = useState(false);
 
-    useEffect(() => setIsLoaded(true), []);
+  useEffect(() => {
+    setIsLoaded(true);
+    // Geolocation olish
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(async (position) => {
+        const { latitude, longitude } = position.coords;
 
-    return (
-        <section className="relative w-full h-[700px] overflow-hidden bg-black">
+        // OpenWeatherMap API chaqiruv
+        const apiKey = "YOUR_OPENWEATHER_API_KEY";
+        const res = await fetch(
+          `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${apiKey}`
+        );
+        const data = await res.json();
+        setWeather(data.weather[0].main); // "Clear", "Clouds", "Rain", etc.
+      });
+    }
+  }, []);
 
-            {/* Video Background */}
-            <div className="absolute inset-0 w-full h-full z-0 overflow-hidden">
-                <iframe
-                    className="w-full h-full object-cover"
-                    src="https://www.youtube.com/embed/QOLUgCc_94Q?autoplay=1&mute=1&loop=1&playlist=QOLUgCc_94Q&controls=0&playsinline=1"
-                    title="DriveVision POV 2023 GAC AION Y Plus"
-                    frameBorder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    allowFullScreen
-                />
-            </div>
+  return (
+    <section className="relative w-full h-[700px] overflow-hidden bg-gradient-to-br from-gray-900 to-gray-800">
+      <div className="absolute inset-0 z-0">
+        <img
+          src="https://cdn.urbandrive.uz/images/brand/main-images/1729937832390_GAC-Aion_(En).webp"
+          alt="GAC Aion"
+          className={`w-full h-full object-cover transition-all duration-700 ${
+            isLoaded ? "opacity-100" : "opacity-0"
+          }`}
+        />
+      </div>
 
-
-            {/* Weather Animations (overlay) */}
-            <div className="absolute inset-0 w-full h-full z-10 pointer-events-none">
-                <WeatherAnimation locationId="YOUR_LOCATION_ID" />
-            </div>
-
-            {/* Hero Content */}
-           
-        </section>
-    );
+      <div className="absolute inset-0 z-10 pointer-events-none">
+        <WeatherAnimation weather={weather} />
+      </div>
+    </section>
+  );
 };
 
 export default Hero;
