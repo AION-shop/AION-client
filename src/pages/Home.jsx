@@ -95,6 +95,8 @@ export default function Home() {
                   : "bg-gray-100 border-gray-300 text-gray-700"
               }`}
             >
+
+              {/* 🔹 Products count */}
               {t("itemsAvailable", { count: colProducts.length })}
             </span>
           </div>
