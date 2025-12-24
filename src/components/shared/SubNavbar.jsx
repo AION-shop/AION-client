@@ -128,46 +128,56 @@ const SubNavbar = () => {
               <div className="relative">
                 <button
                   onClick={toggleLangDropdown}
-                  className="flex items-center gap-1.5 border border-gray-300 rounded-lg px-2 py-2 text-sm hover:bg-white/20 transition text-white"
+                  className="
+                    flex items-center gap-1.5
+                    border border-white/30
+                    rounded-lg
+                    px-3 py-2
+                    text-sm sm:text-base
+                    text-white
+                    hover:bg-white/20
+                    transition
+                  "
                 >
                   <Globe size={16} />
-                  <span className="font-medium">{lang.toUpperCase()}</span>
+                  <span className="font-semibold">{lang.toUpperCase()}</span>
                   <ChevronDown
                     size={14}
-                    className={`transition-transform ${
+                    className={`transition-transform duration-300 ${
                       isLangDropdownOpen ? "rotate-180" : ""
                     }`}
                   />
                 </button>
 
-                {/* 🔽 Mobile: pastga | 🔼 Desktop: tepaga */}
                 {isLangDropdownOpen && (
                   <div
                     className="
                       absolute right-0
-                      mt-2
-                      lg:mt-0
-                      lg:bottom-full
-                      lg:mb-2
-                      w-32
+                      bottom-full mb-2
+                      w-28 sm:w-32
                       bg-white
                       border border-gray-200
-                      rounded-lg
+                      rounded-xl
                       shadow-2xl
                       py-1
                       z-50
-                      animate-slideUp
+                      animate-langUp
                     "
                   >
                     {["uz", "ru", "en"].map((l) => (
                       <button
                         key={l}
                         onClick={() => handleLangChange(l)}
-                        className={`px-4 py-2 w-full text-left text-sm transition ${
-                          lang === l
-                            ? "font-bold text-blue-600 bg-blue-50"
-                            : "text-gray-700 hover:bg-gray-100"
-                        }`}
+                        className={`
+                          w-full px-4 py-2
+                          text-left text-sm sm:text-base
+                          transition
+                          ${
+                            lang === l
+                              ? "font-bold text-blue-600 bg-blue-50"
+                              : "text-gray-700 hover:bg-gray-100"
+                          }
+                        `}
                       >
                         {l.toUpperCase()}
                       </button>
@@ -209,8 +219,38 @@ const SubNavbar = () => {
             transform: translateY(0);
           }
         }
+
+        @keyframes langUp {
+          from {
+            opacity: 0;
+            transform: translateY(12px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
         .animate-slideUp {
           animation: slideUp 0.25s ease-out forwards;
+        }
+
+        .animate-langUp {
+          animation: langUp 0.25s ease-out forwards;
+        }
+
+        @keyframes slideDown {
+          from {
+            opacity: 0;
+            transform: translateY(-10px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        .animate-slideDown {
+          animation: slideDown 0.25s ease-out forwards;
         }
       `}</style>
     </section>
