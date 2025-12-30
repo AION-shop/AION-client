@@ -15,16 +15,12 @@
     "infobar": {
         "specialOffer": "Special Offer",
         "bestCars": "Best electric cars at the best price",
-        "look": "View",
-        "sellCardLink": "Start Selling",
-        "contactUs": "Contact Us",
-        "phone": "Phone",
-        "email": "Email"
+        "look": "View"
     },
     "sellCard": {
         "pageTitle": "AION Electric Vehicles — Start Selling",
         "heroTitle": "Start with AION Electric Vehicles",
-        "heroTitleHighlight": "Selling",
+        
         "heroDesc": "AION is a new generation of electric vehicles. Premium quality, power and eco safety.",
         "features": {
             "distanceTitle": "450 km range",
@@ -146,6 +142,38 @@
         "fetchError": "Error fetching feedbacks",
         "submitError": "Error submitting feedback",
         "anonymous": "Anonymous"
+    },
+    "singleProduct": {
+        "featuresTab": "Features",
+        "warrantyTab": "Warranty",
+        "backToGallery": "Back to gallery",
+        "addRating": "Add rating",
+        "noDescription": "Product description not available",
+        "specsTitle": "Technical specifications",
+        "maxRange": "Max range (km)",
+        "acceleration": "Acceleration (0-100 km/h)",
+        "power": "Power (kW)",
+        "topSpeed": "Top speed (km/h)",
+        "drivetrain": "Drivetrain",
+        "chargingTime": "Charging time",
+        "freeDelivery": "Free delivery",
+        "offertaButton": "Make offerta",
+        "warrantyTitle": "5-Year Extended Warranty",
+        "warrantyDesc": "Car is guaranteed for 5 years or 100,000 km.",
+        "noFeatures": "No additional features",
+        "linkCopied": "Link copied",
+        "reviews": "reviews",
+        "views": "views"
+    },
+    "banners": {
+        "title": " ALL BANNERS"
+    },
+    "discover": {
+        "title": "Discover",
+        "subtitle": "Explore curated experiences and electric performance designed for the future.",
+        "loading": "Loading popular models...",
+        "more": "Learn more",
+        "viewModel": "View {{title}}"
     },
     "about": "AutoMarket – Premium electric vehicles with the best offers.",
     "rights": "All rights reserved."

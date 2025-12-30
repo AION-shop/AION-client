@@ -1,78 +1,25 @@
-import React, { useState } from "react";
-import {
-  Zap,
-  Shield,
-  BarChart2,
-  Star,
-  Phone,
-  AtSign,
-} from "lucide-react";
+import React, { useState, useContext } from "react";
+import { Zap, Shield, BarChart2, Star, Phone, AtSign } from "lucide-react";
 import { Helmet } from "react-helmet-async";
-import axios from "axios";
-import toast, { Toaster } from "react-hot-toast";
-import { useTranslation } from "react-i18next";
-import Footer from "../layouts/Footer";
-
-const API_URL = "http://localhost:5000/api/sell";
+import { LangContext } from "../../../LangContext"; // LangContext import
 
 const SellCard = () => {
-  const { t } = useTranslation("sellCard");
+  const { t } = useContext(LangContext); // translate ishlatish
   const [openModal, setOpenModal] = useState(false);
-  const [loading, setLoading] = useState(false);
-
-  const [formData, setFormData] = useState({
-    fullName: "",
-    region: "",
-    carModel: "",
-    aboutYou: "",
-    aboutCar: "",
-    phone: "",
-    email: "",
-    telegram: "",
-  });
-
-  const handleChange = (e) =>
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-
-  const submitForm = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    try {
-      await axios.post(API_URL, formData);
-      toast.success(t("successMessage"));
-      setOpenModal(false);
-      setFormData({
-        fullName: "",
-        region: "",
-        carModel: "",
-        aboutYou: "",
-        aboutCar: "",
-        phone: "",
-        email: "",
-        telegram: "",
-      });
-    } catch {
-      toast.error(t("errorMessage"));
-    }
-    setLoading(false);
-  };
 
   return (
     <>
       {/* SEO */}
       <Helmet>
-        <title>{t("pageTitle")}</title>
+        <title>{t.sellCard?.pageTitle}</title>
         <meta
           name="description"
           content="Продажа электромобилей AION. Быстро, безопасно и выгодно."
         />
       </Helmet>
 
-      <Toaster position="top-center" />
-
       <section className="bg-white pt-20 pb-24">
         <div className="container mx-auto px-4 lg:px-14 space-y-24">
-
           {/* HERO */}
           <div className="grid lg:grid-cols-2 gap-14 items-center">
             <div className="rounded-3xl overflow-hidden shadow-2xl">
@@ -88,60 +35,70 @@ const SellCard = () => {
 
             <div className="space-y-6 text-black">
               <h1 className="text-4xl md:text-5xl font-extrabold leading-tight">
-                {t("heroTitle")}{" "}
-                <span className="text-blue-600">
-                  {t("heroTitleHighlight")}
-                </span>
+                {t.sellCard?.heroTitle}{" "}
+                <span className="text-blue-600">{t.sellCard?.heroTitleHighlight}</span>
               </h1>
 
-              <p className="text-lg text-gray-600">
-                {t("heroDesc")}
-              </p>
+              <p className="text-lg text-gray-600">{t.sellCard?.heroDesc}</p>
 
               <div className="grid sm:grid-cols-2 gap-4">
                 <Feature
                   icon={<Zap />}
-                  title={t("features.distanceTitle")}
-                  desc={t("features.distanceDesc")}
+                  title={t.sellCard?.features.distanceTitle}
+                  desc={t.sellCard?.features.distanceDesc}
                 />
                 <Feature
                   icon={<Shield />}
-                  title={t("features.warrantyTitle")}
-                  desc={t("features.warrantyDesc")}
+                  title={t.sellCard?.features.warrantyTitle}
+                  desc={t.sellCard?.features.warrantyDesc}
                 />
                 <Feature
                   icon={<BarChart2 />}
-                  title={t("features.qualityTitle")}
-                  desc={t("features.qualityDesc")}
+                  title={t.sellCard?.features.qualityTitle}
+                  desc={t.sellCard?.features.qualityDesc}
                 />
                 <Feature
                   icon={<Star />}
-                  title={t("features.ratingTitle")}
-                  desc={t("features.ratingDesc")}
+                  title={t.sellCard?.features.ratingTitle}
+                  desc={t.sellCard?.features.ratingDesc}
                 />
               </div>
 
+              {/* Form tugmasi o'chirildi yoki disable qilindi */}
               <button
-                onClick={() => setOpenModal(true)}
-                className="btn btn-primary px-8 py-3 text-lg rounded-xl shadow-lg hover:scale-105 transition"
+                disabled
+                className="btn btn-primary px-8 py-3 text-lg rounded-xl shadow-lg opacity-50 cursor-not-allowed"
               >
-                {t("startSelling")}
+                {t.sellCard?.startSelling}
               </button>
             </div>
           </div>
 
           {/* TRUST SECTION */}
-          <section className="bg-gray rounded-3xl p-10 text-black">
+          <section className="bg-gray-100 rounded-3xl p-10 text-black">
             <div className="text-center mb-10">
-              <h2 className="text-3xl font-bold">
-                {t("premiumModels")}
-              </h2>
-              <p className="text-gray-600 mt-3 max-w-2xl mx-auto">
-                {t("modelDesc")}
-              </p>
+              <h2 className="text-3xl font-bold">{t.sellCard?.premiumModels}</h2>
+              <p className="text-gray-600 mt-3 max-w-2xl mx-auto">{t.sellCard?.modelDesc}</p>
+
+              {/* AION rasmlari */}
+              <div className="mt-8 grid sm:grid-cols-1 md:grid-cols-3 gap-8">
+                <div className="bg-white rounded-2xl overflow-hidden shadow-lg">
+                  <img src="https://d3jvxfsgjxj1vz.cloudfront.net/news/wp-content/uploads/2025/05/09162244/gac-aion-es-launched-in-uae-price-variants-specs-7-1024x576.jpg" alt="AION S" className="w-full h-64 object-cover" />
+                  <div className="p-4 text-center font-semibold text-lg">AION S</div>
+                </div>
+                <div className="bg-white rounded-2xl overflow-hidden shadow-lg">
+                  <img src="https://img.caixin.com/2021-11-01/163575175630998.jpg" alt="AION Y" className="w-full h-64 object-cover" />
+                  <div className="p-4 text-center font-semibold text-lg">AION Y</div>
+                </div>
+                <div className="bg-white rounded-2xl overflow-hidden shadow-lg">
+                  <img src="https://www.bigwheels.my/wp-content/uploads/2024/02/GAC-AION-Y-PLUS-2.jpg" alt="AION V" className="w-full h-64 object-cover" />
+                  <div className="p-4 text-center font-semibold text-lg">AION V</div>
+                </div>
+              </div>
             </div>
 
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 text-black">
+            {/* TRUST / CONTACT SECTION */}
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 text-black mb-8">
               <TrustCard icon={<Shield />} title="100% Безопасно" />
               <TrustCard icon={<BarChart2 />} title="Честная цена" />
               <TrustCard icon={<Star />} title="Высокий рейтинг" />
@@ -157,38 +114,9 @@ const SellCard = () => {
               </div>
             </div>
           </section>
+
         </div>
       </section>
-
-      {/* MODAL */}
-      {openModal && (
-        <dialog open className="modal modal-open">
-          <div className="modal-box">
-            <h3 className="text-xl font-bold mb-4">
-              {t("modalTitle")}
-            </h3>
-
-            <form onSubmit={submitForm} className="space-y-3">
-              <input className="input input-bordered w-full" name="fullName" placeholder={t("form.fullName")} onChange={handleChange} />
-              <input className="input input-bordered w-full" name="region" placeholder={t("form.region")} onChange={handleChange} />
-              <input className="input input-bordered w-full" name="carModel" placeholder={t("form.carModel")} onChange={handleChange} />
-              <textarea className="textarea textarea-bordered w-full" name="aboutYou" placeholder={t("form.aboutYou")} onChange={handleChange} />
-              <textarea className="textarea textarea-bordered w-full" name="aboutCar" placeholder={t("form.aboutCar")} onChange={handleChange} />
-
-              <div className="modal-action">
-                <button type="button" className="btn" onClick={() => setOpenModal(false)}>
-                  {t("form.cancel")}
-                </button>
-                <button type="submit" className="btn btn-primary" disabled={loading}>
-                  {loading ? t("form.sending") : t("form.submit")}
-                </button>
-              </div>
-            </form>
-          </div>
-        </dialog>
-      )}
-
-    
     </>
   );
 };

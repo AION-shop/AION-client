@@ -15,11 +15,7 @@
     "infobar": {
         "specialOffer": "Maxsus taklif",
         "bestCars": "Eng yaxshi narxdagi eng zo‘r elektromobillar",
-        "look": "Ko‘rish",
-        "sellCardLink": "Sotishni boshlash",
-        "contactUs": "Biz bilan bog‘laning",
-        "phone": "Telefon",
-        "email": "Elektron pochta"
+        "login": "Kirish"
     },
     "sellCard": {
         "pageTitle": "AION Elektr Avtomobillari — Sotishni boshlang",
@@ -146,6 +142,38 @@
         "fetchError": "Feedbacklarni olishda xato",
         "submitError": "Feedback yuborishda xato",
         "anonymous": "Anonim"
+    },
+    "singleProduct": {
+        "featuresTab": "Xususiyatlar",
+        "warrantyTab": "Kafolat",
+        "backToGallery": "Galereyaga qaytish",
+        "addRating": "Reyting qo'shish",
+        "noDescription": "Mahsulot tavsifi mavjud emas",
+        "specsTitle": "Texnik xususiyatlar",
+        "maxRange": "Maksimal masofa (km)",
+        "acceleration": "Tezlanish (0-100 km/h)",
+        "power": "Quvvat (kW)",
+        "topSpeed": "Eng yuqori tezlik (km/h)",
+        "drivetrain": "Drayv tizimi",
+        "chargingTime": "Zaryad vaqti",
+        "freeDelivery": "Yetkazib berish bepul",
+        "offertaButton": "Offerta otkazish",
+        "warrantyTitle": "5 Yillik Kengaytirilgan Kafolat",
+        "warrantyDesc": "Avtomobilga 5 yil yoki 100,000 km masofagacha kafolat beriladi.",
+        "noFeatures": "Qo'shimcha xususiyatlar mavjud emas",
+        "linkCopied": "Link nusxalandi",
+        "reviews": "reviews",
+        "views": "views"
+    },
+    "banners": {
+        "title": "BARCHA BANNERLAR"
+    },
+    "discover": {
+        "title": "Kashf eting",
+        "subtitle": "Kelajak uchun yaratilgan elektr modellari bilan tanishing.",
+        "loading": "Mashhur modellar yuklanmoqda...",
+        "more": "Batafsil",
+        "viewModel": "{{title}} ni ko‘rish"
     },
     "about": "AutoMarket – Premium sifatli elektron avtomobillar. Eng yaxshi takliflar faqat shu yerda!",
     "rights": "Barcha huquqlar himoyalangan."

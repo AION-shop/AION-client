@@ -13,6 +13,7 @@ const LoginPage = () => {
 
     setLoading(true);
     try {
+      // Backend URLni .env dan olish
       const res = await fetch(
         `${import.meta.env.VITE_API_URL}/api/userClient/send-code`,
         {
@@ -26,6 +27,7 @@ const LoginPage = () => {
 
       if (data.success) {
         toast.success("Kod emailingizga yuborildi 📩");
+        // Verify page ga email bilan navigate qilish
         navigate("/verify-account", { state: { email } });
       } else {
         toast.error(data.message || "Xatolik yuz berdi");

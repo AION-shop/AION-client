@@ -1,143 +1,136 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
+import { ArrowRight, Sparkles } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { ArrowRight } from "lucide-react";
+import { LangContext } from "../../../../LangContext";
+import { motion } from "framer-motion";
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: { staggerChildren: 0.15 },
+  },
+};
+
+const cardVariants = {
+  hidden: { opacity: 0, y: 50 },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.8, ease: [0.25, 0.1, 0.25, 1] },
+  },
+};
 
 export default function DiscoverSection() {
-  const [popularItems, setPopularItems] = useState([]);
+  const { t } = useContext(LangContext);
+  const [cards, setCards] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const getPopular = async () => {
-      try {
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/popular`);
-        const data = await response.json();
-        setPopularItems(data);
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    getPopular();
+    fetch(`${import.meta.env.VITE_API_URL}/api/popular`)
+      .then((res) => res.json())
+      .then(setCards)
+      .finally(() => setLoading(false));
   }, []);
-
-  const handleItemClick = (item) => {
-    const id = item._id;
-    navigate(`/about-car/${id}`);
-  };
-
-
-
-
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 flex items-center justify-center px-4">
-        <div className="text-center">
-          <div className="relative inline-block">
-            <div className="animate-spin rounded-full h-12 w-12 sm:h-16 sm:w-16 border-3 sm:border-4 border-blue-200 border-t-blue-600"></div>
-            <div className="absolute inset-0 rounded-full h-12 w-12 sm:h-16 sm:w-16 border-3 sm:border-4 border-blue-200 opacity-20 animate-ping"></div>
-          </div>
-          <p className="text-gray-600 mt-4 sm:mt-6 font-medium text-sm sm:text-base">Loading amazing content...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (!popularItems.length) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 flex items-center justify-center px-4">
-        <div className="text-center">
-          <div className="text-5xl sm:text-6xl mb-4">🔍</div>
-          <p className="text-gray-500 text-base sm:text-lg">No popular items available</p>
-        </div>
-      </div>
+      <section className="py-32 flex justify-center bg-white">
+        <div className="w-10 h-10 border-4 border-gray-100 border-t-blue-600 rounded-full animate-spin" />
+      </section>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
-      <section className="py-8 sm:py-12 md:py-16 lg:py-20">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
-          {/* Header */}
-          <div className="text-center mb-8 sm:mb-12 md:mb-16 animate-fade-in">
-            <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-3 sm:mb-4 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent leading-tight px-4">
-              Popular Cars
-            </h2>
-            <p className="text-sm sm:text-base md:text-lg max-w-2xl mx-auto text-gray-600 px-4">
-              Explore our curated popular cars collection
-            </p>
-          </div>
+    <motion.section
+      variants={containerVariants}
+      initial="hidden"
+      whileInView="show"
+      viewport={{ once: true, margin: "-100px" }}
+      className="bg-white py-12 md:py-24"
+    >
+      <div className="max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-10">
+        
+        {/* HEADER */}
+        <header className="mb-12 md:mb-20">
+          <motion.div 
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            className="flex items-center gap-3 text-blue-600 font-bold tracking-[0.3em] uppercase text-xs mb-4"
+          >
+            <Sparkles size={16} /> 2025 Collection
+          </motion.div>
+          <h2 className="text-4xl sm:text-6xl md:text-8xl font-black uppercase tracking-tighter text-slate-900 leading-[0.9]">
+            {t.discover?.title}
+          </h2>
+          <p className="mt-6 text-gray-500 max-w-xl text-base sm:text-lg font-medium">
+            {t.discover?.subtitle}
+          </p>
+        </header>
 
-          {/* Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 max-w-6xl mx-auto">
-            {popularItems.map((item, index) => (
-              <div
-                key={item._id || index}
-                onClick={() => handleItemClick(item)}
-                className="group relative h-56 sm:h-64 md:h-72 lg:h-80 rounded-xl sm:rounded-2xl overflow-hidden cursor-pointer transition-all duration-500 hover:scale-[1.02] active:scale-[0.98]"
-                style={{
-                  animation: "slideUp 0.6s ease-out",
-                  animationDelay: `${index * 100}ms`,
-                  animationFillMode: "both",
-                }}
-              >
-                {/* Card Background */}
-                <div className="absolute inset-0 bg-white rounded-xl sm:rounded-2xl shadow-md sm:shadow-lg group-hover:shadow-xl sm:group-hover:shadow-2xl transition-shadow duration-500"></div>
-
-                {/* Image */}
-                <div className="absolute inset-0 w-full h-full overflow-hidden rounded-xl sm:rounded-2xl">
-                  <img
-                    src={item.thumbnail}
-                    alt={item.title}
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                    loading="lazy"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-gray-900/85 via-gray-900/50 to-transparent sm:from-gray-900/80 sm:via-gray-900/40"></div>
-                </div>
-
-                {/* Content */}
-                <div className="relative h-full flex flex-col justify-end p-5 sm:p-6 md:p-8 z-10">
-                  <div className="transform transition-all duration-500 group-hover:-translate-y-2">
-                    <h3 className="text-white text-xl sm:text-2xl md:text-3xl font-bold mb-2 sm:mb-3 leading-tight">
-                      {item.title}
-                    </h3>
-                    <p className="hidden sm:block text-white/90 text-sm md:text-base mb-1">
-                      ${item.price} • {item.maxRange} km range • {item.power} kW
-                    </p>
-                    <div className="flex items-center gap-2 sm:gap-3 sm:opacity-0 sm:group-hover:opacity-100 transition-all duration-300 sm:delay-100">
-                      <span className="text-white/90 text-xs sm:text-sm font-medium">Learn more</span>
-                      <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center group-hover:bg-blue-500 transition-all duration-300">
-                        <ArrowRight
-                          size={16}
-                          className="sm:w-5 sm:h-5 text-white transform group-hover:translate-x-1 transition-transform duration-300"
-                        />
-                      </div>
-                    </div>
-                  </div>
+        {/* GRID */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-10">
+          {cards.map((card) => (
+            <motion.article
+              key={card._id}
+              variants={cardVariants}
+              onClick={() => navigate(`/about-car/${card._id}`)}
+              className="group relative rounded-[32px] md:rounded-[48px] overflow-hidden cursor-pointer shadow-2xl aspect-[4/5] sm:aspect-[16/10] lg:aspect-[16/11]"
+            >
+              {/* NEW BADGE */}
+              <div className="absolute top-6 left-6 z-20">
+                <div className="bg-white/10 backdrop-blur-xl border border-white/20 text-white px-5 py-2 rounded-full text-[10px] font-black uppercase tracking-[0.2em] flex items-center gap-2 shadow-xl">
+                  <span className="w-2 h-2 bg-blue-500 rounded-full animate-pulse" />
+                  New Model
                 </div>
               </div>
-            ))}
-          </div>
+
+              {/* IMAGE */}
+              <div className="absolute inset-0">
+                <img
+                  src={card.thumbnail}
+                  alt={card.title}
+                  className="absolute inset-0 w-full h-full object-cover scale-100 group-hover:scale-110 transition-transform duration-[1.5s] ease-out"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/30 to-transparent opacity-80 group-hover:opacity-100 transition-opacity duration-700" />
+              </div>
+
+              {/* CONTENT */}
+              <div className="absolute inset-0 flex flex-col justify-end p-8 sm:p-12 lg:p-16">
+                <h3 className="text-white text-3xl sm:text-4xl md:text-6xl font-black uppercase tracking-tighter mb-4 leading-tight group-hover:text-blue-400 transition-colors duration-500">
+                  {card.title}
+                </h3>
+
+                {/* Subtitle: Mobilda ham ko'rinadi, faqat opasitisi biroz pastroq */}
+                <p className="text-white/60 text-sm sm:text-lg max-w-md line-clamp-2 mb-8 md:opacity-0 md:group-hover:opacity-100 md:translate-y-4 md:group-hover:translate-y-0 transition-all duration-700">
+                  {card.subtitle}
+                </p>
+
+                {/* BUTTON: Responsive mantiq bilan */}
+                <div className="flex items-center">
+                  <button className="flex items-center gap-3  text-white px-8 py-4 rounded-full border text-xs font-black uppercase tracking-widest shadow-white/10 hover:bg-blue-600 hover:text-white transition-all duration-300 md:translate-y-10 md:opacity-0 md:group-hover:translate-y-0 md:group-hover:opacity-100">
+                    {t.discover?.more}
+                    <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                  </button>
+                </div>
+              </div>
+
+              {/* SHIMMER EFFECT */}
+              <div className="absolute inset-0 pointer-events-none bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:animate-shimmer" />
+            </motion.article>
+          ))}
         </div>
-      </section>
+      </div>
 
       <style>{`
-        @keyframes slideUp {
-          from { opacity: 0; transform: translateY(30px); }
-          to { opacity: 1; transform: translateY(0); }
+        @keyframes shimmer {
+          100% { transform: translateX(150%); }
         }
-        @keyframes fade-in {
-          from { opacity: 0; transform: translateY(-10px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        .animate-fade-in { animation: fade-in 0.8s ease-out; }
-        @media (prefers-reduced-motion: reduce) {
-          * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+        .animate-shimmer {
+          animation: shimmer 1.5s ease-in-out;
         }
       `}</style>
-    </div>
+    </motion.section>
   );
 }

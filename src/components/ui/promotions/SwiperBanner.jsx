@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
-const SwiperBanner = () => {
+const SwiperBanner = ({ isFullHeight = false }) => {
   const [banners, setBanners] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [isTransitioning, setIsTransitioning] = useState(false);
 
   useEffect(() => {
     fetch(`${import.meta.env.VITE_API_URL}/api/banners/`)
@@ -23,102 +24,156 @@ const SwiperBanner = () => {
 
   useEffect(() => {
     if (banners.length <= 1) return;
-    const interval = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % banners.length);
-    }, 5000);
+    const interval = setInterval(() => handleNext(), 5000);
     return () => clearInterval(interval);
-  }, [banners.length]);
+  }, [banners.length, currentIndex]);
 
-  const goToSlide = (index) => setCurrentIndex(index);
-  const goToPrevious = () =>
+  const handleNext = () => {
+    if (isTransitioning) return;
+    setIsTransitioning(true);
+    setCurrentIndex((prev) => (prev + 1) % banners.length);
+    setTimeout(() => setIsTransitioning(false), 600);
+  };
+
+  const handlePrevious = () => {
+    if (isTransitioning) return;
+    setIsTransitioning(true);
     setCurrentIndex((prev) => (prev - 1 + banners.length) % banners.length);
-  const goToNext = () => setCurrentIndex((prev) => (prev + 1) % banners.length);
+    setTimeout(() => setIsTransitioning(false), 600);
+  };
+
+  const goToSlide = (index) => {
+    if (isTransitioning || index === currentIndex) return;
+    setIsTransitioning(true);
+    setCurrentIndex(index);
+    setTimeout(() => setIsTransitioning(false), 600);
+  };
+
+  const containerHeight = isFullHeight
+    ? "min-h-screen"
+    : "h-[300px] sm:h-[400px] md:h-[500px] lg:h-[600px]";
 
   if (loading)
     return (
-      <div className="w-full h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 to-gray-800">
-        <div className="text-center">
-          <div className="inline-block w-16 h-16 border-4 border-white border-t-transparent rounded-full animate-spin mb-4"></div>
-          <p className="text-white text-lg font-medium">Loading banners...</p>
-        </div>
+      <div
+        className={`w-full ${containerHeight} flex items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900`}
+      >
+        <p className="text-white text-lg sm:text-xl font-semibold animate-pulse">
+          Loading banners...
+        </p>
       </div>
     );
 
   if (error || banners.length === 0)
     return (
-      <div className="w-full h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 to-gray-800 text-center p-4">
-        <p className="text-white text-xl font-medium">
+      <div
+        className={`w-full ${containerHeight} flex items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900`}
+      >
+        <p className="text-white text-lg sm:text-xl font-medium px-4 text-center">
           {error || "Bannerlar mavjud emas"}
         </p>
       </div>
     );
 
   return (
-    <div className="w-full relative overflow-hidden rounded-4xl">
-      <div className="relative w-full h-[60vh] sm:h-[80vh] md:h-screen">
-        {banners.map((banner, index) => (
-          <a
+    <div
+      className={`w-full relative overflow-hidden rounded-lg border border-white/10 shadow-xl ${containerHeight}`}
+    >
+      {banners.map((banner, index) => {
+        const isActive = index === currentIndex;
+        return (
+          <div
             key={banner._id}
-            href={banner.link || "#"}
-            target={banner.link ? "_blank" : "_self"}
-            rel="noopener noreferrer"
-            className={`absolute inset-0 w-full h-full transition-opacity duration-700 ${
-              index === currentIndex ? "opacity-100 z-10" : "opacity-0 z-0"
+            className={`absolute inset-0 w-full h-full transition-opacity duration-700 ease-in-out ${
+              isActive ? "opacity-100 z-20" : "opacity-0 z-0"
             }`}
           >
-            <img
-              src={banner.image}
-              alt={banner.title || "Banner"}
-              className="w-full h-full object-cover sm:object-cover md:object-cover"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent"></div>
-            {banner.title && (
-              <div className="absolute bottom-4 sm:bottom-10 left-4 sm:left-16 right-4 text-center sm:text-left">
-                <h2 className="text-white font-bold text-xl sm:text-4xl md:text-6xl drop-shadow-lg">
-                  {banner.title}
-                </h2>
-                <div className="w-16 h-1 bg-white rounded-full mt-2 mx-auto sm:mx-0"></div>
+            <a
+              href={banner.link || "#"}
+              target={banner.link ? "_blank" : "_self"}
+              rel="noopener noreferrer"
+              className="block w-full h-full relative"
+            >
+              {/* Rasmni ekran bo‘yicha ideal qilish */}
+              <div className="w-full h-full flex items-center justify-center bg-black/20 overflow-hidden">
+                <img
+                  src={banner.image}
+                  alt={banner.title || "Banner"}
+                  className="w-full h-full object-cover object-center"
+                />
               </div>
-            )}
-          </a>
-        ))}
-      </div>
 
-      {/* Navigation Buttons */}
+              {/* Overlay gradient */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
+
+              {/* Title */}
+              {banner.title && (
+                <div
+                  className={`absolute top-1/4 left-1/2 -translate-x-1/2 z-30 text-center px-4 transition-all duration-700 ${
+                    isActive ? "opacity-100" : "opacity-0"
+                  }`}
+                >
+                  <h2 className="text-white font-bold text-lg sm:text-xl md:text-2xl lg:text-3xl drop-shadow-lg leading-tight">
+                    {banner.title}
+                  </h2>
+                </div>
+              )}
+            </a>
+          </div>
+        );
+      })}
+
+      {/* Navigation */}
       {banners.length > 1 && (
         <>
           <button
-            onClick={goToPrevious}
-            className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-20 bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white rounded-full p-2 sm:p-4 transition-all duration-300 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-white/50"
-            aria-label="Previous slide"
+            onClick={handlePrevious}
+            disabled={isTransitioning}
+            className="absolute left-3 sm:left-5 top-1/2 -translate-y-1/2 z-30 group disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            <ChevronLeft className="w-4 sm:w-6 h-4 sm:h-6" />
+            <div className="bg-white/20 hover:bg-white/30 backdrop-blur-md border border-white/20 rounded-full p-2 sm:p-3 transition-all duration-300 group-hover:scale-110">
+              <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+            </div>
           </button>
           <button
-            onClick={goToNext}
-            className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-20 bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white rounded-full p-2 sm:p-4 transition-all duration-300 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-white/50"
-            aria-label="Next slide"
+            onClick={handleNext}
+            disabled={isTransitioning}
+            className="absolute right-3 sm:right-5 top-1/2 -translate-y-1/2 z-30 group disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            <ChevronRight className="w-4 sm:w-6 h-4 sm:h-6" />
+            <div className="bg-white/20 hover:bg-white/30 backdrop-blur-md border border-white/20 rounded-full p-2 sm:p-3 transition-all duration-300 group-hover:scale-110">
+              <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+            </div>
           </button>
         </>
       )}
 
-      {/* Pagination Dots */}
+      {/* Pagination */}
       {banners.length > 1 && (
-        <div className="absolute bottom-4 sm:bottom-8 left-1/2 -translate-x-1/2 z-20 flex gap-2 sm:gap-3">
+        <div className="absolute bottom-3 sm:bottom-4 left-1/2 -translate-x-1/2 z-30 flex items-center gap-2 bg-black/20 backdrop-blur-md px-3 py-1 rounded-full border border-white/10">
           {banners.map((_, index) => (
             <button
               key={index}
               onClick={() => goToSlide(index)}
-              className={`transition-all duration-300 rounded-full focus:outline-none focus:ring-2 focus:ring-white/50 ${
+              disabled={isTransitioning}
+              className={`transition-all duration-500 rounded-full disabled:cursor-not-allowed ${
                 index === currentIndex
-                  ? "w-8 h-2 sm:w-12 sm:h-3 bg-white"
-                  : "w-2 h-2 sm:w-3 sm:h-3 bg-white/40 hover:bg-white/60"
+                  ? "w-6 sm:w-8 h-2 sm:h-2.5 bg-white shadow-lg"
+                  : "w-2 sm:w-2.5 h-2 sm:h-2.5 bg-white/40 hover:bg-white/70 hover:scale-125"
               }`}
-              aria-label={`Go to slide ${index + 1}`}
             />
           ))}
+        </div>
+      )}
+
+      {/* Progress Bar */}
+      {banners.length > 1 && (
+        <div className="absolute top-0 left-0 right-0 h-1 bg-white/10 z-30">
+          <div
+            className="h-full bg-gradient-to-r from-blue-500 to-purple-500 transition-all duration-300"
+            style={{
+              width: `${((currentIndex + 1) / banners.length) * 100}%`,
+            }}
+          />
         </div>
       )}
     </div>

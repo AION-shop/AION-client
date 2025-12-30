@@ -1,155 +1,192 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { Battery, Zap, Shield, Wind, Gauge, Timer, Home, Disc, TrendingUp, Sparkles, Check } from "lucide-react";
+import { useParams, useNavigate } from "react-router-dom";
+import {
+  Zap,
+  Gauge,
+  Activity,
+  ArrowRight,
+  ChevronRight,
+  Leaf,
+  BatteryCharging,
+  DollarSign,
+  Smartphone,
+  ShieldCheck,
+} from "lucide-react";
 
-// Animated Feature Card
-const FeatureCard = ({ icon: Icon, title, value, description, delay }) => {
-  const [visible, setVisible] = useState(false);
-  useEffect(() => {
-    const timer = setTimeout(() => setVisible(true), delay);
-    return () => clearTimeout(timer);
-  }, [delay]);
-
-  return (
-    <div className={`bg-white/90 backdrop-blur-md shadow-lg p-6 rounded-3xl border border-gray-100 transition-all duration-700 transform ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"} hover:scale-105 hover:shadow-2xl`}>
-      <div className="flex items-center gap-4 mb-4">
-        <div className="p-4 bg-gray-100 rounded-xl">
-          <Icon className="w-6 h-6 text-gray-700" />
-        </div>
-        <div>
-          <h3 className="text-lg font-bold text-gray-900">{title}</h3>
-          <p className="text-xl font-semibold text-gray-600">{value}</p>
-        </div>
-      </div>
-      <p className="text-gray-500 text-sm">{description}</p>
-    </div>
-  );
-};
-
-// Animated Spec Item
-const SpecItem = ({ label, value, icon: Icon }) => (
-  <div className="flex items-center gap-3 p-4 bg-white/90 backdrop-blur-md shadow-md rounded-2xl transition-all transform hover:scale-105 hover:shadow-xl">
-    {Icon && <Icon className="w-5 h-5 text-gray-700" />}
-    <div className="flex-1">
-      <span className="text-gray-500 text-sm">{label}</span>
-      <p className="text-gray-900 font-semibold">{value}</p>
-    </div>
-    <Check className="w-5 h-5 text-green-500" />
-  </div>
-);
-
-// Section Header with subtle animation
-const SectionHeader = ({ icon: Icon, title, subtitle }) => (
-  <div className="text-center mb-12 animate-fade-up">
-    <div className="inline-flex items-center justify-center p-3 bg-gray-800 rounded-2xl mb-4 animate-pulse">
-      <Icon className="w-8 h-8 text-white" />
-    </div>
-    <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-2">{title}</h2>
-    <p className="text-gray-600">{subtitle}</p>
-  </div>
-);
-
-const AboutCar = () => {
+export default function AboutCar() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [car, setCar] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [activeImage, setActiveImage] = useState(0);
+  const [show, setShow] = useState(false);
 
   useEffect(() => {
-    const fetchCar = async () => {
-      try {
-        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/popular/${id}`);
-        const data = await res.json();
-        setCar(data);
-      } catch (err) {
-        console.error(err);
-      } finally {
+    fetch(`${import.meta.env.VITE_API_URL}/api/popular/${id}`)
+      .then((r) => r.json())
+      .then((d) => {
+        setCar(d);
         setLoading(false);
-      }
-    };
-    fetchCar();
+        setTimeout(() => setShow(true), 80);
+      })
+      .catch(() => setLoading(false));
   }, [id]);
 
-  if (loading) return <p className="text-gray-900 p-4 text-center">Loading car information...</p>;
-  if (!car) return <p className="text-gray-900 p-4 text-center">Car not found</p>;
+  const handleOrder = () => {
+    const isAuth = localStorage.getItem("token");
+    navigate(isAuth ? "/offerta" : "/login");
+  };
+
+  if (loading) {
+    return (
+      <div className="h-[60vh] flex items-center justify-center">
+        <div className="w-10 h-10 border-2 border-gray-200 border-t-blue-600 rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  if (!car) return <div className="h-screen grid place-items-center">Topilmadi</div>;
+
+  const { title, images = [], acceleration, topSpeed, power, price, category } = car;
 
   return (
-    <div className="min-h-screen  text-gray-900">
-      <div className="container mx-auto px-4 py-12 space-y-16">
+    <div className="bg-white text-slate-900 overflow-hidden">
+      {/* HERO */}
+      <section className="max-w-[1440px] mx-auto px-4 sm:px-6 pt-8 lg:pt-16 grid lg:grid-cols-2 gap-14">
+        {/* IMAGE SIDE */}
+        <div
+          className={`space-y-5 transition-all duration-1000 ${
+            show ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-6"
+          }`}
+        >
+          <div className="relative aspect-[16/10] rounded-[36px] overflow-hidden bg-gray-100 shadow-sm group">
+            {images[activeImage] && (
+              <img
+                src={images[activeImage]}
+                alt={title}
+                className="absolute inset-0 w-full h-full object-cover scale-100 group-hover:scale-110 transition-transform duration-[1600ms]"
+              />
+            )}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent" />
+          </div>
 
-        {/* Hero Section */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-          {/* Text */}
-          <div className="flex flex-col justify-center text-center md:text-left space-y-4 animate-fade-up">
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900">{car.title}</h1>
-            <p className="text-gray-600 text-sm sm:text-base md:text-lg">{car.description}</p>
-            <div className="flex gap-4 justify-center md:justify-start mt-4">
-              <span className="px-5 py-2 bg-gray-900 text-white rounded-full font-semibold">Electric</span>
-              <span className="px-5 py-2 bg-gray-200 text-gray-900 rounded-full font-semibold">{car.power ?? "N/A"} kW</span>
+          {images.length > 1 && (
+            <div className="flex gap-3 overflow-x-auto no-scrollbar pt-1">
+              {images.map((img, i) => (
+                <button
+                  key={i}
+                  onClick={() => setActiveImage(i)}
+                  className={`relative w-24 h-20 rounded-2xl overflow-hidden transition-all shrink-0
+                    ${
+                      activeImage === i
+                        ? "ring-2 ring-blue-600 scale-105"
+                        : "opacity-50 hover:opacity-100"
+                    }`}
+                >
+                  <img src={img} className="absolute inset-0 w-full h-full object-cover" />
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* INFO SIDE */}
+        <div
+          className={`flex flex-col justify-center transition-all duration-1000 delay-150 ${
+            show ? "opacity-100 translate-x-0" : "opacity-0 translate-x-6"
+          }`}
+        >
+          <div className="flex items-center gap-3 mb-6">
+            <span className="bg-blue-600 text-white text-[10px] px-3 py-1 font-black tracking-[0.2em] uppercase rounded">
+              {category || "Premium"}
+            </span>
+            <span className="text-xs text-gray-400 uppercase tracking-widest">
+              Model 2025
+            </span>
+          </div>
+
+          <h1 className="text-5xl sm:text-6xl xl:text-7xl font-extrabold italic tracking-tight mb-4">
+            {title}
+          </h1>
+
+          <p className="text-3xl font-light text-blue-600 mb-10">
+            ${Number(price).toLocaleString()}
+          </p>
+
+          <div className="grid grid-cols-3 gap-6 py-8 border-y border-gray-100 mb-10">
+            {acceleration && <QuickStat label="0-100" value={`${acceleration}s`} icon={<Zap size={14} />} />}
+            {topSpeed && <QuickStat label="Speed" value={`${topSpeed}km/h`} icon={<Gauge size={14} />} />}
+            {power && <QuickStat label="Power" value={`${power}kW`} icon={<Activity size={14} />} />}
+          </div>
+
+          <button
+            onClick={handleOrder}
+            className="group bg-slate-900 hover:bg-blue-600 text-white py-6 rounded-2xl font-black uppercase tracking-widest text-sm flex items-center justify-center gap-3 transition-all shadow-xl hover:shadow-blue-200"
+          >
+            Buyurtma berish
+            <ArrowRight className="group-hover:translate-x-1 transition" size={18} />
+          </button>
+        </div>
+      </section>
+
+      {/* BENEFITS */}
+      <section className="max-w-[1440px] mx-auto px-4 sm:px-6 mt-24">
+        <div className="border-t pt-20">
+          <h2 className="text-3xl md:text-4xl font-black text-center mb-6 uppercase">
+            Nima uchun {title.split(" ")[0]}?
+          </h2>
+          <p className="text-gray-500 text-center max-w-2xl mx-auto mb-16">
+            Kelajak texnologiyasi, maksimal qulaylik va ekologik toza yechimlar.
+          </p>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            <Benefit icon={<Leaf className="text-green-500" />} title="Eco Friendly" />
+            <Benefit icon={<DollarSign className="text-blue-500" />} title="Tejamkor" />
+            <Benefit icon={<BatteryCharging className="text-orange-500" />} title="Fast Charge" />
+            <Benefit icon={<Smartphone className="text-purple-500" />} title="Smart Control" />
+          </div>
+        </div>
+
+        {/* WARRANTY */}
+        <div className="mt-24 p-10 rounded-[36px] bg-slate-50 flex flex-col md:flex-row gap-10 items-center justify-between">
+          <div className="flex items-center gap-6">
+            <div className="w-16 h-16 bg-white rounded-2xl shadow grid place-items-center">
+              <ShieldCheck className="text-blue-600" size={32} />
+            </div>
+            <div>
+              <h3 className="text-2xl font-bold">3 yillik rasmiy kafolat</h3>
+              <p className="text-gray-500 text-sm">
+                To‘liq servis va texnik yordam bilan
+              </p>
             </div>
           </div>
 
-          {/* Image */}
-          <div className="relative w-full h-96 rounded-3xl overflow-hidden shadow-2xl animate-fade-up">
-            <img
-              src={car.images?.[0] || "https://via.placeholder.com/600"}
-              alt={car.title}
-              className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
-          </div>
+          <button className="flex items-center gap-2 text-blue-600 font-bold uppercase text-sm hover:gap-3 transition-all">
+            Batafsil <ChevronRight size={16} />
+          </button>
         </div>
-
-        {/* Stats Section */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-          <FeatureCard icon={Battery} title="Battery Options" value={car.batteryOptions?.join(", ") || "N/A"} description="Available battery types" delay={0} />
-          <FeatureCard icon={Zap} title="Power" value={`${car.power ?? "N/A"} kW`} description="Motor power output" delay={150} />
-          <FeatureCard icon={Gauge} title="Top Speed" value={`${car.topSpeed ?? "N/A"} km/h`} description="Maximum speed" delay={300} />
-          <FeatureCard icon={Timer} title="Acceleration" value={`${car.acceleration ?? "N/A"}s`} description="0-100 km/h" delay={450} />
-          <FeatureCard icon={Wind} title="Max Range" value={`${car.maxRange ?? "N/A"} km`} description="Full battery distance" delay={600} />
-          <FeatureCard icon={Shield} title="Drivetrain" value={car.drivetrain || "N/A"} description="Drive type" delay={750} />
-        </div>
-
-        {/* Brake Section */}
-        <div>
-          <SectionHeader icon={Disc} title="Brake System" subtitle="Front & Rear, ABS, EBD, ESP" />
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 items-center">
-            <div className="space-y-4">
-              <SpecItem label="Front Brake" value="Disc" icon={Disc} />
-              <SpecItem label="Rear Brake" value="Disc" icon={Disc} />
-              <SpecItem label="ABS" value="Yes" icon={Shield} />
-              <SpecItem label="EBD" value="Yes" icon={Zap} />
-              <SpecItem label="ESP" value="Yes" icon={TrendingUp} />
-              <SpecItem label="Brake Assist" value="Yes" icon={Timer} />
-            </div>
-            <img src={car.images?.[1] || car.images?.[0] || ""} alt="Brake system" className="rounded-3xl shadow-lg w-full h-72 md:h-full object-cover animate-fade-up" />
-          </div>
-        </div>
-
-        {/* Interior Section */}
-        <div>
-          <SectionHeader icon={Home} title="Interior Features" subtitle="Comfort and digital dashboard" />
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            <FeatureCard icon={Gauge} title="Digital Panel" value="10.25”" description="High resolution dashboard" delay={0} />
-            <FeatureCard icon={Home} title="Sensor Screen" value="14.6”" description="Central touch display" delay={150} />
-            <FeatureCard icon={Wind} title="Climate Control" value="Auto" description="Automatic climate system" delay={300} />
-            <FeatureCard icon={Sparkles} title="Panoramic Sunroof" value="Yes" description="Wide panoramic roof" delay={450} />
-          </div>
-        </div>
-
-      </div>
-
-      {/* Animations */}
-      <style>{`
-        @keyframes fade-up {
-          from { opacity: 0; transform: translateY(20px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        .animate-fade-up {
-          animation: fade-up 0.8s ease-out forwards;
-        }
-      `}</style>
+      </section>
     </div>
   );
-};
+}
 
-export default AboutCar;
+/* COMPONENTS */
+
+const QuickStat = ({ label, value, icon }) => (
+  <div className="flex flex-col items-center sm:items-start">
+    <div className="flex items-center gap-1 text-gray-400 mb-1">
+      {icon}
+      <span className="text-[10px] font-black uppercase">{label}</span>
+    </div>
+    <p className="text-2xl font-bold">{value}</p>
+  </div>
+);
+
+const Benefit = ({ icon, title }) => (
+  <div className="p-8 rounded-[30px] border border-gray-100 hover:bg-blue-50/40 hover:-translate-y-2 transition-all duration-500">
+    <div className="w-12 h-12 bg-white rounded-2xl shadow flex items-center justify-center mb-6">
+      {icon}
+    </div>
+    <h4 className="font-bold text-lg">{title}</h4>
+  </div>
+);

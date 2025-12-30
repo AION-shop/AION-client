@@ -19,47 +19,67 @@ const Footer = () => {
   const { t } = useContext(LangContext);
 
   return (
-    <footer
-      className="bg-gray-900 text-gray-200 pt-12"
-      role="contentinfo"
-      aria-label="Footer"
-    >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-10">
-
-        {/* About */}
-        <div>
-          <h3 className="text-lg font-semibold mb-3 text-white">
-            AutoMarket
-          </h3>
+    <footer className="bg-gray-900 text-gray-200" role="contentinfo" aria-label="Footer">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
+        
+        {/* About / Brand */}
+        <div className="sm:col-span-2 lg:col-span-1">
+          <h3 className="text-2xl font-bold text-white mb-3">AutoMarket</h3>
           <p className="text-sm text-gray-400 leading-relaxed">
-            {t.about}
+            {t.about || "AutoMarket – Premium sifatli elektron avtomobillar. Eng yaxshi takliflar faqat shu yerda!"}
           </p>
         </div>
 
         {/* Quick Links */}
         <nav aria-label="Footer navigation">
-          <h3 className="text-lg font-semibold mb-3 text-white">
-            {t.quickLinks}
-          </h3>
+          <h3 className="text-lg font-semibold mb-3 text-white">{t.quickLinks || "Quick Links"}</h3>
           <ul className="space-y-2 text-sm">
             <li>
-              <a href="/feedbacks" className="hover:text-white transition">
-                {t.links?.feedbacks}
+              <a
+                href="/"
+                className="relative inline-block text-gray-400 hover:text-white transition-all after:absolute after:left-0 after:bottom-0 after:w-full after:h-[2px] after:bg-blue-500 after:scale-x-0 after:origin-left hover:after:scale-x-100 after:transition-transform after:duration-300"
+              >
+                {t.links?.home || "Home"}
               </a>
             </li>
             <li>
-              <a href="/Models" className="hover:text-white transition">
-                {t.links?.Models}
+              <a
+                href="/Models"
+                className="relative inline-block text-gray-400 hover:text-white transition-all after:absolute after:left-0 after:bottom-0 after:w-full after:h-[2px] after:bg-blue-500 after:scale-x-0 after:origin-left hover:after:scale-x-100 after:transition-transform after:duration-300"
+              >
+                {t.links?.Models || "Car Models"}
               </a>
             </li>
             <li>
-              <a href="/news" className="hover:text-white transition">
-                {t.links?.news}
+              <a
+                href="/feedbacks"
+                className="relative inline-block text-gray-400 hover:text-white transition-all after:absolute after:left-0 after:bottom-0 after:w-full after:h-[2px] after:bg-blue-500 after:scale-x-0 after:origin-left hover:after:scale-x-100 after:transition-transform after:duration-300"
+              >
+                {t.links?.feedbacks || "Testimonials"}
               </a>
             </li>
             <li>
-              <a href="/rasrochka" className="hover:text-white transition">
-                {t.links?.installment}
+              <a
+                href="/news"
+                className="relative inline-block text-gray-400 hover:text-white transition-all after:absolute after:left-0 after:bottom-0 after:w-full after:h-[2px] after:bg-blue-500 after:scale-x-0 after:origin-left hover:after:scale-x-100 after:transition-transform after:duration-300"
+              >
+                {t.links?.news || "News"}
+              </a>
+            </li>
+            <li>
+              <a
+                href="/rasrochka"
+                className="relative inline-block text-gray-400 hover:text-white transition-all after:absolute after:left-0 after:bottom-0 after:w-full after:h-[2px] after:bg-blue-500 after:scale-x-0 after:origin-left hover:after:scale-x-100 after:transition-transform after:duration-300"
+              >
+                {t.links?.installment || "Installment"}
+              </a>
+            </li>
+            <li>
+              <a
+                href="/about"
+                className="relative inline-block text-gray-400 hover:text-white transition-all after:absolute after:left-0 after:bottom-0 after:w-full after:h-[2px] after:bg-blue-500 after:scale-x-0 after:origin-left hover:after:scale-x-100 after:transition-transform after:duration-300"
+              >
+                {t.links?.about || "About Us"}
               </a>
             </li>
           </ul>
@@ -67,52 +87,38 @@ const Footer = () => {
 
         {/* Contact */}
         <div>
-          <h3 className="text-lg font-semibold mb-3 text-white">
-            {t.contact}
-          </h3>
+          <h3 className="text-lg font-semibold mb-3 text-white">{t.contact || "Contact"}</h3>
           <ul className="space-y-3 text-sm text-gray-400">
             <li className="flex items-center gap-2">
               <Phone className="w-4 h-4" aria-hidden="true" />
-              <a href="tel:+998952100550" className="hover:text-white transition">
-                +998 95 210 05 50
-              </a>
+              <a href="tel:+998952100550" className="hover:text-white transition">+998 95 210 05 50</a>
             </li>
             <li className="flex items-center gap-2">
               <Mail className="w-4 h-4" aria-hidden="true" />
-              <a
-                href="mailto:Bakhromovv07@gmail.com"
-                className="hover:text-white transition"
-              >
-                Bakhromovv07@gmail.com
-              </a>
+              <a href="mailto:Bakhromovv07@gmail.com" className="hover:text-white transition">Bakhromovv07@gmail.com</a>
             </li>
           </ul>
         </div>
 
         {/* Social */}
         <div>
-          <h3 className="text-lg font-semibold mb-3 text-white">
-            {t.social}
-          </h3>
-          <div className="flex items-center gap-4">
-            {/* Telegram */}
+          <h3 className="text-lg font-semibold mb-3 text-white">{t.social || "Follow Us"}</h3>
+          <div className="flex items-center gap-3">
             <a
-              href="https://t.me/username"
+              href="https://t.me/developerBhk"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Telegram"
-              className="p-2 rounded-full bg-gray-800 hover:bg-sky-500 hover:text-white transition transform hover:scale-110"
+              className="w-10 h-10 rounded-lg bg-gray-800 hover:bg-sky-500 flex items-center justify-center transition transform hover:scale-110"
             >
               <TelegramIcon />
             </a>
-
-            {/* Instagram */}
             <a
-              href="https://instagram.com/username"
+              href="https://instagram.com/14.Bakhromovv"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Instagram"
-              className="p-2 rounded-full bg-gray-800 hover:bg-pink-500 hover:text-white transition transform hover:scale-110"
+              className="w-10 h-10 rounded-lg bg-gray-800 hover:bg-pink-500 flex items-center justify-center transition transform hover:scale-110"
             >
               <Instagram className="w-5 h-5" />
             </a>
@@ -120,9 +126,11 @@ const Footer = () => {
         </div>
       </div>
 
-      {/* Bottom */}
-      <div className="mt-12 border-t border-gray-800 py-6 text-center text-sm text-gray-500">
-        &copy; {new Date().getFullYear()} AutoMarket. {t.rights}
+      {/* Bottom Bar */}
+      <div className="border-t border-gray-800 bg-gray-900/50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 text-center text-sm text-gray-500">
+          &copy; {new Date().getFullYear()} AutoMarket. {t.rights || "Barcha huquqlar himoyalangan."}
+        </div>
       </div>
     </footer>
   );

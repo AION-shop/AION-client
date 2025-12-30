@@ -5,7 +5,7 @@ const MapSection = () => {
   return (
     <div className="w-full h-80 rounded-xl overflow-hidden relative shadow-md">
       <iframe
-        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2996.2!2d69.285147!3d41.276832!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x38ae8c7a1c5bfa9f%3A0x4d6edc1f9b7e6d3b!2sIndex%20Bazar%2C%20Sergeli%2C%20Toshkent%2C%20O%27zbekiston!5e0!3m2!1sen!2s!4v1700000000000"
+        src="www.google.com"
         width="100%"
         height="100%"
         style={{ border: 0 }}
@@ -18,7 +18,7 @@ const MapSection = () => {
         <button
           onClick={() =>
             window.open(
-              "https://www.google.com/maps/dir/?api=1&destination=41.276832,69.285147",
+              "www.google.com",
               "_blank"
             )
           }
@@ -84,7 +84,7 @@ const Offerta = () => {
         className="relative w-full h-80 flex items-center justify-center text-center"
         style={{
           backgroundImage:
-            "url(https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRBD8oDzeV8K0-Scs8q_4KmqOrvunLT7bMzig&s)",
+            "url(encrypted-tbn0.gstatic.com)",
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}
@@ -208,40 +208,8 @@ const Offerta = () => {
             </div>
           </div>
         </div>
-
-        {/* Map Section */}
-        <div className="bg-white rounded-2xl shadow-md p-6">
-          <h3 className="text-2xl font-bold text-gray-900 mb-4 flex items-center gap-3">
-            <MapPin className="w-7 h-7 text-blue-500" />
-            Bizning manzil
-          </h3>
-          <p className="text-gray-700 mb-4">
-            Toshkent, Oʻzbekiston, Sergeli tumani, Index Bazar
-          </p>
-          <MapSection />
-        </div>
-
-        {/* Action Buttons */}
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <button
-            onClick={() => window.history.back()}
-            className="px-8 py-4 bg-gray-200 hover:bg-gray-300 text-gray-900 font-semibold rounded-full transition-colors shadow-md"
-          >
-            Orqaga qaytish
-          </button>
-          <button
-            onClick={() => window.open("tel:+998711234567")}
-            className="px-8 py-4 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold rounded-full transition-all shadow-md flex items-center justify-center gap-2"
-          >
-            <Phone className="w-5 h-5" />
-            Qo'ng'iroq qilish
-          </button>
-        </div>
-      </div>
-
-      {/* Footer */}
-      <div className="bg-white text-gray-500 py-8 px-4 text-center">
-        <p className="text-sm">© 2024 AION Uzbekistan. Barcha huquqlar himoyalangan.</p>
+        {/* Map Sectionni bu yerga qo'shishingiz mumkin, agar kerak bo'lsa */}
+        <MapSection />
       </div>
     </div>
   );
