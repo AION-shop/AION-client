@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast"; // Toaster App.jsx da
 import { Mail, ArrowRight } from "lucide-react";
 
 const LoginPage = () => {
@@ -9,11 +9,11 @@ const LoginPage = () => {
   const navigate = useNavigate();
 
   const sendCode = async () => {
+    if (loading) return;
     if (!email) return toast.error("Email kiriting");
 
     setLoading(true);
     try {
-      // Backend URLni .env dan olish
       const res = await fetch(
         `${import.meta.env.VITE_API_URL}/api/userClient/send-code`,
         {
@@ -26,8 +26,7 @@ const LoginPage = () => {
       const data = await res.json();
 
       if (data.success) {
-        toast.success("Kod emailingizga yuborildi 📩");
-        // Verify page ga email bilan navigate qilish
+        toast.success("Kod emailingizga yuborildi 📩"); // faqat 1 toast
         navigate("/verify-account", { state: { email } });
       } else {
         toast.error(data.message || "Xatolik yuz berdi");
@@ -42,17 +41,13 @@ const LoginPage = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-purple-100 px-4">
-      <Toaster position="top-center" />
-
       <div className="w-full max-w-md bg-white rounded-3xl shadow-2xl p-8 space-y-6">
-        {/* ICON */}
         <div className="flex justify-center">
           <div className="p-4 rounded-full bg-blue-100">
             <Mail size={34} className="text-blue-600" />
           </div>
         </div>
 
-        {/* TITLE */}
         <h1 className="text-3xl font-extrabold text-gray-900 text-center">
           Kirish
         </h1>
@@ -61,7 +56,6 @@ const LoginPage = () => {
           Emailingizni kiriting va tasdiqlash kodini oling
         </p>
 
-        {/* INPUT */}
         <input
           type="email"
           placeholder="example@gmail.com"
@@ -71,7 +65,6 @@ const LoginPage = () => {
           focus:outline-none focus:ring-2 focus:ring-blue-400 text-black"
         />
 
-        {/* BUTTON */}
         <button
           onClick={sendCode}
           disabled={loading}
@@ -83,7 +76,6 @@ const LoginPage = () => {
           {!loading && <ArrowRight size={18} />}
         </button>
 
-        {/* INFO */}
         <p className="text-xs text-center text-gray-500">
           Kod emailingizga yuboriladi. Parol talab qilinmaydi.
         </p>

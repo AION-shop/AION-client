@@ -1,21 +1,37 @@
-import React, { useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useDispatch } from "react-redux";
 import { setAuthState } from "../redux/slices/authSlice";
 import { useNavigate, useLocation } from "react-router-dom";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import { ShieldCheck } from "lucide-react";
 
-const VerifyAccount = () => {
+export default function VerifyAccount() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { state } = useLocation(); // email LoginPage'dan keladi
+  const { state } = useLocation();
 
   const [code, setCode] = useState("");
   const [loading, setLoading] = useState(false);
+  
+  // Toast dublikatlarini oldini olish uchun ID saqlaymiz
+  const toastId = useRef(null);
+
+  // 🔒 Agar email bo‘lmasa → login sahifasiga qaytarish
+  useEffect(() => {
+    if (!state?.email) {
+      navigate("/login", { replace: true });
+    }
+  }, [state, navigate]);
 
   const verifyCode = async () => {
-    if (!code || code.length < 4) {
-      return toast.error("Tasdiqlash kodini to‘liq kiriting");
+    // Avvalgi toast bo'lsa o'chirib tashlaymiz
+    if (toastId.current) toast.dismiss(toastId.current);
+
+    if (loading) return;
+
+    if (code.length !== 6) {
+      toastId.current = toast.error("Kod 6 xonali bo‘lishi kerak");
+      return;
     }
 
     setLoading(true);
@@ -34,81 +50,79 @@ const VerifyAccount = () => {
 
       const data = await res.json();
 
-      if (data.success) {
-        dispatch(
-          setAuthState({
-            user: data.user,
-            token: data.token,
-          })
-        );
-
-        toast.success("Muvaffaqiyatli kirdingiz 🎉");
-        setTimeout(() => navigate("/"), 800);
-      } else {
-        toast.error(data.message || "Kod noto‘g‘ri");
+      if (!res.ok) {
+        toastId.current = toast.error(data.message || "Kod noto‘g‘ri");
+        setLoading(false);
+        return;
       }
+
+      // Hamma eski toastlarni tozalash
+      toast.dismiss();
+      
+      dispatch(setAuthState({ user: data.user, token: data.token }));
+      toast.success("Muvaffaqiyatli kirdingiz 🎉");
+
+      // Sahifaga o'tish
+      navigate("/", { replace: true });
+
     } catch (err) {
-      toast.error("Server bilan aloqa yo‘q");
-      console.error(err);
-    } finally {
+      toastId.current = toast.error("Server bilan aloqa yo‘q");
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-purple-100 px-4">
-      <Toaster position="top-center" />
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+      <div className="w-full max-w-md bg-white rounded-3xl shadow-2xl p-6 sm:p-8 space-y-6 border border-gray-100">
 
-      <div className="w-full max-w-md bg-white rounded-3xl shadow-2xl p-8 space-y-6">
-        {/* ICON */}
         <div className="flex justify-center">
-          <div className="p-4 rounded-full bg-blue-100">
+          <div className="p-4 rounded-full bg-blue-50">
             <ShieldCheck size={36} className="text-blue-600" />
           </div>
         </div>
 
-        {/* TITLE */}
-        <h1 className="text-2xl font-bold text-center text-gray-800">
+        <h1 className="text-xl sm:text-2xl font-bold text-center text-gray-800">
           Email tasdiqlash
         </h1>
 
-        <p className="text-center text-sm text-gray-500">
-          <span className="font-medium text-gray-700">{state?.email}</span>
-          <br />
-          emailiga yuborilgan kodni kiriting
+        <p className="text-center text-sm text-gray-500 leading-relaxed">
+          <span className="font-semibold text-gray-700 block sm:inline">{state?.email}</span>
+          <br className="hidden sm:block" />
+          manziliga yuborilgan kodni kiriting
         </p>
 
-        {/* CODE INPUT */}
-        <input
-          type="text"
-          maxLength={6}
-          value={code}
-          onChange={(e) => setCode(e.target.value.replace(/\D/g, ""))}
-          placeholder="123456"
-          className="w-full text-center text-2xl tracking-widest py-3 rounded-xl border border-gray-300
-          focus:outline-none focus:ring-2 focus:ring-blue-400 text-black"
-        />
+        <div className="space-y-4">
+          <input
+            type="text"
+            inputMode="numeric" // Mobil klaviaturada raqamlar chiqishi uchun
+            maxLength={6}
+            value={code}
+            onChange={(e) => setCode(e.target.value.replace(/\D/g, ""))}
+            placeholder="000000"
+            className="w-full text-center text-3xl tracking-[0.3em] sm:tracking-[0.5em] py-3 sm:py-4
+            rounded-2xl border border-gray-200 focus:border-blue-500 
+            focus:ring-4 focus:ring-blue-500/10 focus:outline-none 
+            text-gray-900 transition-all font-mono"
+          />
 
-        {/* BUTTON */}
-        <button
-          onClick={verifyCode}
-          disabled={loading}
-          className="w-full py-3 rounded-xl bg-blue-600 hover:bg-blue-700
-          text-white font-semibold transition disabled:opacity-50"
-        >
-          {loading ? "Tekshirilmoqda..." : "Tasdiqlash"}
-        </button>
+          <button
+            onClick={verifyCode}
+            disabled={loading}
+            className="w-full py-3.5 sm:py-4 rounded-2xl bg-blue-600 hover:bg-blue-700
+            text-white font-bold text-base sm:text-lg transition-all active:scale-95
+            disabled:opacity-50 disabled:active:scale-100 shadow-lg shadow-blue-200"
+          >
+            {loading ? "Tekshirilmoqda..." : "Tasdiqlash"}
+          </button>
+        </div>
 
-        {/* BACK */}
         <button
           onClick={() => navigate("/login")}
-          className="w-full text-sm text-gray-500 hover:text-blue-600 transition"
+          className="w-full text-sm font-medium text-gray-400 hover:text-blue-600 transition-colors"
         >
           ← Orqaga qaytish
         </button>
       </div>
     </div>
   );
-};
-
-export default VerifyAccount;
+}
