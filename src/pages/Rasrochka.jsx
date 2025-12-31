@@ -1,29 +1,30 @@
-import React, { useEffect, useState, useCallback, useMemo } from "react";
-import { useLocation, Link } from "react-router-dom";
+import React, { useEffect, useState, useCallback, useMemo, useContext } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
-import { Menu, X } from "lucide-react";
-import { useTranslation } from "react-i18next";
+import { Menu, X, ArrowLeft } from "lucide-react";
+import { LangContext } from "../../LangContext";
 import ColProductCard from "../components/ui/cards/Products";
 import Container from "../components/shared/Container";
 
 const Rasrochka = () => {
-  const { t } = useTranslation(); // <-- useTranslation hook
+  const { lang } = useContext(LangContext);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const API_URL = import.meta.env.VITE_API_URL;
+
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  const location = useLocation();
-  const API_URL = import.meta.env.VITE_API_URL;
-
   const categories = useMemo(() => [
-    { id: "all", name: t("categories.all") },
-    { id: "AION V", name: t("categories.AION V") },
-    { id: "AION Y", name: t("categories.AION Y") },
-    { id: "AION S", name: t("categories.AION S") }, 
-    { id: "AION MAX", name: t("categories.AION MAX") },
-    { id: "new", name: t("categories.new") },
-  ], [t]);
+    { id: "all", name: lang.categories?.all || "Barchasi" },
+    { id: "AION V", name: lang.categories?.["AION V"] || "AION V" },
+    { id: "AION Y", name: lang.categories?.["AION Y"] || "AION Y" },
+    { id: "AION S", name: lang.categories?.["AION S"] || "AION S" },
+    { id: "AION MAX", name: lang.categories?.["AION MAX"] || "AION MAX" },
+    { id: "new", name: lang.categories?.new || "Yangi" },
+  ], [lang]);
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -45,10 +46,7 @@ const Rasrochka = () => {
         if (selectedCategory !== "all") {
           if (selectedCategory === "new") {
             const now = new Date();
-            fetched = fetched.filter(p => {
-              const createdAt = new Date(p.createdAt);
-              return (now - createdAt) / (1000 * 3600 * 24) <= 4;
-            });
+            fetched = fetched.filter(p => (now - new Date(p.createdAt)) / (1000 * 3600 * 24) <= 4);
           } else {
             fetched = fetched.filter(p => p.title.toUpperCase().includes(selectedCategory.toUpperCase()));
           }
@@ -70,67 +68,78 @@ const Rasrochka = () => {
   }, []);
 
   const activeCategoryName = useMemo(() => {
-    if (selectedCategory === "all") return t("installment_page.title");
-    return categories.find(c => c.id === selectedCategory)?.name || t("installment_page.title");
-  }, [selectedCategory, categories, t]);
+    if (selectedCategory === "all") return lang.installment_page?.title || "Rassrochka";
+    return categories.find(c => c.id === selectedCategory)?.name || lang.installment_page?.title || "Rassrochka";
+  }, [selectedCategory, categories, lang]);
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50 text-gray-900">
+
       <Helmet>
         <title>{activeCategoryName} | AutoMarket</title>
-        <meta
-          name="description"
-          content={`${t("installment_page.meta_description")} ${activeCategoryName} modelini ko'rish.`}
-        />
       </Helmet>
 
-      {/* Mobile Header */}
-      <header className="lg:hidden sticky top-0 z-10 bg-white shadow-md">
+      {/* Modern SubNavbar */}
+      <nav className="sticky top-0 w-full bg-white/80 backdrop-blur-md shadow-sm border-b border-gray-200 z-50">
         <Container>
-          <div className="flex items-center justify-between py-4">
-            <h1 className="text-xl font-bold">{activeCategoryName}</h1>
+          <div className="flex items-center justify-between py-3">
+
+            {/* CHAP TOMON: Orqaga qaytish */}
             <button
-              onClick={() => setIsMobileMenuOpen(prev => !prev)}
-              className="p-2 rounded-lg bg-black text-white hover:bg-gray-800 transition shadow-md"
-              aria-label="Toggle Menu"
+              onClick={() => navigate(-1)}
+              className="p-2 rounded-full hover:bg-gray-100 transition-colors"
+              title="Orqaga"
             >
-              {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+              <ArrowLeft size={22} className="text-gray-900"/>
             </button>
+
+            {/* O'NG TOMON: Burger Menu */}
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="lg:hidden p-2 rounded-full hover:bg-gray-100 transition-colors"
+            >
+              {isMobileMenuOpen ? <X size={22} className="text-gray-900"/> : <Menu size={22} className="text-gray-900"/>}
+            </button>
+
           </div>
         </Container>
 
+        {/* Mobile Slide-down Menu */}
         {isMobileMenuOpen && (
-          <div className="absolute top-full left-0 right-0 bg-white shadow-xl animate-slideDown overflow-y-auto">
-            <ul className="space-y-3">
-              {categories.map(cat => (
-                <li key={cat.id}>
-                  <button
-                    onClick={() => handleCategoryChange(cat.id)}
-                    className={`w-full text-left px-4 py-3 rounded-lg font-medium transition-all duration-300
-          ${selectedCategory === cat.id ? "bg-black text-white shadow-lg font-semibold" : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"}`}
-                  >
-                    {cat.name}
-                  </button>
-                </li>
-              ))}
-            </ul>
-
+          <div className="lg:hidden bg-white border-t border-gray-100 shadow-xl w-full absolute z-40 top-full left-0 p-4 space-y-2 animate-slideDown">
+            <p className="text-xs font-bold text-gray-400 uppercase tracking-widest px-4 mb-2">
+              {lang.categoriesTitle || "Kategoriyalar"}
+            </p>
+            {categories.map(cat => (
+              <button
+                key={cat.id}
+                onClick={() => handleCategoryChange(cat.id)}
+                className={`w-full text-left px-4 py-3 rounded-xl font-semibold transition-all
+                  ${selectedCategory === cat.id ? "bg-blue-600 text-white shadow-md" : "bg-gray-50 text-gray-700 hover:bg-gray-200"}`}
+              >
+                {cat.name}
+              </button>
+            ))}
           </div>
         )}
-      </header>
+      </nav>
 
       {/* Main Content */}
       <div className="flex flex-1 relative">
         {/* Sidebar Desktop */}
-        <aside className="hidden lg:block w-72 h-screen sticky top-0 p-6 bg-white border-r border-gray-100 shadow-sm">
-          <h3 className="text-2xl font-extrabold mb-6 text-gray-900">{t("Brands ")}</h3>
-          <ul className="space-y-3">
+        <aside className="hidden lg:block w-72 h-[calc(100vh-64px)] sticky top-16 p-6 bg-white border-r border-gray-200 shadow-sm">
+          <h3 className="text-xl font-black mb-6 text-gray-900 uppercase tracking-tight">
+            {lang.categoriesTitle || "Kategoriyalar"}
+          </h3>
+          <ul className="space-y-2">
             {categories.map(cat => (
               <li key={cat.id}>
                 <button
                   onClick={() => handleCategoryChange(cat.id)}
-                  className={`w-full text-left px-4 py-3 rounded-lg font-medium transition-all duration-300
-                    ${selectedCategory === cat.id ? "bg-black text-white shadow-lg font-semibold" : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"}`}
+                  className={`w-full text-left px-4 py-3 rounded-xl font-bold transition-all duration-200
+                    ${selectedCategory === cat.id 
+                      ? "bg-gray-900 text-white shadow-lg scale-[1.02]" 
+                      : "text-gray-500 hover:bg-gray-100 hover:text-gray-900"}`}
                 >
                   {cat.name}
                 </button>
@@ -143,23 +152,23 @@ const Rasrochka = () => {
         <main className="flex-1 p-4 sm:p-6 lg:p-10">
           <Container>
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
-              <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900">{activeCategoryName}</h1>
-              <span className="text-gray-500 text-base">
-                {t("general.found_products", { count: products.length })}
-              </span>
+              <h1 className="text-3xl sm:text-4xl font-black text-gray-900 tracking-tight">{activeCategoryName}</h1>
+              <div className="px-4 py-1.5 bg-gray-200 rounded-full text-gray-600 text-sm font-bold">
+                {lang.general?.found_products?.replace("{count}", products.length) || `${products.length} ta mahsulot`}
+              </div>
             </div>
 
             {loading ? (
               <div className="flex items-center justify-center h-64">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-4 border-black"></div>
+                <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-b-4 border-blue-600"></div>
               </div>
             ) : products.length === 0 ? (
-              <div className="text-center py-20 text-gray-400 text-xl">{t("general.no_products_found")}</div>
+              <div className="text-center py-20 bg-white rounded-3xl border-2 border-dashed border-gray-200 text-gray-400 text-xl font-medium">
+                {lang.general?.no_products_found || "Mahsulot topilmadi"}
+              </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6 md:gap-8">
-                {products.map(product => (
-                  <ColProductCard key={product._id} card={product} />
-                ))}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+                {products.map(product => <ColProductCard key={product._id} card={product} />)}
               </div>
             )}
           </Container>
@@ -167,14 +176,11 @@ const Rasrochka = () => {
       </div>
 
       <style>{`
-        @keyframes fadeIn { from {opacity:0;} to {opacity:1;} }
-        .animate-fadeIn { animation: fadeIn 0.5s ease-out forwards; }
-
         @keyframes slideDown { 
-          from { opacity: 0; transform: translateY(-20px); } 
-          to { opacity: 1; transform: translateY(0); } 
+          0% { opacity: 0; transform: translateY(-15px); } 
+          100% { opacity: 1; transform: translateY(0); } 
         }
-        .animate-slideDown { animation: slideDown 0.3s ease-out forwards; }
+        .animate-slideDown { animation: slideDown 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
       `}</style>
     </div>
   );

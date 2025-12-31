@@ -51,7 +51,7 @@ const SubNavbar = () => {
             </div>
 
             {/* CENTER: Desktop menu */}
-            <div className="hidden lg:flex gap-4 justify-center flex-1 mx-4">
+            <div className={`flex-1 ${isMobileMenuOpen ? 'flex flex-col gap-2 mt-2 lg:flex-row lg:justify-center lg:gap-4 lg:mt-0' : 'hidden lg:flex gap-4 justify-center mx-4'}`}>
               {menuItems.map((item) => (
                 <Link
                   key={item.label}
@@ -68,7 +68,7 @@ const SubNavbar = () => {
             </div>
 
             {/* RIGHT: Phone + Login/User */}
-            <div className="flex items-center gap-1 sm:gap-2">
+            <div className="flex items-center gap-1 sm:gap-2 relative">
               <a href="tel:+998952100550" className="hidden md:flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-white/10 transition-all duration-300 group whitespace-nowrap">
                 <Phone size={18} className="text-white group-hover:text-blue-400 transition-colors duration-300" />
                 <div className="hidden xl:block">
@@ -91,30 +91,28 @@ const SubNavbar = () => {
                     <LogOut size={16} />
                   </button>
 
-                  {/* KICHIKROQ TEPAGA CHIQADIGAN DROPDOWN */}
                   {isLogoutModalOpen && (
                     <>
                       <div className="fixed inset-0 z-10" onClick={() => setIsLogoutModalOpen(false)}></div>
-                      <div className="absolute bottom-full right-0 mb-2 w-40 bg-gray-900 border border-gray-700 rounded-xl shadow-2xl z-20 p-3 animate-slideUp origin-bottom-right">
-                        <p className="text-white text-[11px] mb-2 text-center leading-tight font-medium">
+                      <div className="absolute bottom-0 right-0 mb-12 w-44 bg-gray-900 border border-gray-700 rounded-2xl shadow-2xl z-20 p-4 animate-slideDown origin-top-right">
+                        <p className="text-white text-sm mb-3 text-center font-medium">
                           {t.subNavbar?.logoutConfirm || "Chiqishni xohlaysizmi?"}
                         </p>
-                        <div className="flex gap-2">
+                        <div className="flex gap-3">
                           <button
                             onClick={() => setIsLogoutModalOpen(false)}
-                            className="flex-1 bg-gray-800 hover:bg-gray-700 text-white text-[10px] font-bold py-1.5 rounded-lg transition"
+                            className="flex-1 bg-gray-800 hover:bg-gray-700 text-white text-sm font-bold py-2 rounded-xl transition"
                           >
                             {t.subNavbar?.no || "Yo'q"}
                           </button>
                           <button
                             onClick={handleLogout}
-                            className="flex-1 bg-red-600 hover:bg-red-700 text-white text-[10px] font-bold py-1.5 rounded-lg transition"
+                            className="flex-1 bg-red-600 hover:bg-red-700 text-white text-sm font-bold py-2 rounded-xl transition"
                           >
                             {t.subNavbar?.yes || "Ha"}
                           </button>
                         </div>
-                        {/* Ko'rsatkich (uchburchak) o'ngroqqa surildi */}
-                        <div className="absolute -bottom-1 right-3 w-2 h-2 bg-gray-900 border-b border-r border-gray-700 rotate-45"></div>
+                        <div className="absolute -top-2 right-5 w-3 h-3 bg-gray-900 border-b border-r border-gray-700 rotate-45"></div>
                       </div>
                     </>
                   )}
@@ -131,11 +129,11 @@ const SubNavbar = () => {
       </nav>
 
       <style>{`
-        @keyframes slideUp { 
-          from { opacity: 0; transform: translateY(8px) scale(0.95); } 
-          to { opacity: 1; transform: translateY(0) scale(1); } 
+        @keyframes slideDown { 
+          0% { opacity: 0; transform: translateY(-10px) scale(0.95); } 
+          100% { opacity: 1; transform: translateY(0) scale(1); } 
         }
-        .animate-slideUp { animation: slideUp 0.2s ease-out forwards; }
+        .animate-slideDown { animation: slideDown 0.25s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
       `}</style>
     </section>
   );
