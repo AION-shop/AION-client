@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import toast from "react-hot-toast"; // Toaster App.jsx da
+import toast from "react-hot-toast"; // App.jsx da Toaster bo'lishi kerak
 import { Mail, ArrowRight } from "lucide-react";
 
 const LoginPage = () => {
@@ -14,19 +14,16 @@ const LoginPage = () => {
 
     setLoading(true);
     try {
-      const res = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/userClient/send-code`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email }),
-        }
-      );
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/userClient/send-code`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
 
       const data = await res.json();
 
       if (data.success) {
-        toast.success("Kod emailingizga yuborildi 📩"); // faqat 1 toast
+        toast.success(data.message || "Kod emailingizga yuborildi 📩");
         navigate("/verify-account", { state: { email } });
       } else {
         toast.error(data.message || "Xatolik yuz berdi");
@@ -61,16 +58,13 @@ const LoginPage = () => {
           placeholder="example@gmail.com"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="w-full px-4 py-3 rounded-xl border border-gray-300
-          focus:outline-none focus:ring-2 focus:ring-blue-400 text-black"
+          className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400 text-black"
         />
 
         <button
           onClick={sendCode}
           disabled={loading}
-          className="w-full flex items-center justify-center gap-2 py-3
-          rounded-xl bg-blue-600 hover:bg-blue-700 text-white
-          font-semibold transition disabled:opacity-50"
+          className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold transition disabled:opacity-50"
         >
           {loading ? "Yuborilmoqda..." : "Kod yuborish"}
           {!loading && <ArrowRight size={18} />}
