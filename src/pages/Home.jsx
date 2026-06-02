@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext, useRef } from "react";
 import { Helmet } from "react-helmet-async";
-import { motion, useMotionValue, useTransform } from "framer-motion";
+import { motion, useMotionValue, useTransform, useSpring } from "framer-motion";
 import { Link } from "react-router-dom";
 import { Sparkles, ArrowUpRight, Gauge, BatteryCharging, Zap } from "lucide-react";
 
@@ -14,7 +14,7 @@ import SnowAnimation from "./SnowAnimation";
 import WeatherAnimation from "./WeatherAnimation";
 import { LangContext } from "../../LangContext";
 
-// 1. Unikal 3D rasmlar va slug-IDlar bilan static ma'lumotlar ombori
+// 1. Static ma'lumotlar ombori
 const STATIC_PRODUCTS = [
   {
     id: "aion-y-plus",
@@ -54,7 +54,6 @@ export default function Home() {
   const [loading] = useState(false);
   const [darkBg, setDarkBg] = useState(false);
 
-  // Tarjimalar zaxirasi
   const translations = {
     home: {
       discoverCollection: t?.home?.discoverCollection || "Kolleksiyani kashf eting",
@@ -69,7 +68,6 @@ export default function Home() {
     }
   };
 
-  // Fon o'zgarishi uchun Intersection Observer
   useEffect(() => {
     if (!colProducts.length) return;
     const observer = new IntersectionObserver(
@@ -88,7 +86,6 @@ export default function Home() {
   return (
     <main className={`relative transition-colors duration-[1000ms] ease-out ${darkBg ? "bg-slate-950 text-white" : "bg-white text-gray-900"}`}>
       
-      {/* Orqa fondagi chiroyli qor va ob-havo effektlari */}
       <div className="pointer-events-none fixed inset-0 z-[20] opacity-40">
         <SnowAnimation />
         <WeatherAnimation locationId="YOUR_LOCATION_ID" />
@@ -99,7 +96,6 @@ export default function Home() {
         <meta name="description" content={translations.home.discoverCollection} />
       </Helmet>
 
-      {/* Hero Section */}
       <Hero
         heading={translations.hero.heroHeading}
         subheading={translations.hero.heroSub}
@@ -108,7 +104,6 @@ export default function Home() {
       />
 
       <Container>
-        {/* POPULAR MODELS SECTION */}
         <section className="py-24 observe-card">
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-16 gap-6">
             <div>
@@ -126,29 +121,27 @@ export default function Home() {
             </span>
           </div>
 
-          {/* Grid: Kattaroq, uzunchoq va maxsus 2 talik ustunli dizayn */}
+          {/* Grid */}
           <div className="hidden sm:grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
             {colProducts.map((product) => (
-              <Card3D key={product.id} product={product} darkBg={darkBg} />
+              <Card3D key={product.id} product={product} />
             ))}
           </div>
 
-          {/* Mobile Carousel: Telefonlar uchun moslashuvchan swipe */}
+          {/* Mobile Carousel */}
           <div className="sm:hidden flex gap-5 overflow-x-auto pb-8 snap-x snap-mandatory no-scrollbar">
             {colProducts.map((product) => (
               <div key={product.id} className="min-w-[85vw] snap-center">
-                <Card3D product={product} darkBg={darkBg} />
+                <Card3D product={product} />
               </div>
             ))}
           </div>
         </section>
 
-        {/* Swiper Banner Section */}
         <section className="py-12 relative">
           <SwiperBanner isFullHeight={false} />
         </section>
 
-        {/* DISCOVER COLLECTION SECTION */}
         <section className="py-24 observe-card">
           <h2 className={`text-4xl md:text-7xl font-black mb-16 text-center tracking-tight uppercase transition-colors duration-700 ${
             darkBg ? "text-white" : "text-slate-900"
@@ -164,120 +157,137 @@ export default function Home() {
   );
 }
 
-// 🔥 NAFIS VA KUCHLI 3D PORTRAIT (UZUNCHOQ) KARTA KOMPONENTI
-function Card3D({ product, darkBg }) {
+// 🔥 YANGILANGAN VA TO'LIQ ISHLOVCHI 3D CARD KOMPONENTI (Framer Motion orqali LERP va Glow effekti)
+function Card3D({ product }) {
   const cardRef = useRef(null);
-  const x = useMotionValue(250);
-  const y = useMotionValue(350);
 
-  // Kattaroq va sezgirroq 3D og'ish burchaklari (-12 dan 12 gacha)
-  const rotateX = useTransform(y, [0, 700], [12, -12]);
-  const rotateY = useTransform(x, [0, 500], [-12, 12]);
+  // Sichqoncha koordinatalari uchun Motion qiymatlari
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
 
-  // Sichqoncha o'rniga qarab siljiydigan neon Glow effekt koordinatalari
-  const glowX = useTransform(x, (val) => `${val}px`);
-  const glowY = useTransform(y, (val) => `${val}px`);
+  // LERP effekti uchun Spring (Silliq harakatlanish)
+  const springConfig = { stiffness: 150, damping: 20, mass: 0.5 };
+  const rotateX = useSpring(useTransform(y, [-0.5, 0.5], [14, -14]), springConfig);
+  const rotateY = useSpring(useTransform(x, [-0.5, 0.5], [-14, 14]), springConfig);
 
-  function handleMouseMove(event) {
+  // Dinamik nurlanish (Glow effect) joylashuvi
+  const glowX = useMotionValue("50%");
+  const glowY = useMotionValue("50%");
+  const glowOpacity = useMotionValue(0);
+
+  function handleMouseMove(e) {
     if (!cardRef.current) return;
     const rect = cardRef.current.getBoundingClientRect();
-    x.set(event.clientX - rect.left);
-    y.set(event.clientY - rect.top);
+    
+    // 3D og'ish burchagini hisoblash (0 atrofida -0.5 dan 0.5 gacha)
+    const px = (e.clientX - rect.left) / rect.width;
+    const py = (e.clientY - rect.top) / rect.height;
+    x.set(px - 0.5);
+    y.set(py - 0.5);
+
+    // Glow effekti uchun foizli koordinatalar
+    glowX.set(`${px * 100}%`);
+    glowY.set(`${py * 100}%`);
+  }
+
+  function handleMouseEnter() {
+    glowOpacity.set(1);
   }
 
   function handleMouseLeave() {
-    x.set(250);
-    y.set(350);
+    x.set(0);
+    y.set(0);
+    glowOpacity.set(0);
   }
 
   return (
-    <Link to={`/about-car/${product.id}`} className="block perspective-1000 no-underline w-full h-full">
+    <Link to={`/about-car/${product.id}`} className="block no-underline w-full h-full group" style={{ perspective: "1200px" }}>
+      {/* Suzish (Float) va 3D harakat bloki */}
       <motion.div
         ref={cardRef}
         onMouseMove={handleMouseMove}
+        onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
         style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
-        whileHover={{ scale: 1.015 }}
-        transition={{ type: "spring", stiffness: 180, damping: 22 }}
-        className={`relative rounded-[40px] overflow-hidden aspect-[3/4] border transition-all duration-500 cursor-pointer shadow-2xl select-none ${
-          darkBg 
-            ? "bg-slate-900 border-white/5 shadow-black/80" 
-            : "bg-slate-900 border-slate-200/10 shadow-slate-300/40"
-        }`}
+        animate={{ y: [0, -8, 0] }}
+        transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+        className="relative rounded-[32px] overflow-hidden aspect-[3/4] cursor-pointer select-none bg-[#0d1117] border border-white/10 shadow-[0_24px_60px_rgba(0,0,0,0.6)] will-change-transform"
       >
         
-        {/* DINAMIK SICHQONChA NURI (GLOW EFFECT) */}
+        {/* DINAMIK SICHQONCHA NURI (GLOW EFFECT) */}
         <motion.div 
-          className="absolute pointer-events-none inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10"
+          className="absolute inset-0 pointer-events-none z-10 transition-opacity duration-300"
           style={{
-            background: `radial-gradient(600px circle at ${glowX} ${glowY}, rgba(59, 130, 246, 0.2), transparent 45%)`
+            opacity: glowOpacity,
+            background: useTransform(() => `radial-gradient(circle at ${glowX.get()} ${glowY.get()}, rgba(99, 140, 255, 0.2) 0%, transparent 60%)`)
           }}
         />
 
-        {/* 3D RASM QATLAMI (TranslateZ orqali chuqurlik berilgan) */}
-        <div className="absolute inset-0 w-full h-full overflow-hidden" style={{ transform: "translateZ(20px)" }}>
+        {/* PREMIUM CHEGARA YORUG'LIGI (BORDER GLOW) */}
+        <div className="absolute inset-0 pointer-events-none z-20 rounded-[32px] border border-transparent bg-gradient-to-br from-blue-500/30 via-transparent to-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
+        {/* 3D RASM QATLAMI */}
+        <div className="absolute inset-0 overflow-hidden" style={{ transform: "translateZ(20px)" }}>
           <img 
             src={product.image} 
             alt={product.title} 
-            className="w-full h-full object-cover transition-transform duration-[1.5s] ease-out scale-100 hover:scale-105"
+            className="w-full h-full object-cover scale-[1.04] group-hover:scale-110 transition-transform duration-[1500ms] ease-out"
             loading="lazy"
           />
-          {/* To'q gradient qoplamasi */}
-          <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent" />
+          {/* Gradient qoplamasi */}
+          <div className="absolute inset-0 bg-gradient-to-t from-[#05070f]/95 via-[#05070f]/45 to-[#05070f]/08" />
         </div>
 
         {/* HIGH-TECH BADGE */}
-        <div className="absolute top-6 left-6 z-20" style={{ transform: "translateZ(35px)" }}>
-          <span className="flex items-center gap-1.5 px-4 py-2 bg-slate-950/50 backdrop-blur-xl text-white border border-white/10 text-[10px] font-black uppercase tracking-[0.2em] rounded-full">
-            <Zap size={12} className="text-blue-400" />
+        <div className="absolute top-4 left-4 z-30 flex items-center gap-1.5 px-4 py-2 bg-[#0a0c14]/65 backdrop-blur-xl border border-white/12 rounded-full" style={{ transform: "translateZ(35px)" }}>
+          <span className="w-1.5 h-1.5 rounded-full bg-[#4f8aff] animate-ping absolute left-4" />
+          <span className="w-1.5 h-1.5 rounded-full bg-[#4f8aff]" />
+          <span className="text-[10px] font-semibold text-[#7eb8ff] tracking-[0.12em] uppercase">
             {product.badge}
           </span>
         </div>
 
-        {/* MATNLAR VA INTERFEYS BLOKI (Egilganda oldinga bo'rtib chiqadi) */}
-        <div className="absolute inset-0 flex flex-col justify-end p-8 sm:p-10 text-white z-20" style={{ transform: "translateZ(60px)", transformStyle: "preserve-3d" }}>
+        {/* MATNLAR VA INTERFEYS BLOKI */}
+        <div className="absolute inset-0 flex flex-col justify-end p-6 z-30 text-white" style={{ transform: "translateZ(55px)", transformStyle: "preserve-3d" }}>
           
-          {/* Texnik xarakteristikalar qatori (Hoverda suzib chiqadi) */}
-          <div className="flex gap-3 mb-4 text-[11px] font-bold text-gray-300">
-            <div className="flex items-center gap-1 bg-white/5 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/5">
-              <BatteryCharging size={13} className="text-emerald-400" />
+          {/* Texnik xarakteristikalar */}
+          <div className="flex gap-2 mb-3">
+            <div className="flex items-center gap-1.5 bg-white/5 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/08 text-[10px] text-white/70 font-medium">
+              <BatteryCharging size={12} className="text-emerald-400" />
               <span>{product.range}</span>
             </div>
-            <div className="flex items-center gap-1 bg-white/5 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/5">
-              <Gauge size={13} className="text-blue-400" />
+            <div className="flex items-center gap-1.5 bg-white/5 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/08 text-[10px] text-white/70 font-medium">
+              <Gauge size={12} className="text-blue-400" />
               <span>{product.power}</span>
             </div>
           </div>
 
-          {/* Avtomobil Sarlavhasi */}
-          <h3 className="text-3xl sm:text-4xl font-black tracking-tighter uppercase mb-3 leading-none transition-colors duration-300 hover:text-blue-400">
+          {/* Sarlavha */}
+          <h3 className="text-xl sm:text-2xl font-bold tracking-tight uppercase mb-2 leading-none group-hover:text-blue-400 transition-colors duration-300">
             {product.title}
           </h3>
           
-          {/* Qisqa tavsif */}
-          <p className="text-gray-300/80 text-xs sm:text-sm font-medium leading-relaxed max-w-sm line-clamp-2 mb-6">
+          {/* Tavsif */}
+          <p className="text-white/50 text-[11px] leading-[1.55] max-w-sm line-clamp-2 mb-4">
             {product.description}
           </p>
 
-          {/* Pastki qism: Narx va premium tugma */}
-          <div className="flex items-center justify-between border-t border-white/10 pt-5">
+          {/* Narx va Tugma */}
+          <div className="flex items-center justify-between border-t border-white/08 pt-4">
             <div className="flex flex-col">
-              <span className="text-[9px] uppercase tracking-[0.2em] text-gray-500 font-black">STARTING AT</span>
-              <span className="text-2xl sm:text-3xl font-black text-white tracking-tight">
+              <span className="text-[9px] uppercase tracking-[0.15em] text-white/35 font-semibold">Starting at</span>
+              <span className="text-xl sm:text-2xl font-bold tracking-tight">
                 {product.price}
               </span>
             </div>
 
-            {/* Doiraviy strelka belgisi */}
-            <div className="w-12 h-12 rounded-full bg-white text-black flex items-center justify-center shadow-xl transition-all duration-500 hover:bg-blue-600 hover:text-white hover:rotate-45">
-              <ArrowUpRight size={22} className="stroke-[2.5]" />
+            {/* Doiraviy strelka */}
+            <div className="w-10 h-10 rounded-full bg-white text-[#0d1117] flex items-center justify-center shadow-xl group-hover:bg-blue-600 group-hover:text-white group-hover:rotate-45 transition-all duration-300 flex-shrink-0">
+              <ArrowUpRight size={20} className="stroke-[2.5]" />
             </div>
           </div>
 
         </div>
-
-        {/* Hover qilinganda konturni yorituvchi neon chiziq */}
-        <div className="absolute -inset-px bg-gradient-to-tr from-blue-500/20 via-transparent to-white/5 opacity-0 hover:opacity-100 rounded-[40px] transition-opacity duration-500 pointer-events-none" />
       </motion.div>
     </Link>
   );

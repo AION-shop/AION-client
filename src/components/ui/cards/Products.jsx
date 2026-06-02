@@ -1,72 +1,311 @@
-import React, { useCallback } from "react";
-import { useNavigate } from "react-router-dom";
-import { ArrowRight, DollarSign } from "lucide-react";
+import React, { useRef } from "react";
+import { Link } from "react-router-dom";
+import { BatteryCharging, Gauge, ArrowUpRight, Zap } from "lucide-react";
 
-export default function ColProductCard({ card }) {
-  const navigate = useNavigate();
-  if (!card) return null;
+function Card3D({ product, darkBg }) {
+  const cardRef = useRef(null);
+  const wrapRef = useRef(null);
+  const rafRef = useRef(null);
+  const stateRef = useRef({
+    active: false,
+    curRX: 0, curRY: 0,
+    tarRX: 0, tarRY: 0,
+  });
 
-  const imageSrc = card.images?.[0] || card.thumbnail || "https://via.placeholder.com/400";
-  const productTitle = card.title || card.name || "Unnamed Product";
-  const productDescription = card.description || "High performance vehicle details.";
-  const formattedPrice = card.price ? `$${card.price.toLocaleString()}` : "Price on request";
+  function lerp(a, b, t) {
+    return a + (b - a) * t;
+  }
 
-  const handleNavigation = useCallback(() => {
-    if (card._id) navigate(`/col-products/${card._id}`);
-  }, [navigate, card._id]);
+  function animate() {
+    const s = stateRef.current;
+    const card = cardRef.current;
+    if (!card) return;
+
+    s.curRX = lerp(s.curRX, s.tarRX, 0.1);
+    s.curRY = lerp(s.curRY, s.tarRY, 0.1);
+    card.style.transform = `rotateX(${s.curRX}deg) rotateY(${s.curRY}deg) scale(1.02)`;
+
+    if (s.active || Math.abs(s.curRX) > 0.05 || Math.abs(s.curRY) > 0.05) {
+      rafRef.current = requestAnimationFrame(animate);
+    } else {
+      card.style.transform = "";
+      rafRef.current = null;
+    }
+  }
+
+  function handleMouseMove(e) {
+    const card = cardRef.current;
+    if (!card) return;
+    const rect = card.getBoundingClientRect();
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 2;
+    const dx = (e.clientX - cx) / (rect.width / 2);
+    const dy = (e.clientY - cy) / (rect.height / 2);
+    stateRef.current.tarRX = -dy * 14;
+    stateRef.current.tarRY = dx * 14;
+
+    const mx = (((e.clientX - rect.left) / rect.width) * 100).toFixed(1);
+    const my = (((e.clientY - rect.top) / rect.height) * 100).toFixed(1);
+    card.style.setProperty("--mx", mx + "%");
+    card.style.setProperty("--my", my + "%");
+
+    if (!rafRef.current) rafRef.current = requestAnimationFrame(animate);
+  }
+
+  function handleMouseEnter() {
+    stateRef.current.active = true;
+    cardRef.current?.classList.add("is-hovered");
+    if (!rafRef.current) rafRef.current = requestAnimationFrame(animate);
+  }
+
+  function handleMouseLeave() {
+    const s = stateRef.current;
+    s.active = false;
+    s.tarRX = 0;
+    s.tarRY = 0;
+    cardRef.current?.classList.remove("is-hovered");
+    cardRef.current?.style.removeProperty("--mx");
+    cardRef.current?.style.removeProperty("--my");
+    if (!rafRef.current) rafRef.current = requestAnimationFrame(animate);
+  }
 
   return (
-    <div
-      onClick={handleNavigation}
-      className="group relative cursor-pointer rounded-2xl overflow-hidden shadow-lg aspect-square
-        transition-all duration-500 hover:scale-[1.03] hover:shadow-2xl bg-gray-800"
-      role="link"
-      aria-label={`Explore details for ${productTitle}`}
+    <Link
+      to={`/about-car/${product.id}`}
+      className="block no-underline w-full h-full"
+      style={{ perspective: "1000px" }}
     >
-      {/* IMAGE */}
-      <img
-        src={imageSrc}
-        alt={productTitle}
-        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-        loading="lazy"
-      />  
+      {/* Wrap: float animation + mouse events */}
+      <div
+        ref={wrapRef}
+        onMouseMove={handleMouseMove}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        className="float-card"
+        style={{
+          animation: `floatCard 5s ease-in-out infinite`,
+        }}
+      >
+        {/* Card: 3D tilt target */}
+        <div
+          ref={cardRef}
+          className="relative rounded-[32px] overflow-hidden aspect-[3/4] cursor-pointer select-none"
+          style={{
+            background: "#0d1117",
+            border: "0.5px solid rgba(255,255,255,0.08)",
+            transformStyle: "preserve-3d",
+            transition: "box-shadow 0.4s",
+            boxShadow: "0 24px 60px rgba(0,0,0,0.6)",
+            willChange: "transform",
+          }}
+        >
+          {/* Mouse spotlight glow */}
+          <div
+            className="absolute inset-0 pointer-events-none z-10 opacity-0 hover-glow"
+            style={{
+              background:
+                "radial-gradient(circle at var(--mx, 50%) var(--my, 50%), rgba(99,140,255,0.18) 0%, transparent 60%)",
+              transition: "opacity 0.4s",
+            }}
+          />
 
-      {/* Overlay Gradient */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent"></div>
+          {/* Image */}
+          <div
+            className="absolute inset-0 overflow-hidden"
+            style={{ transform: "translateZ(20px)" }}
+          >
+            <img
+              src={product.image}
+              alt={product.title}
+              loading="lazy"
+              className="w-full h-full object-cover transition-transform duration-[1500ms] ease-out scale-[1.04] hover:scale-110"
+            />
+            {/* Dark overlay */}
+            <div
+              className="absolute inset-0"
+              style={{
+                background:
+                  "linear-gradient(to top, rgba(5,7,15,0.95) 0%, rgba(5,7,15,0.45) 50%, rgba(5,7,15,0.08) 100%)",
+              }}
+            />
+          </div>
 
-      {/* CONTENT */}
-      <div className="absolute bottom-0 left-0 w-full p-5 sm:p-6 text-white opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-500">
-        <div className="transform transition-transform duration-500 group-hover:-translate-y-2">
-          {card.type && (
-            <div className="mb-3">
-              <span className="inline-block px-3 py-1 bg-blue-600/90 text-white text-xs font-semibold rounded-full uppercase tracking-wide">
-                {card.type}
-              </span>
+          {/* Shine overlay */}
+          <div
+            className="shine-overlay absolute inset-0 rounded-[32px] pointer-events-none z-[3]"
+            style={{
+              background:
+                "linear-gradient(135deg, rgba(255,255,255,0.06) 0%, transparent 50%, rgba(255,255,255,0.02) 100%)",
+              opacity: 0,
+              transition: "opacity 0.3s",
+            }}
+          />
+
+          {/* Border ring */}
+          <div
+            className="ring-overlay absolute pointer-events-none z-[4]"
+            style={{
+              inset: -1,
+              borderRadius: 33,
+              background:
+                "linear-gradient(135deg, rgba(79,138,255,0.35), transparent 50%, rgba(255,255,255,0.06))",
+              WebkitMask:
+                "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)",
+              WebkitMaskComposite: "xor",
+              maskComposite: "exclude",
+              padding: 1,
+              opacity: 0,
+              transition: "opacity 0.4s",
+            }}
+          />
+
+          {/* Badge */}
+          <div
+            className="absolute top-4 left-4 z-20 flex items-center gap-1.5 px-4 py-2"
+            style={{
+              background: "rgba(10,12,20,0.65)",
+              backdropFilter: "blur(12px)",
+              border: "0.5px solid rgba(255,255,255,0.12)",
+              borderRadius: 100,
+              transform: "translateZ(35px)",
+            }}
+          >
+            <span
+              className="badge-pulse"
+              style={{
+                width: 6,
+                height: 6,
+                borderRadius: "50%",
+                background: "#4f8aff",
+                display: "inline-block",
+              }}
+            />
+            <span
+              style={{
+                fontSize: 10,
+                fontWeight: 600,
+                color: "#7eb8ff",
+                letterSpacing: "0.12em",
+                textTransform: "uppercase",
+              }}
+            >
+              {product.badge}
+            </span>
+          </div>
+
+          {/* Body */}
+          <div
+            className="absolute inset-0 flex flex-col justify-end p-6 z-20 text-white"
+            style={{
+              transform: "translateZ(55px)",
+              transformStyle: "preserve-3d",
+            }}
+          >
+            {/* Stats */}
+            <div className="flex gap-2 mb-3">
+              <div
+                className="flex items-center gap-1.5 px-3 py-1.5"
+                style={{
+                  background: "rgba(255,255,255,0.06)",
+                  backdropFilter: "blur(8px)",
+                  border: "0.5px solid rgba(255,255,255,0.08)",
+                  borderRadius: 100,
+                  fontSize: 10,
+                  color: "rgba(255,255,255,0.7)",
+                  fontWeight: 500,
+                }}
+              >
+                <BatteryCharging size={12} style={{ color: "#4ade80" }} />
+                {product.range}
+              </div>
+              <div
+                className="flex items-center gap-1.5 px-3 py-1.5"
+                style={{
+                  background: "rgba(255,255,255,0.06)",
+                  backdropFilter: "blur(8px)",
+                  border: "0.5px solid rgba(255,255,255,0.08)",
+                  borderRadius: 100,
+                  fontSize: 10,
+                  color: "rgba(255,255,255,0.7)",
+                  fontWeight: 500,
+                }}
+              >
+                <Gauge size={12} style={{ color: "#60a5fa" }} />
+                {product.power}
+              </div>
             </div>
-          )}
-          <h3 className="text-xl sm:text-2xl font-bold mb-2 leading-tight line-clamp-2">{productTitle}</h3>
-          <p className="text-gray-300 text-sm mb-4 line-clamp-2 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300">
-            {productDescription}
-          </p>
 
-          <div className="flex items-center justify-between opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300">
-            {card.price && (
-              <span className="text-xl sm:text-2xl font-bold flex items-center">
-                <DollarSign className="w-5 h-5 mr-1 text-green-400" />
-                {formattedPrice}
-              </span>
-            )}
-            <div className="flex items-center gap-3">
-              <button className="px-5 py-2 bg-white text-black rounded-full font-semibold hover:bg-gray-100 transition-all duration-300 transform hover:scale-105">
-                Explore
-              </button>
-              <div className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center group-hover:bg-blue-500 transition-all duration-300">
-                <ArrowRight size={20} className="text-white transform group-hover:translate-x-1 transition-transform duration-300" />
+            {/* Title */}
+            <h3
+              className="uppercase mb-2 leading-none"
+              style={{
+                fontSize: "clamp(18px, 2vw, 24px)",
+                fontWeight: 700,
+                letterSpacing: "-0.02em",
+              }}
+            >
+              {product.title}
+            </h3>
+
+            {/* Description */}
+            <p
+              className="mb-4 line-clamp-2"
+              style={{
+                fontSize: 11,
+                color: "rgba(255,255,255,0.5)",
+                lineHeight: 1.55,
+              }}
+            >
+              {product.description}
+            </p>
+
+            {/* Footer */}
+            <div
+              className="flex items-center justify-between pt-4"
+              style={{ borderTop: "0.5px solid rgba(255,255,255,0.08)" }}
+            >
+              <div className="flex flex-col">
+                <span
+                  style={{
+                    fontSize: 9,
+                    color: "rgba(255,255,255,0.35)",
+                    fontWeight: 600,
+                    letterSpacing: "0.15em",
+                    textTransform: "uppercase",
+                  }}
+                >
+                  Starting at
+                </span>
+                <span
+                  style={{
+                    fontSize: "clamp(20px, 2vw, 26px)",
+                    fontWeight: 700,
+                    letterSpacing: "-0.03em",
+                  }}
+                >
+                  {product.price}
+                </span>
+              </div>
+
+              <div
+                className="arrow-btn flex items-center justify-center"
+                style={{
+                  width: 42,
+                  height: 42,
+                  borderRadius: "50%",
+                  background: "#fff",
+                  transition: "background 0.3s, transform 0.3s",
+                  flexShrink: 0,
+                }}
+              >
+                <ArrowUpRight size={20} style={{ color: "#0d1117", strokeWidth: 2.5 }} />
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </Link>
   );
 }
+
+export default Card3D;
