@@ -21,7 +21,7 @@ const Footer = () => {
   return (
     <footer className="bg-gray-900 text-gray-200" role="contentinfo" aria-label="Footer">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
-        
+
         {/* About / Brand */}
         <div className="sm:col-span-2 lg:col-span-1">
           <h3 className="text-2xl font-bold text-white mb-3">AutoMarket</h3>
@@ -97,21 +97,38 @@ const Footer = () => {
               <Mail className="w-4 h-4" aria-hidden="true" />
               <a href="mailto:Bakhromovv07@gmail.com" className="hover:text-white transition">Bakhromovv07@gmail.com</a>
             </li>
+              <li className="flex items-center gap-2">
+              <Mail className="w-4 h-4" aria-hidden="true" />
+              <a href="mailto:Bakhromovv07@gmail.com" className="hover:text-white transition">Don't worry last flag is near here </a>
+            </li>
           </ul>
         </div>
 
-        {/* Social */}
+        {/* Social */} 
         <div>
           <h3 className="text-lg font-semibold mb-3 text-white">{t.social || "Follow Us"}</h3>
           <div className="flex items-center gap-3">
             <a
-              href="https://t.me/developerBhk"
+              href="https://t.me/+gnoSt7LCNfBmNzBi"
               target="_blank"
               rel="noopener noreferrer"
-              aria-label="Telegram"
-              className="w-10 h-10 rounded-lg bg-gray-800 hover:bg-sky-500 flex items-center justify-center transition transform hover:scale-110"
+              aria-label="Flag Link"
+              className="w-10 h-10 rounded-lg bg-gray-800 hover:bg-white/10 border border-white/5 flex items-center justify-center transition transform hover:scale-110"
             >
-              <TelegramIcon />
+              {/* Minimalist, toza oq rangli bayroq ikonasi */}
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="w-5 h-5 text-white"
+              >
+                <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z" />
+                <line x1="4" y1="22" x2="4" y2="15" />
+              </svg>
             </a>
             <a
               href="https://instagram.com/14.Bakhromovv"

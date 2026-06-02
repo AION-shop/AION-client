@@ -42,7 +42,7 @@ const STATIC_CARS_DETAILS = {
   },
   "aion-v-plus": {
     title: "GAC AION V PLUS ",
-    category: "Y0U_W1nN3r",
+    category: "Y0u_N33d_L@st",
 
     price: 29000,
     acceleration: "7.5",
