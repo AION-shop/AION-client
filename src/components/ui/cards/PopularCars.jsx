@@ -4,6 +4,28 @@ import { useNavigate } from "react-router-dom";
 import { LangContext } from "../../../../LangContext";
 import { motion } from "framer-motion";
 
+// 1. Backend ishlamayotgan paytda ko'rinadigan chiroyli static avtomobillar ro'yxati
+const STATIC_POPULAR_CARS = [
+  {
+    _id: "aion-y-plus",
+    title: "AION Y PLUS",
+    subtitle: "Keng qamrovli va aqlli shahar krossoveri. Premium qulaylik va yuqori texnologiyalar uyg'unligi.",
+    thumbnail: "https://www.bigwheels.my/wp-content/uploads/2024/02/GAC-AION-Y-PLUS-2.jpg"
+  },
+  {
+    _id: "aion-s-plus",
+    title: "AION S PLUS",
+    subtitle: "Aerodinamik dizayn va futuristik salon. Tezyurar elektro sedan ishqibozlari uchun.",
+    thumbnail: "https://img.caixin.com/2021-11-01/163575175630998.jpg"
+  },
+  {
+    _id: "aion-v-plus",
+    title: "AION V PLUS",
+    subtitle: "Oilaviy sayohatlar uchun mukammal SUV. Maksimal xavfsizlik va uzoq masofa kafolati.",
+    thumbnail: "https://d3jvxfsgjxj1vz.cloudfront.net/news/wp-content/uploads/2025/05/09162244/gac-aion-es-launched-in-uae-price-variants-specs-7-1024x576.jpg"
+  }
+];
+
 const containerVariants = {
   hidden: { opacity: 0 },
   show: {
@@ -23,21 +45,41 @@ const cardVariants = {
 
 export default function DiscoverSection() {
   const { t } = useContext(LangContext);
-  const [cards, setCards] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [cards, setCards] = useState(STATIC_POPULAR_CARS);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/api/popular`)
-      .then((res) => res.json())
-      .then(setCards)
-      .finally(() => setLoading(false));
+    const fetchPopularCars = async () => {
+      try {
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/popular`);
+        if (!res.ok) throw new Error("Backend offline");
+        const json = await res.json();
+        
+        if (Array.isArray(json)) {
+          setCards(json);
+        }
+      } catch (error) {
+        console.log("Backend ishlamadi, static ma'lumotlar ishlatilmoqda.");
+        setCards(STATIC_POPULAR_CARS);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPopularCars();
   }, []);
+
+  const translations = {
+    title: t?.discover?.title || "KOLLEKSIYANI KASHF ETING",
+    subtitle: t?.discover?.subtitle || "GAC AION'ning eng so'nggi va innovatsion elektromobillari bilan kelajakka qadam qo'ying.",
+    more: t?.discover?.more || "Batafsil"
+  };
 
   if (loading) {
     return (
-      <section className="py-32 flex justify-center bg-white">
-        <div className="w-10 h-10 border-4 border-gray-100 border-t-blue-600 rounded-full animate-spin" />
+      <section className="py-32 flex justify-center bg-transparent">
+        <div className="w-10 h-10 border-4 border-gray-100/20 border-t-blue-600 rounded-full animate-spin" />
       </section>
     );
   }
@@ -48,7 +90,7 @@ export default function DiscoverSection() {
       initial="hidden"
       whileInView="show"
       viewport={{ once: true, margin: "-100px" }}
-      className="bg-white py-12 md:py-24"
+      className="py-12 md:py-24 bg-transparent transition-colors duration-700"
     >
       <div className="max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-10">
         
@@ -59,24 +101,26 @@ export default function DiscoverSection() {
             whileInView={{ opacity: 1, x: 0 }}
             className="flex items-center gap-3 text-blue-600 font-bold tracking-[0.3em] uppercase text-xs mb-4"
           >
-            <Sparkles size={16} /> 2025 Collection
+            <Sparkles size={16} /> 2026 Collection
           </motion.div>
-          <h2 className="text-4xl sm:text-6xl md:text-8xl font-black uppercase tracking-tighter text-slate-900 leading-[0.9]">
-            {t.discover?.title}
+          
+          {/* text-slate-900 o'rniga text-current yoki dinamik rang qo'shildi */}
+          <h2 className="text-4xl sm:text-6xl md:text-8xl font-black uppercase tracking-tighter text-current leading-[0.9] break-words">
+            {translations.title}
           </h2>
-          <p className="mt-6 text-gray-500 max-w-xl text-base sm:text-lg font-medium">
-            {t.discover?.subtitle}
+          <p className="mt-6 text-gray-400 max-w-xl text-base sm:text-lg font-medium">
+            {translations.subtitle}
           </p>
         </header>
 
         {/* GRID */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-10">
-          {cards.map((card) => (
+          {(Array.isArray(cards) ? cards : STATIC_POPULAR_CARS).map((card) => (
             <motion.article
               key={card._id}
               variants={cardVariants}
               onClick={() => navigate(`/about-car/${card._id}`)}
-              className="group relative rounded-[32px] md:rounded-[48px] overflow-hidden cursor-pointer shadow-2xl aspect-[4/5] sm:aspect-[16/10] lg:aspect-[16/11]"
+              className="group relative rounded-[32px] md:rounded-[48px] overflow-hidden cursor-pointer shadow-2xl aspect-[4/5] sm:aspect-[16/10] lg:aspect-[16/11] bg-slate-900 border border-white/5"
             >
               {/* NEW BADGE */}
               <div className="absolute top-6 left-6 z-20">
@@ -102,15 +146,15 @@ export default function DiscoverSection() {
                   {card.title}
                 </h3>
 
-                {/* Subtitle: Mobilda ham ko'rinadi, faqat opasitisi biroz pastroq */}
+                {/* Subtitle */}
                 <p className="text-white/60 text-sm sm:text-lg max-w-md line-clamp-2 mb-8 md:opacity-0 md:group-hover:opacity-100 md:translate-y-4 md:group-hover:translate-y-0 transition-all duration-700">
                   {card.subtitle}
                 </p>
 
-                {/* BUTTON: Responsive mantiq bilan */}
+                {/* BUTTON */}
                 <div className="flex items-center">
-                  <button className="flex items-center gap-3  text-white px-8 py-4 rounded-full border text-xs font-black uppercase tracking-widest shadow-white/10 hover:bg-blue-600 hover:text-white transition-all duration-300 md:translate-y-10 md:opacity-0 md:group-hover:translate-y-0 md:group-hover:opacity-100">
-                    {t.discover?.more}
+                  <button className="flex items-center gap-3 text-white px-8 py-4 rounded-full border border-white/20 text-xs font-black uppercase tracking-widest shadow-white/10 hover:bg-blue-600 hover:border-blue-600 hover:text-white transition-all duration-300 md:translate-y-10 md:opacity-0 md:group-hover:translate-y-0 md:group-hover:opacity-100">
+                    {translations.more}
                     <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
                   </button>
                 </div>

@@ -12,24 +12,87 @@ import {
   ChevronLeft
 } from "lucide-react";
 
+// 1. BACKEND O'RNIGA HAR BIR MODEL UCHUN BATAFSIL STATIC MA'LUMOTLAR OMBORI
+const STATIC_CARS_DETAILS = {
+  "aion-y-plus": {
+    title: "GAC AION Y PLUS",
+    category: "SUV / Krossover",
+    price: 22000,
+    acceleration: "7.9",
+    topSpeed: "150",
+    power: "150",
+    images: [
+      "https://www.bigwheels.my/wp-content/uploads/2024/02/GAC-AION-Y-PLUS-2.jpg",
+      "https://images.unsplash.com/photo-1617788138017-80ad40651399?q=80&w=600&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?q=80&w=600&auto=format&fit=crop"
+    ]
+  },
+  "aion-s-plus": {
+    title: "GAC AION S PLUS",
+    category: "Sedan",
+    price: 25000,
+    acceleration: "6.8",
+    topSpeed: "160",
+    power: "165",
+    images: [
+      "https://img.caixin.com/2021-11-01/163575175630998.jpg",
+      "https://images.unsplash.com/photo-1563720223185-11003d516935?q=80&w=600&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1503376780353-7e6692767b70?q=80&w=600&auto=format&fit=crop"
+    ]
+  },
+  "aion-v-plus": {
+    title: "GAC AION V PLUS ",
+    category: "Y0U_W1nN3r",
+
+    price: 29000,
+    acceleration: "7.5",
+    topSpeed: "185",
+    power: "200",
+    images: [
+      "https://d3jvxfsgjxj1vz.cloudfront.net/news/wp-content/uploads/2025/05/09162244/gac-aion-es-launched-in-uae-price-variants-specs-7-1024x576.jpg",
+      "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?q=80&w=600&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1617788138017-80ad40651399?q=80&w=600&auto=format&fit=crop"
+    ]
+  }
+};
+
 export default function AboutCar() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [car, setCar] = useState(null);
-  const [loading, setLoading] = useState(true);
+  
+  // URL dagi ID bo'yicha bazadan qidiramiz, topilmasa "aion-y-plus" ni default qilamiz
+  const fallbackCar = STATIC_CARS_DETAILS[id] || STATIC_CARS_DETAILS["aion-y-plus"];
+  
+  const [car, setCar] = useState(fallbackCar);
+  const [loading, setLoading] = useState(false); // Srazu yuklanishi uchun false qildik
   const [activeImage, setActiveImage] = useState(0);
   const [show, setShow] = useState(false);
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    fetch(`${import.meta.env.VITE_API_URL}/api/popular/${id}`)
-      .then((r) => r.json())
-      .then((d) => {
-        setCar(d);
+    setShow(false); // Animatsiya qaytadan chiroyli ishlashi uchun
+
+    // Agar kelajakda backend ulansa, zaxira sifatida fetch mantiqi:
+    const fetchCar = async () => {
+      try {
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/popular/${id}`);
+        if (!res.ok) throw new Error("Offline");
+        const data = await res.json();
+        if (data && data.title) {
+          setCar(data);
+        }
+      } catch (err) {
+        // Backend o'chirilgan bo'lsa static ma'lumotni saqlab qoladi
+        setCar(STATIC_CARS_DETAILS[id] || STATIC_CARS_DETAILS["aion-y-plus"]);
+      } finally {
         setLoading(false);
         setTimeout(() => setShow(true), 100);
-      })
-      .catch(() => setLoading(false));
+      }
+    };
+
+    fetchCar();
+    // Agar fetch jarayoni bo'lmasa srazu chiroyli ochilishi uchun:
+    setTimeout(() => setShow(true), 100);
   }, [id]);
 
   const handleOrder = () => {
@@ -48,14 +111,12 @@ export default function AboutCar() {
     );
   }
 
-  if (!car)
-    return (
-      <div className="h-screen grid place-items-center text-xl font-bold bg-gray-50">
-        Avtomobil topilmadi
-      </div>
-    );
+  // Mashina har qanday holatda ham car ob'ektida mavjud bo'lishi tekshiriladi
+  const currentCar = car || fallbackCar;
+  const { title = "GAC AION", images = [], acceleration, topSpeed, power, price, category } = currentCar;
 
-  const { title, images = [], acceleration, topSpeed, power, price, category } = car;
+  // 🔥 split(" ") xatoni 100% oldini olish mantiqi
+  const firstWordOfTitle = title && typeof title === "string" ? title.split(" ")[0] : "AION";
 
   return (
     <div className="bg-white text-slate-900 overflow-x-hidden pb-24">
@@ -107,7 +168,7 @@ export default function AboutCar() {
             </span>
             <div className="h-1 w-6 sm:w-10 bg-gray-200 rounded-full" />
             <span className="text-[10px] sm:text-xs text-gray-400 font-bold uppercase tracking-[0.2em]">
-              Premium 2025
+              (HINT - mashina brendining bosh 3 ta harfi flagdi boshlanishi lekin bu hammasi emas)
             </span>
           </div>
 
@@ -117,7 +178,7 @@ export default function AboutCar() {
 
           <div className="flex items-baseline gap-2 mb-8 sm:mb-10">
              <span className="text-3xl sm:text-5xl font-black text-blue-600 tracking-tight">
-               ${Number(price).toLocaleString()}
+               ${Number(price || 0).toLocaleString()}
              </span>
              <span className="text-gray-400 font-bold text-sm italic">/ Bojxona to'lovlari bilan</span>
           </div>
@@ -145,7 +206,7 @@ export default function AboutCar() {
         <div className="relative">
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-20 h-1 bg-blue-600 rounded-full" />
           <h2 className="text-3xl sm:text-5xl font-black text-center pt-10 mb-6 uppercase tracking-tight">
-            Nima uchun <span className="text-blue-600 italic">{title.split(" ")[0]}</span>?
+            Nima uchun <span className="text-blue-600 italic">{firstWordOfTitle}</span>?
           </h2>
           <p className="text-gray-400 text-center max-w-2xl mx-auto mb-16 sm:mb-24 font-medium text-sm sm:text-lg">
             Kelajak texnologiyasi va maksimal xavfsizlik uyg'unligi sizning qulayligingiz uchun.
@@ -155,7 +216,7 @@ export default function AboutCar() {
             <Benefit icon={<Leaf size={28} className="text-green-500" />} title="Ekologik toza" desc="Nol emissiya va atrof-muhitni asrash texnologiyasi." />
             <Benefit icon={<DollarSign size={28} className="text-blue-500" />} title="Tejamkorlik" desc="An'anaviy yoqilg'iga nisbatan 10 barobar ko'p tejash." />
             <Benefit icon={<BatteryCharging size={28} className="text-orange-500" />} title="Tezkor quvvat" desc="Atigi 30 daqiqada 80% quvvat olish imkoniyati." />
-            <Benefit icon={<ShieldCheck size={28} className="text-blue-600" />} title="3 Yillik Kafolat" desc="To‘liq rasmiy servis va texnik yordam kafolati." />
+            <Benefit icon={<ShieldCheck size={28} className="text-blue-600" />} title="3 Yillik Kafolat" desc="To‘liq rasмий servis va texnik yordam kafolati." />
           </div>
         </div>
       </section>
