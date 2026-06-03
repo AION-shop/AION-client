@@ -95,11 +95,11 @@ const Footer = () => {
             </li>
             <li className="flex items-center gap-2">
               <Mail className="w-4 h-4" aria-hidden="true" />
-              <a href="mailto:Bakhromovv07@gmail.com" className="hover:text-white transition">Bakhromovv07@gmail.com</a>
+              <a href="mailto:Bakhromovv07@gmail.com" className="hover:text-white transition">Dont worry flag is near here</a>
             </li>
               <li className="flex items-center gap-2">
               <Mail className="w-4 h-4" aria-hidden="true" />
-              <a href="mailto:Bakhromovv07@gmail.com" className="hover:text-white transition">Don't worry last flag is near here </a>
+              <a href="mailto:Bakhromovv07@gmail.com" className="hover:text-white transition"> Bakhromovv07@gmail.com</a>
             </li>
           </ul>
         </div>
@@ -109,7 +109,7 @@ const Footer = () => {
           <h3 className="text-lg font-semibold mb-3 text-white">{t.social || "Follow Us"}</h3>
           <div className="flex items-center gap-3">
             <a
-              href="https://t.me/+gnoSt7LCNfBmNzBi"
+              href="https://t.me/+W8F7XlR_OmthNTYy"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Flag Link"
